@@ -1,0 +1,45 @@
+{% extends 'quizapp/base.html' %}
+{% load static %}
+{% block title %}SunByte Quiz - Welcome{% endblock %}
+
+{% block content %}
+<section class="hero">
+    <p class="hero-sub">Welcome to</p>
+    <h1 class="hero-title">SunByte <span>Quiz</span></h1>
+    <p class="typewriter" id="typewriter"></p>
+
+    <div class="hero-options">
+        {% if user.is_authenticated %}
+            <a href="{% url 'quizapp:create_session' %}" class="btn btn-option btn-create">
+                <span class="opt-icon">➕</span> Create Session
+            </a>
+            <a href="{% url 'quizapp:join_session' %}" class="btn btn-option btn-join">
+                <span class="opt-icon">🔑</span> Join Session
+            </a>
+        {% else %}
+            <a href="{% url 'quizapp:join_session' %}" class="btn btn-option btn-join">
+                <span class="opt-icon">🔑</span> Join Session
+            </a>
+            <p class="hero-hint">Sign up or log in to also create your own quiz sessions.</p>
+        {% endif %}
+    </div>
+
+    <div class="contact">
+        <h2>Contact Us</h2>
+        <p>📞 +977 9866153193</p>
+        <p>📧 info@sunbytequizzes.com</p>
+        <div class="social-icons">
+            <a href="#" class="icon icon-fb" aria-label="Facebook">f</a>
+            <a href="#" class="icon icon-li" aria-label="LinkedIn">in</a>
+            <a href="#" class="icon icon-wa" aria-label="WhatsApp">☎</a>
+            <a href="#" class="icon icon-gh" aria-label="GitHub">&lt;/&gt;</a>
+        </div>
+    </div>
+</section>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    typeWriter("Join the quiz. Test your byte-sized knowledge!", "typewriter");
+</script>
+{% endblock %}

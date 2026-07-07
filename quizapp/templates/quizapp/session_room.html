@@ -1,0 +1,65 @@
+{% extends 'quizapp/base.html' %}
+{% block title %}{{ session.title }} - SunByte Quiz{% endblock %}
+
+{% block content %}
+<section class="dashboard">
+    <h1 class="hero-title small">{{ session.title }}</h1>
+    <p class="hero-hint">Session code: <span class="code-chip big">{{ session.code }}</span></p>
+    <p class="hero-hint">Status: <span class="status status-{{ session.status }}">{{ session.get_status_display }}</span></p>
+
+    {% if is_host %}
+        <p class="hero-hint">You are hosting this session.</p>
+        <div class="hero-options">
+            <a href="{% url 'quizapp:manage_session' session.code %}" class="btn btn-option btn-create">🛠 Manage Questions</a>
+            {% if session.status == 'active' %}
+                <form method="post" action="{% url 'quizapp:end_session' session.code %}">
+                    {% csrf_token %}
+                    <button type="submit" class="btn btn-option" style="background:linear-gradient(135deg,#c96b6b,#7a4550);color:#fff;">⏹ End Session</button>
+                </form>
+            {% endif %}
+        </div>
+    {% elif participant %}
+        <p class="hero-hint">Joined as <strong>{{ participant.display_name }}</strong>.</p>
+        {% if session.status == 'active' %}
+            <div class="hero-options">
+                <a href="{% url 'quizapp:take_quiz' session.code %}" class="btn btn-option btn-create">▶ Start Quiz</a>
+            </div>
+        {% elif session.status == 'draft' %}
+            <p class="hero-hint">Waiting for the host to start the quiz…</p>
+        {% else %}
+            <p class="hero-hint">This session has ended.</p>
+            <a href="{% url 'quizapp:result_detail' session.code %}" class="btn btn-option btn-join">🏆 View Result</a>
+        {% endif %}
+    {% endif %}
+
+    <div class="dash-card" style="max-width:520px;margin:24px auto;">
+        <h3>Players ({{ participants.count }})</h3>
+        <ul>
+            {% for p in participants %}
+                <li>
+                    {{ p.display_name }}{% if p.user_id == session.host_id %} (host){% endif %}
+                    {% if p.submitted %}<span class="code-chip">submitted</span>{% endif %}
+                </li>
+            {% endfor %}
+        </ul>
+    </div>
+
+    <div class="hero-options">
+        {% if user.is_authenticated %}
+            <a href="{% url 'quizapp:dashboard' %}" class="btn btn-option btn-join">&larr; Back to Dashboard</a>
+        {% else %}
+            <a href="{% url 'quizapp:home' %}" class="btn btn-option btn-join">&larr; Back to Home</a>
+        {% endif %}
+    </div>
+</section>
+{% endblock %}
+
+{% block extra_js %}
+{% if session.status != 'ended' %}
+<script>
+    // Lightly auto-refresh the lobby so players see the "Start Quiz" option
+    // appear as soon as the host goes live, without needing WebSockets.
+    setTimeout(() => window.location.reload(), 8000);
+</script>
+{% endif %}
+{% endblock %}

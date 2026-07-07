@@ -1,0 +1,80 @@
+{% extends 'quizapp/base.html' %}
+{% block title %}Add Question - SunByte Quiz{% endblock %}
+
+{% block content %}
+<section class="auth-page" style="max-width:600px;">
+    <h1 class="auth-title" style="font-size:2rem;">Add Question</h1>
+    <p class="hero-hint">to {{ session.title }} ({{ session.code }})</p>
+
+    <form method="post" enctype="multipart/form-data" class="auth-card">
+        {% csrf_token %}
+
+        <label for="{{ form.question_type.id_for_label }}">Question type:</label>
+        {{ form.question_type }}
+
+        <label for="{{ form.text.id_for_label }}">Question:</label>
+        {{ form.text }}
+        {% for error in form.text.errors %}<p class="field-error">{{ error }}</p>{% endfor %}
+
+        <label for="{{ form.image.id_for_label }}">Image (optional):</label>
+        {{ form.image }}
+
+        <label for="{{ form.video_file.id_for_label }}">Video upload (optional):</label>
+        {{ form.video_file }}
+        <label for="{{ form.video_url.id_for_label }}">Or video link (optional):</label>
+        {{ form.video_url }}
+
+        <label for="{{ form.marks.id_for_label }}">Marks (leave blank for session default):</label>
+        {{ form.marks }}
+        <label for="{{ form.time_limit_seconds.id_for_label }}">Time limit in seconds (leave blank for session default):</label>
+        {{ form.time_limit_seconds }}
+
+        <div id="tf-block" style="display:none;margin-top:16px;">
+            <h3 style="color:var(--gold);">Correct answer</h3>
+            {% for radio in tf_form.correct_answer %}
+                <label class="checkbox-row">{{ radio.tag }} {{ radio.choice_label }}</label>
+            {% endfor %}
+        </div>
+
+        <div id="choices-block" style="margin-top:16px;">
+            <h3 style="color:var(--gold);">Options <span class="muted">(tick the correct one, at least one required)</span></h3>
+            {{ formset.management_form }}
+            {% for choice_form in formset %}
+                <div style="border:1px solid rgba(242,185,13,0.3);border-radius:10px;padding:10px;margin-bottom:10px;">
+                    <label class="checkbox-row">{{ choice_form.is_correct }} Correct?</label>
+                    <label>Option text:</label>
+                    {{ choice_form.text }}
+                    <label>Option image (optional):</label>
+                    {{ choice_form.image }}
+                    {% if choice_form.DELETE %}
+                        <label class="checkbox-row">{{ choice_form.DELETE }} Remove this option</label>
+                    {% endif %}
+                </div>
+            {% endfor %}
+        </div>
+
+        <button type="submit" class="btn btn-submit btn-block">Save Question</button>
+    </form>
+
+    <p class="auth-switch"><a href="{% url 'quizapp:manage_session' session.code %}">&larr; Back to question list</a></p>
+</section>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+function toggleQuestionType() {
+    const type = document.getElementById('id_question_type').value;
+    const tf = document.getElementById('tf-block');
+    const choices = document.getElementById('choices-block');
+    if (type === 'true_false') {
+        tf.style.display = 'block';
+        choices.style.display = 'none';
+    } else {
+        tf.style.display = 'none';
+        choices.style.display = 'block';
+    }
+}
+document.getElementById('id_question_type').addEventListener('change', toggleQuestionType);
+toggleQuestionType();
+</script>
+{% endblock %}

@@ -1,0 +1,70 @@
+{% extends 'quizapp/base.html' %}
+{% block title %}Result - {{ session.title }} - SunByte Quiz{% endblock %}
+
+{% block content %}
+<section class="dashboard">
+    <h1 class="hero-title small">Your Result</h1>
+    <p class="hero-hint">{{ session.title }} · {{ participant.display_name }}</p>
+
+    <div class="dash-lists" style="justify-content:center;">
+        <div class="dash-card" style="text-align:center;flex:1 1 160px;">
+            <h3>Score</h3>
+            <p style="font-size:1.6rem;color:var(--gold);font-weight:800;">{{ participant.total_marks }} / {{ total_possible }}</p>
+        </div>
+        <div class="dash-card" style="text-align:center;flex:1 1 160px;">
+            <h3>Rank</h3>
+            <p style="font-size:1.6rem;color:var(--gold);font-weight:800;">{% if participant.rank %}#{{ participant.rank }}{% else %}-{% endif %}</p>
+        </div>
+        <div class="dash-card" style="text-align:center;flex:1 1 160px;">
+            <h3>Correct</h3>
+            <p style="font-size:1.6rem;color:#37c98a;font-weight:800;">{{ participant.correct_count }}</p>
+        </div>
+        <div class="dash-card" style="text-align:center;flex:1 1 160px;">
+            <h3>Wrong</h3>
+            <p style="font-size:1.6rem;color:#e77a86;font-weight:800;">{{ participant.wrong_count }}</p>
+        </div>
+        <div class="dash-card" style="text-align:center;flex:1 1 160px;">
+            <h3>Not Attempted</h3>
+            <p style="font-size:1.6rem;color:#d9d94a;font-weight:800;">{{ participant.not_attempted_count }}</p>
+        </div>
+    </div>
+
+    <div class="dash-card" style="max-width:640px;margin:24px auto;text-align:left;">
+        <h3>Question-by-question</h3>
+        <ul>
+            {% for r in responses %}
+                <li style="display:block;padding:10px 0;">
+                    <strong>{{ r.question.text|truncatechars:80 }}</strong><br>
+                    {% if r.selected_choice %}
+                        Your answer: {{ r.selected_choice.text }} —
+                        {% if r.is_correct %}<span style="color:#37c98a;">Correct</span>{% else %}<span style="color:#e77a86;">Wrong</span>{% endif %}
+                    {% else %}
+                        <span style="color:#d9d94a;">Not attempted</span>
+                    {% endif %}
+                    &nbsp; <span class="code-chip">{{ r.marks_awarded }} marks</span>
+                </li>
+            {% endfor %}
+        </ul>
+    </div>
+
+    <div class="dash-card" style="max-width:640px;margin:24px auto;text-align:left;">
+        <h3>Leaderboard</h3>
+        <ul>
+            {% for p in leaderboard %}
+                <li>
+                    <span>#{{ p.rank|default:forloop.counter }} {{ p.display_name }}{% if p.id == participant.id %} (you){% endif %}</span>
+                    <span class="code-chip">{{ p.total_marks }} pts</span>
+                </li>
+            {% endfor %}
+        </ul>
+    </div>
+
+    <div class="hero-options">
+        {% if user.is_authenticated %}
+            <a href="{% url 'quizapp:dashboard' %}" class="btn btn-option btn-join">&larr; Back to Dashboard</a>
+        {% else %}
+            <a href="{% url 'quizapp:home' %}" class="btn btn-option btn-join">&larr; Back to Home</a>
+        {% endif %}
+    </div>
+</section>
+{% endblock %}

@@ -1,0 +1,47 @@
+{% extends 'quizapp/base.html' %}
+{% block title %}Create Session - SunByte Quiz{% endblock %}
+
+{% block content %}
+<section class="auth-page" style="max-width:560px;">
+    <h1 class="auth-title">Create Session</h1>
+
+    <form method="post" class="auth-card">
+        {% csrf_token %}
+
+        <label for="{{ form.title.id_for_label }}">Quiz title:</label>
+        {{ form.title }}
+        {% for error in form.title.errors %}<p class="field-error">{{ error }}</p>{% endfor %}
+
+        <label for="{{ form.category.id_for_label }}">Program / category:</label>
+        {{ form.category }}
+        <label for="{{ form.new_category.id_for_label }}">{{ form.new_category.label }}</label>
+        {{ form.new_category }}
+
+        <hr style="border-color:rgba(242,185,13,0.3);margin:18px 0;">
+        <h3 style="color:var(--gold);margin:0 0 6px;">Timer</h3>
+        <label for="{{ form.timer_mode.id_for_label }}">Timer mode:</label>
+        {{ form.timer_mode }}
+        <label for="{{ form.total_time_minutes.id_for_label }}">Total quiz time (minutes):</label>
+        {{ form.total_time_minutes }}
+        <label for="{{ form.default_time_per_question_seconds.id_for_label }}">Default time per question (seconds):</label>
+        {{ form.default_time_per_question_seconds }}
+
+        <hr style="border-color:rgba(242,185,13,0.3);margin:18px 0;">
+        <h3 style="color:var(--gold);margin:0 0 6px;">Marking scheme</h3>
+        <label for="{{ form.marks_mode.id_for_label }}">Marks mode:</label>
+        {{ form.marks_mode }}
+        <label for="{{ form.default_marks.id_for_label }}">Default marks per question:</label>
+        {{ form.default_marks }}
+
+        <label class="checkbox-row">{{ form.negative_marking }} {{ form.negative_marking.label }}</label>
+        <label for="{{ form.negative_marks.id_for_label }}">{{ form.negative_marks.label }}:</label>
+        {{ form.negative_marks }}
+
+        <label class="checkbox-row">{{ form.shuffle_questions }} {{ form.shuffle_questions.label }}</label>
+
+        <button type="submit" class="btn btn-submit btn-block">Create Session &amp; Add Questions</button>
+    </form>
+
+    <p class="auth-switch"><a href="{% url 'quizapp:dashboard' %}">&larr; Back to dashboard</a></p>
+</section>
+{% endblock %}

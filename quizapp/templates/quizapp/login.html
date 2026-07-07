@@ -1,0 +1,29 @@
+{% extends 'quizapp/base.html' %}
+{% block title %}Login - SunByte Quiz{% endblock %}
+
+{% block content %}
+<section class="auth-page">
+    <h1 class="auth-title">Login</h1>
+
+    <form method="post" class="auth-card">
+        {% csrf_token %}
+
+        <label for="{{ form.email.id_for_label }}">Email:</label>
+        {{ form.email }}
+        {% for error in form.email.errors %}<p class="field-error">{{ error }}</p>{% endfor %}
+
+        <label for="{{ form.password.id_for_label }}">Password:</label>
+        {{ form.password }}
+        {% for error in form.password.errors %}<p class="field-error">{{ error }}</p>{% endfor %}
+
+        <label class="checkbox-row">
+            {{ form.remember_me }} Remember Me
+        </label>
+
+        <button type="submit" class="btn btn-submit btn-block">Login</button>
+    </form>
+
+    <p class="auth-switch"><a href="#">Forgot Password?</a></p>
+    <p class="auth-switch">Don't have an account? <a href="{% url 'quizapp:signup' %}">Sign up</a></p>
+</section>
+{% endblock %}
