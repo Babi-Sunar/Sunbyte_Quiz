@@ -20,9 +20,9 @@ SECRET_KEY = os.environ.get(
 
 DEBUG = os.environ.get('DJANGO_DEBUG', 'True') == 'True'
 
-ALLOWED_HOSTS = os.environ.get('DJANGO_ALLOWED_HOSTS', '127.0.0.1,localhost').split(',')
+# ALLOWED_HOSTS = os.environ.get('DJANGO_ALLOWED_HOSTS', '127.0.0.1,localhost').split(',')
 #ALLOWED_HOSTS = ['*']
-#ALLOWED_HOSTS = ['localhost', '127.0.0.1', '10.20.20.198']
+ALLOWED_HOSTS = ['localhost', '127.0.0.1', '10.20.20.198']
 
 # -----------------------------------------------------------------------
 # APPLICATION DEFINITION

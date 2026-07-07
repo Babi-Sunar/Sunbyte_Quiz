@@ -1,36 +1,50 @@
-{% extends 'quizapp/base.html' %}
-{% block title %}Sign Up - SunByte Quiz{% endblock %}
+<!DOCTYPE html>
+<html lang="en">
 
-{% block content %}
-<section class="auth-page">
-    <h1 class="auth-title">Sign Up</h1>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="../css/signup.css">
+    <title>Sign-up</title>
+</head>
 
-    <form method="post" class="auth-card">
-        {% csrf_token %}
+<body>
 
-        <label for="{{ form.username.id_for_label }}">Username:</label>
-        {{ form.username }}
-        {% for error in form.username.errors %}<p class="field-error">{{ error }}</p>{% endfor %}
 
-        <label for="{{ form.email.id_for_label }}">Email:</label>
-        {{ form.email }}
-        {% for error in form.email.errors %}<p class="field-error">{{ error }}</p>{% endfor %}
+    <h2>Sign Up</h2>
 
-        <label for="{{ form.password1.id_for_label }}">Password:</label>
-        {{ form.password1 }}
-        {% for error in form.password1.errors %}<p class="field-error">{{ error }}</p>{% endfor %}
+    <form id="signupForm" action="#" method="post">
+        <div id="input-section">
+            <!-- username -->
+            <label id="username-label" class="input-label" for="username">Username:</label>
+            <input class="input-field"  type="text" id="username" name="username" placeholder="Username" required><br>
+            <!-- email -->
+            <label class="input-label"  id="email-label" for="email">Email:</label>
+            <input class="input-field"  type="email" id="email" name="email" placeholder="E-mail"  required><br>
+            <!-- password -->
+            <label class="input-label"  id="password-label" for="password">Password:</label>
+            <input class="input-field"  type="password" id="password" name="password" placeholder="Password" autocomplete="new-password" required><br>
+            <!--conform password -->
+            <label class="input-label"  id="conformPassword-label" for="conformPassword">Conform Password:</label>
+            <input class="input-field"  type="password" id="conformPassword" name="conformPassword" placeholder="conform Password" autocomplete="new-password" required><br>
 
-        <label for="{{ form.password2.id_for_label }}">Conform Password:</label>
-        {{ form.password2 }}
-        {% for error in form.password2.errors %}<p class="field-error">{{ error }}</p>{% endfor %}
+            <!-- signup button -->
+            <div id="signup-btn-container">
+                <button id="signup-btn" type="submit">Sign up</button><br><br>
+            </div>
+        </div>
 
-        {% if form.non_field_errors %}
-            <p class="field-error">{{ form.non_field_errors }}</p>
-        {% endif %}
-
-        <button type="submit" class="btn btn-submit">Sign up</button>
+        <br><br>
+        <div id="signup-options">
+            <!-- do not have account -->
+            <p style="color: rgb(236, 206, 172);text-shadow: rgba(0, 0, 0, 0.16) 0px 3px 6px, rgba(0, 0, 0, 0.23) 0px 3px 6px;
+            ">Already have an account? <a href="login.html"
+                    style="color: #cc9d04;text-shadow: rgba(0, 0, 0, 0.16) 0px 3px 6px, rgba(0, 0, 0, 0.23) 0px 3px 6px;">Login</a></p>
+        </div>
     </form>
 
-    <p class="auth-switch">Already have an account? <a href="{% url 'quizapp:login' %}">Login</a></p>
-</section>
-{% endblock %}
+    <!-- script -->
+    <script src="../js/signup.js"></script>
+</body>
+
+</html>
