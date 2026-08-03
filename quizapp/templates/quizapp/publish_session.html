@@ -1,0 +1,79 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <title>Publish Session</title>
+
+    <link rel="stylesheet" href="{% static 'quizapp/css/publish_session.css' %}">
+
+</head>
+
+<body>
+
+<div class="container">
+
+    <div class="card">
+
+        <h1>Publish Session</h1>
+
+        <p class="warning">
+
+            Once published, participants can join this quiz.
+
+        </p>
+
+        <div class="question-box">
+
+            <h3>{{ session.title }}</h3>
+
+            <p>
+
+                Session Code:
+                <strong>{{ session.code }}</strong>
+
+            </p>
+
+            <p>
+
+                Questions:
+                <strong>{{ session.question_count }}</strong>
+
+            </p>
+
+        </div>
+
+        <form method="POST">
+
+            {% csrf_token %}
+
+            <div class="button-group" >
+
+                <button class="delete-btn" type="submit">
+
+                    🚀 Publish Session
+
+                </button>
+
+                <a
+                    class="cancel-btn"
+                    href="{% url 'quizapp:manage_session' session.code %}">
+
+                    Cancel
+
+                </a>
+
+            </div>
+
+        </form>
+
+    </div>
+
+</div>
+
+</body>
+
+</html>

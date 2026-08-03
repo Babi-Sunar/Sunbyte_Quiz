@@ -1,0 +1,204 @@
+/* ===========================
+SunByte Quiz - Add Question
+=========================== */
+@import url('https://fonts.googleapis.com/css2?family=Bungee+Spice&family=Exo:ital,wght@0,100..900;1,100..900&family=Merriweather:ital,opsz,wght@0,18..144,300..900;1,18..144,300..900&family=Montserrat:ital,wght@0,100..900;1,100..900&family=Orbitron:wght@400..900&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap');
+
+@import url('https://fonts.googleapis.com/css2?family=Bungee+Spice&family=Edu+AU+VIC+WA+NT+Arrows:wght@400..700&family=Exo:ital,wght@0,100..900;1,100..900&family=Merriweather:ital,opsz,wght@0,18..144,300..900;1,18..144,300..900&family=Montserrat:ital,wght@0,100..900;1,100..900&family=Nabla&family=Orbitron:wght@400..900&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap');
+
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: "Poppins", sans-serif;
+}
+
+body {
+    min-height: 100vh;
+    background: linear-gradient(0deg,
+            rgba(17, 115, 115, 1) 0%,
+            rgba(155, 127, 127, 1) 39%,
+            rgba(194, 130, 130, 1) 62%);
+    background-repeat: no-repeat;
+    background-size: cover;
+    padding: 30px 15px;
+}
+
+/* Main Card */
+
+.container {
+    width: 100%;
+    max-width: 750px;
+    margin: auto;
+    padding: 25px;
+    background: rgba(29, 49, 83, 0.15);
+    border: 1px solid #FFC300;
+    border-radius: 20px;
+
+    box-shadow:
+        rgba(50, 50, 93, .25) 0px 30px 60px -12px inset,
+        rgba(0, 0, 0, .3) 0px 18px 36px -18px inset;
+}
+
+/* Heading */
+
+.container h1 {
+    text-align: center;
+    color: #FFC300;
+    margin-bottom: 10px;
+
+    text-shadow:
+        rgba(0, 0, 0, .16) 0 3px 6px,
+        rgba(0, 0, 0, .23) 0 3px 6px;
+}
+
+.session-name {
+    text-align: center;
+    color: white;
+    margin-bottom: 30px;
+}
+
+/* Labels */
+
+.label {
+    color: #FFC300;
+    text-shadow:
+        rgba(0, 0, 0, .16) 0 3px 6px,
+        rgba(0, 0, 0, .23) 0 3px 6px;
+    display: block;
+    margin-top: 18px;
+    margin-bottom: 8px;
+    font-weight: 600;
+}
+
+/* Inputs */
+
+input,
+textarea,
+select {
+    width: 100%;
+    padding: 12px;
+
+    border-radius: 10px;
+    border: 1px solid #FFC300;
+
+    background: rgba(255, 228, 196, .55);
+
+    font-size: 16px;
+
+    box-shadow:
+        rgb(70, 79, 88) 3px 3px 6px inset,
+        rgba(156, 114, 114, .5) -3px -3px 6px inset;
+}
+
+textarea {
+    resize: vertical;
+    min-height: 120px;
+}
+
+input[type="file"] {
+    background: rgba(255, 255, 255, .85);
+    padding: 8px;
+    color: #003566;
+}
+
+/* Option Cards */
+
+.choice-row {
+    margin-top: 18px;
+    padding: 15px;
+
+    background: rgba(255, 255, 255, .08);
+
+    border-radius: 12px;
+
+    border: 1px solid rgba(255, 195, 0, .5);
+}
+
+.choice-row h4 {
+    color: #FFC300;
+    margin-bottom: 12px;
+}
+
+.choice-row label {
+    margin-top: 12px;
+    color: white;
+}
+
+.choice-row input[type="checkbox"] {
+    width: auto;
+    margin-left: 8px;
+}
+
+/* True False */
+#tf-section input[type="radio"] {
+    width: 20px;
+    height: 20px;
+    margin-right: 20px;
+    border-radius: 50%;
+}
+
+#tf-section {
+    margin-top: 20px;
+}
+
+#tf-section label {
+    color: #FFC300;
+    font-size: larger;
+    text-shadow:
+        rgba(0, 0, 0, .16) 0 3px 6px,
+        rgba(0, 0, 0, .23) 0 3px 6px;
+}
+
+/* Horizontal Line */
+
+hr {
+    border: none;
+    border-top: 1px solid rgba(255, 195, 0, .3);
+    margin: 20px 0;
+}
+
+/* Button */
+
+button {
+    width: 100%;
+    margin-top: 30px;
+    padding: 14px;
+
+    border: none;
+    border-radius: 100px;
+
+    background: #FFC300;
+
+    color: #003566;
+
+    font-size: 17px;
+    font-weight: bold;
+
+    cursor: pointer;
+
+    transition: .25s;
+
+    box-shadow:
+        rgba(255, 195, 0, .35) 0 -25px 18px -14px inset,
+        rgba(255, 195, 0, .20) 0 1px 2px,
+        rgba(255, 195, 0, .20) 0 2px 4px,
+        rgba(255, 195, 0, .20) 0 4px 8px,
+        rgba(255, 195, 0, .20) 0 8px 16px,
+        rgba(255, 195, 0, .20) 0 16px 32px;
+}
+
+button:hover {
+
+    background: #FFD60A;
+
+    transform: scale(1.02);
+
+    box-shadow:
+        rgba(255, 214, 10, .45) 0 -25px 18px -14px inset,
+        rgba(255, 214, 10, .30) 0 1px 2px,
+        rgba(255, 214, 10, .30) 0 2px 4px,
+        rgba(255, 214, 10, .30) 0 4px 8px,
+        rgba(255, 214, 10, .30) 0 8px 16px,
+        rgba(255, 214, 10, .30) 0 16px 32px;
+}

@@ -1,0 +1,181 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Edit Question</title>
+
+    <link rel="stylesheet" href="{% static 'quizapp/css/question_form.css' %}">
+</head>
+
+<body>
+
+    <div class="container">
+
+        <h1>Edit Question</h1>
+
+        <p class="session-name" style="text-shadow: rgba(0,0,0,.16) 0 3px 6px,rgba(0,0,0,.23) 0 3px 6px;">
+            Session: {{ session.title }}
+        </p>
+
+        <form method="POST" enctype="multipart/form-data">
+
+            {% csrf_token %}
+
+            <!-- Question Type -->
+            <p class="label">
+                {{ form.question_type.label }}<br>
+                {{ form.question_type }}
+            </p>
+
+            <!-- Question -->
+            <p class="label">
+                {{ form.text.label }}<br>
+                {{ form.text }}
+            </p>
+
+            <!-- Question Image -->
+            <p class="label">
+                {{ form.image.label }}<br>
+                {{ form.image }}
+            </p>
+
+            <!-- Video Upload -->
+            <p class="label">
+                {{ form.video_file.label }}<br>
+                {{ form.video_file }}
+            </p>
+
+            <!-- Video URL -->
+            <p class="label">
+                {{ form.video_url.label }}<br>
+                {{ form.video_url }}
+            </p>
+
+            <!-- Marks -->
+            <p class="label">
+                {{ form.marks.label }}<br>
+                {{ form.marks }}
+            </p>
+
+            <!-- Time -->
+            <p class="label">
+                {{ form.time_limit_seconds.label }}<br>
+                {{ form.time_limit_seconds }}
+            </p>
+
+            <!-- ======================= -->
+            <!-- Multiple Choice -->
+            <!-- ======================= -->
+
+            <div id="choice-section">
+
+                {% if formset %}
+                    {{ formset.management_form }}
+
+                    {% for choice_form in formset %}
+
+                    <div class="choice-row">
+
+                        <h3>
+                            {% if forloop.counter == 1 %}
+                                Option A
+                            {% elif forloop.counter == 2 %}
+                                Option B
+                            {% elif forloop.counter == 3 %}
+                                Option C
+                            {% elif forloop.counter == 4 %}
+                                Option D
+                            {% endif %}
+                        </h3>
+
+                        {{ choice_form.id }}
+
+                        <p class="label">
+                            {{ choice_form.text }}
+                        </p>
+
+                        <p class="label">
+                            {{ choice_form.image }}
+                        </p>
+
+                        <label class="correct-label">
+                            {{ choice_form.is_correct }}
+                            Correct Answer
+                        </label>
+
+                    </div>
+
+                    {% if not forloop.last %}
+                        <hr>
+                    {% endif %}
+
+                    {% endfor %}
+                {% endif %}
+
+            </div>
+
+            <!-- ======================= -->
+            <!-- True / False -->
+            <!-- ======================= -->
+
+            <div id="tf-section">
+
+                {{ tf_form.as_p }}
+
+            </div>
+
+            <button type="submit">
+                Update Question
+            </button>
+
+        </form>
+
+    </div>
+
+    <script>
+
+        document.addEventListener("DOMContentLoaded", function () {
+
+            const type = document.getElementById("id_question_type");
+            const choiceSection = document.getElementById("choice-section");
+            const tfSection = document.getElementById("tf-section");
+
+            const tfInputs = tfSection.querySelectorAll("input");
+            const choiceInputs = choiceSection.querySelectorAll("input, textarea, select");
+
+            function updateQuestionType() {
+
+                if (type.value === "true_false") {
+
+                    choiceSection.style.display = "none";
+                    tfSection.style.display = "block";
+
+                    tfInputs.forEach(input => input.disabled = false);
+                    choiceInputs.forEach(input => input.disabled = true);
+
+                } else {
+
+                    choiceSection.style.display = "block";
+                    tfSection.style.display = "none";
+
+                    tfInputs.forEach(input => input.disabled = true);
+                    choiceInputs.forEach(input => input.disabled = false);
+
+                }
+
+            }
+
+            updateQuestionType();
+
+            type.addEventListener("change", updateQuestionType);
+
+        });
+
+    </script>
+
+</body>
+
+</html>

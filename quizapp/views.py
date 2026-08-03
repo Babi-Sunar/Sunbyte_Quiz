@@ -1,3 +1,4 @@
+import email
 import random
 from decimal import Decimal
 
@@ -9,6 +10,7 @@ from django.db import transaction
 from django.shortcuts import get_object_or_404, redirect, render
 from django.utils import timezone
 from django.views.decorators.cache import never_cache
+from requests import session
 
 from .forms import (
     ChoiceFormSet, EmailLoginForm, JoinSessionForm, QuestionForm,
@@ -64,10 +66,7 @@ def login_view(request):
         if form.is_valid():
             email = form.cleaned_data['email']
             password = form.cleaned_data['password']
-            try:
-                user_obj = User.objects.get(email__iexact=email)
-            except User.DoesNotExist:
-                user_obj = None
+            user_obj = User.objects.filter(email__iexact=email).first()
 
             user = None
             if user_obj is not None:
@@ -236,91 +235,439 @@ def manage_session(request, code):
 @login_required
 def add_question(request, code):
     session = _get_hosted_session_or_404(request, code)
-    next_order = session.questions.count() + 1
 
-    question_type = request.POST.get('question_type', 'mcq')
+    last_question = session.questions.order_by("-order").first()
+    next_order = 1 if last_question is None else last_question.order + 1
+
     formset = None
     tf_form = None
 
-    if request.method == 'POST':
+    if request.method == "POST":
+
+        print("\n========== POST RECEIVED ==========\n")
+
         form = QuestionForm(request.POST, request.FILES)
+
         if form.is_valid():
+
+            print("✓ Question form is valid")
+
             with transaction.atomic():
+
                 question = form.save(commit=False)
                 question.session = session
                 question.order = next_order
                 question.save()
 
-                if question.question_type == 'true_false':
+                # ==================================
+                # TRUE / FALSE
+                # ==================================
+                if question.question_type == "true_false":
+
                     tf_form = TrueFalseAnswerForm(request.POST)
+
                     if tf_form.is_valid():
-                        correct = tf_form.cleaned_data['correct_answer']
-                        Choice.objects.create(question=question, text='True', is_correct=(correct == 'true'), order=1)
-                        Choice.objects.create(question=question, text='False', is_correct=(correct == 'false'), order=2)
-                        messages.success(request, 'Question added.')
-                        return redirect('quizapp:manage_session', code=session.code)
-                    question.delete()
+
+                        print("✓ True/False form is valid")
+
+                        correct = tf_form.cleaned_data["correct_answer"]
+
+                        Choice.objects.create(
+                            question=question,
+                            text="True",
+                            is_correct=(correct == "true"),
+                            order=1,
+                        )
+
+                        Choice.objects.create(
+                            question=question,
+                            text="False",
+                            is_correct=(correct == "false"),
+                            order=2,
+                        )
+
+                        messages.success(request, "Question added successfully.")
+
+                        return redirect(
+                            "quizapp:manage_session",
+                            code=session.code,
+                        )
+
+                    else:
+
+                        print("True/False Errors:")
+                        print(tf_form.errors)
+
+                        question.delete()
+
+                # ==================================
+                # MCQ
+                # ==================================
                 else:
-                    formset = ChoiceFormSet(request.POST, request.FILES, instance=question)
+
+                    formset = ChoiceFormSet(
+                        request.POST,
+                        request.FILES,
+                        instance=question,
+                    )
+
                     if formset.is_valid():
+
+                        print("✓ Choice Formset is valid")
+
                         choices = formset.save(commit=False)
-                        if not any(c.is_correct for c in choices):
-                            messages.error(request, 'Mark at least one option as the correct answer.')
+
+                        valid_choices = [
+                            c for c in choices
+                            if (c.text and c.text.strip()) or c.image
+                        ]
+
+                        print(f"Choices received: {len(valid_choices)}")
+
+                        if len(valid_choices) < 2:
+
+                            print("ERROR: Less than two choices.")
+
+                            messages.error(
+                                request,
+                                "Please provide at least two options.",
+                            )
+
+                            question.delete()
+
+                        elif not any(c.is_correct for c in valid_choices):
+
+                            print("ERROR: No correct answer selected.")
+
+                            messages.error(
+                                request,
+                                "Please select one correct answer.",
+                            )
+
+                            question.delete()
+
                         else:
-                            for i, choice in enumerate(choices, start=1):
+
+                            for i, choice in enumerate(valid_choices, start=1):
+                                choice.question = question
                                 choice.order = i
                                 choice.save()
-                            messages.success(request, 'Question added.')
-                            return redirect('quizapp:manage_session', code=session.code)
-                    question.delete()
+
+                            print("✓ Question saved successfully")
+
+                            messages.success(
+                                request,
+                                "Question added successfully.",
+                            )
+
+                            return redirect(
+                                "quizapp:manage_session",
+                                code=session.code,
+                            )
+
+                    else:
+
+                        print("\n========== FORMSET ERRORS ==========")
+                        print(formset.errors)
+                        print(formset.non_form_errors())
+                        print("====================================\n")
+
+                        question.delete()
+
+        else:
+
+            print("\n========== QUESTION FORM ERRORS ==========")
+            print(form.errors)
+            print("==========================================\n")
+
     else:
+
         form = QuestionForm()
 
     if formset is None:
         formset = ChoiceFormSet()
+
     if tf_form is None:
         tf_form = TrueFalseAnswerForm()
 
-    return render(request, 'quizapp/question_form.html', {
-        'session': session,
-        'form': form,
-        'formset': formset,
-        'tf_form': tf_form,
-    })
-
-
+    return render(
+        request,
+        "quizapp/question_form.html",
+        {
+            "session": session,
+            "form": form,
+            "formset": formset,
+            "tf_form": tf_form,
+        },
+    )
 @never_cache
 @login_required
 def delete_question(request, code, question_id):
     session = _get_hosted_session_or_404(request, code)
-    question = get_object_or_404(Question, id=question_id, session=session)
-    if request.method == 'POST':
+
+    question = get_object_or_404(
+        Question,
+        id=question_id,
+        session=session,
+    )
+
+    if request.method == "POST":
+
         question.delete()
-        messages.info(request, 'Question removed.')
-    return redirect('quizapp:manage_session', code=session.code)
 
+        # Reorder remaining questions
+        questions = session.questions.order_by("order")
 
+        for index, q in enumerate(questions, start=1):
+            if q.order != index:
+                q.order = index
+                q.save(update_fields=["order"])
+
+        messages.success(request, "Question deleted successfully.")
+
+        return redirect(
+            "quizapp:manage_session",
+            code=session.code,
+        )
+
+    return render(
+        request,
+        "quizapp/delete_question.html",
+        {
+            "session": session,
+            "question": question,
+        },
+    )
+
+@never_cache
+@login_required
+def edit_question(request, code, question_id):
+    session = _get_hosted_session_or_404(request, code)
+
+    question = get_object_or_404(
+        Question,
+        id=question_id,
+        session=session,
+    )
+
+    if request.method == "POST":
+
+        form = QuestionForm(
+            request.POST,
+            request.FILES,
+            instance=question,
+        )
+
+        if question.question_type == "true_false":
+
+            tf_form = TrueFalseAnswerForm(request.POST)
+            formset = None
+
+            if form.is_valid() and tf_form.is_valid():
+
+                form.save()
+
+                correct = tf_form.cleaned_data["correct_answer"]
+
+                choices = list(question.choices.order_by("order"))
+
+                if len(choices) == 2:
+
+                    choices[0].is_correct = (correct == "true")
+                    choices[1].is_correct = (correct == "false")
+
+                    choices[0].save()
+                    choices[1].save()
+
+                messages.success(
+                    request,
+                    "Question updated successfully."
+                )
+
+                return redirect(
+                    "quizapp:manage_session",
+                    code=session.code,
+                )
+
+        else:
+
+            formset = ChoiceFormSet(
+                request.POST,
+                request.FILES,
+                instance=question,
+            )
+
+            tf_form = TrueFalseAnswerForm()
+
+            if form.is_valid() and formset.is_valid():
+
+                form.save()
+
+                choices = formset.save(commit=False)
+
+                Choice.objects.filter(
+                    question=question
+                ).exclude(
+                    id__in=[c.id for c in choices if c.id]
+                ).delete()
+
+                has_correct = False
+
+                for index, choice in enumerate(choices, start=1):
+
+                    choice.question = question
+                    choice.order = index
+
+                    if choice.is_correct:
+                        has_correct = True
+
+                    choice.save()
+
+                if not has_correct:
+
+                    messages.error(
+                        request,
+                        "Please select one correct answer."
+                    )
+
+                else:
+
+                    messages.success(
+                        request,
+                        "Question updated successfully."
+                    )
+
+                    return redirect(
+                        "quizapp:manage_session",
+                        code=session.code,
+                    )
+
+    else:
+
+        form = QuestionForm(instance=question)
+
+        if question.question_type == "true_false":
+
+            formset = None
+
+            correct = "true"
+
+            for choice in question.choices.all():
+
+                if choice.is_correct:
+
+                    correct = choice.text.lower()
+
+            tf_form = TrueFalseAnswerForm(
+                initial={
+                    "correct_answer": correct
+                }
+            )
+
+        else:
+
+            formset = ChoiceFormSet(instance=question)
+
+            tf_form = TrueFalseAnswerForm()
+
+    return render(
+        request,
+        "quizapp/edit_question.html",
+        {
+            "session": session,
+            "question": question,
+            "form": form,
+            "formset": formset,
+            "tf_form": tf_form,
+        },
+    )
+@never_cache
 @login_required
 def publish_session(request, code):
+
     session = _get_hosted_session_or_404(request, code)
-    if session.questions.count() == 0:
-        messages.error(request, 'Add at least one question before going live.')
-    else:
-        session.status = 'active'
-        session.save(update_fields=['status'])
-        messages.success(request, f'Session is live! Share code {session.code}.')
-    return redirect('quizapp:manage_session', code=session.code)
 
+    if request.method == "POST":
 
+        if session.question_count == 0:
+
+            messages.error(
+                request,
+                "Add at least one question before publishing the session."
+            )
+
+            return redirect(
+                "quizapp:manage_session",
+                code=session.code,
+            )
+
+        session.status = "active"
+        session.save(update_fields=["status"])
+
+        messages.success(
+            request,
+            "Session published successfully. Participants can now join using the session code or QR code."
+        )
+
+        return redirect(
+            "quizapp:manage_session",
+            code=session.code,
+        )
+
+    return render(
+        request,
+        "quizapp/publish_session.html",
+        {
+            "session": session,
+        },
+    )
+
+@never_cache
 @login_required
 def end_session(request, code):
-    session = _get_hosted_session_or_404(request, code)
-    session.status = 'ended'
-    session.save(update_fields=['status'])
-    session.recompute_ranks()
-    messages.info(request, 'Session ended.')
-    return redirect('quizapp:manage_session', code=session.code)
 
+    session = _get_hosted_session_or_404(request, code)
+
+
+    if request.method == "POST":
+
+        session.status = 'ended'
+
+        session.save(update_fields=['status'])
+        session.recompute_ranks()
+
+        messages.info(request, 'Session ended.')
+
+        return redirect(
+            'quizapp:manage_session',
+            code=session.code
+        )
+
+
+    return render(
+        request,
+        'quizapp/end_session.html',
+        {
+            'session': session
+        }
+    )
+
+# my quizes
+@login_required
+def my_quizzes(request):
+
+    quizzes = QuizSession.objects.filter(
+        host=request.user
+    ).order_by('-created_at')
+
+
+    return render(
+        request,
+        'quizapp/my_quizzes.html',
+        {
+            'quizzes': quizzes
+        }
+    )
 
 # =======================================================================
 # Lobby / taking the quiz / results

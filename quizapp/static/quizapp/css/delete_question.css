@@ -1,0 +1,202 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: "Poppins", sans-serif;
+}
+
+body {
+    min-height: 100vh;
+    background: #117373;
+    background: linear-gradient(
+        0deg,
+        rgba(17,115,115,1) 0%,
+        rgba(155,127,127,1) 39%,
+        rgba(194,130,130,1) 62%
+    );
+    background-repeat: no-repeat;
+    background-size: cover;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    padding: 25px;
+}
+
+.container{
+    width:100%;
+    max-width:700px;
+}
+
+.card{
+
+    background: rgba(29,49,83,.18);
+
+    backdrop-filter: blur(12px);
+
+    border:1px solid #FFC300;
+
+    border-radius:20px;
+
+    padding:35px;
+
+    box-shadow:
+        rgba(50,50,93,.25) 0 30px 60px -12px inset,
+        rgba(0,0,0,.30) 0 18px 36px -18px inset;
+}
+
+h1{
+
+    text-align:center;
+
+    color:#FFC300;
+
+    margin-bottom:20px;
+
+    text-shadow:
+        rgba(0,0,0,.16) 0 3px 6px,
+        rgba(0,0,0,.23) 0 3px 6px;
+}
+
+.warning{
+
+    text-align:center;
+
+    color:#ffffff;
+
+    font-size:18px;
+
+    margin-bottom:25px;
+
+    line-height:1.6;
+}
+
+.question-box{
+
+    background:rgba(255,255,255,.12);
+
+    border:1px solid rgba(255,195,0,.45);
+
+    border-radius:15px;
+
+    padding:20px;
+
+    margin-bottom:30px;
+}
+
+.question-box h3{
+
+    color:#FFC300;
+
+    margin-bottom:12px;
+}
+
+.question-box p{
+
+    color:white;
+
+    line-height:1.7;
+
+    word-break:break-word;
+}
+
+.button-group{
+
+    display:flex;
+
+    justify-content:center;
+
+    gap:20px;
+
+    flex-wrap:wrap;
+}
+
+.delete-btn{
+
+    background:#dc3545;
+
+    color:white;
+
+    border:none;
+
+    padding:12px 28px;
+
+    border-radius:100px;
+
+    cursor:pointer;
+
+    font-size:16px;
+
+    font-weight:600;
+
+    transition:.3s;
+
+    box-shadow:
+        rgba(220,53,69,.35) 0 -25px 18px -14px inset,
+        rgba(220,53,69,.20) 0 4px 8px;
+}
+
+.delete-btn:hover{
+
+    transform:translateY(-3px);
+
+    background:#c82333;
+
+    box-shadow:
+        rgba(220,53,69,.50) 0 -25px 18px -14px inset,
+        rgba(220,53,69,.35) 0 8px 20px;
+}
+
+.cancel-btn{
+
+    text-decoration:none;
+
+    background:#FFC300;
+
+    color:#003566;
+
+    padding:12px 28px;
+
+    border-radius:100px;
+
+    font-weight:600;
+
+    transition:.3s;
+
+    box-shadow:
+        rgba(255,195,0,.35) 0 -25px 18px -14px inset,
+        rgba(255,195,0,.20) 0 4px 8px;
+}
+
+.cancel-btn:hover{
+
+    background:#FFD60A;
+
+    transform:translateY(-3px);
+
+    box-shadow:
+        rgba(255,214,10,.45) 0 -25px 18px -14px inset,
+        rgba(255,214,10,.30) 0 8px 20px;
+}
+
+@media(max-width:600px){
+
+    .card{
+
+        padding:25px 18px;
+    }
+
+    .button-group{
+
+        flex-direction:column;
+    }
+
+    .delete-btn,
+    .cancel-btn{
+
+        width:100%;
+
+        text-align:center;
+    }
+}

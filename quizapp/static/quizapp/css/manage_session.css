@@ -11,7 +11,7 @@ body {
             rgba(17, 115, 115, 1) 0%,
             rgba(155, 127, 127, 1) 39%,
             rgba(194, 130, 130, 1) 62%);
-    padding: 30px;
+    padding: 25px 30px;
 }
 
 #container {
@@ -23,7 +23,7 @@ h1 {
     color: #FFC300;
     text-shadow: rgba(0, 0, 0, 0.16) 0px 3px 6px, rgba(0, 0, 0, 0.23) 0px 3px 6px;
     text-align: center;
-    margin-bottom: 20px;
+    margin-bottom: 15px;
 }
 
 .card {
@@ -33,7 +33,7 @@ h1 {
     display: flex;
     flex-direction: column;
     padding: 20px;
-    height: 25vh;
+    height: 2vh;
     max-width: 400px;
     background: rgba(30, 64, 123, 0.144);
     border-radius: 20px;
@@ -43,7 +43,7 @@ h1 {
 }
 
 .card p {
-    margin-top: 12px;
+    margin-top: 10px;
 }
 
 .buttons {
@@ -52,7 +52,7 @@ h1 {
     gap: 15px;
     flex-wrap: wrap;
     margin-top: 2vh;
-    margin-bottom: 30px;
+    margin-bottom: 25px;
 
 }
 
@@ -99,13 +99,13 @@ h1 {
 /* qr code */
 .qr-box{
 
-    margin-top:15px;
+    margin-top:10px;
     text-align:center;
 
 }
 
 .qr-box img{
-    width:220px;
+    width:200px;
     background:white;
     padding:10px;
     border-radius:12px;

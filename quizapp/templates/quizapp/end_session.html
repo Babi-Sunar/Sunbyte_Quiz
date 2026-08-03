@@ -1,0 +1,111 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html>
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <title>End Session</title>
+
+    <link rel="stylesheet" href="{% static 'quizapp/css/end_session.css' %}">
+
+</head>
+
+
+<body>
+
+
+<div class="container">
+
+
+    <div class="card">
+
+
+        <h1>
+            End Quiz Session
+        </h1>
+
+
+        <p class="warning">
+
+            Ending this session will stop new participants and finalize the quiz.
+
+        </p>
+
+
+
+        <div class="session-box">
+
+
+            <h3>
+                {{ session.title }}
+            </h3>
+
+
+            <p>
+                Session Code:
+                <strong>{{ session.code }}</strong>
+            </p>
+
+
+            <p>
+                Questions:
+                <strong>{{ session.question_count }}</strong>
+            </p>
+
+
+            <p>
+                Status:
+                <strong class="active">
+                    Active
+                </strong>
+            </p>
+
+
+        </div>
+
+
+
+
+        <form method="POST">
+
+            {% csrf_token %}
+
+
+            <div class="button-group">
+
+
+                <button class="end-btn" type="submit">
+
+                    ⚠️ End Session
+
+                </button>
+
+
+
+                <a class="cancel-btn"
+                href="{% url 'quizapp:manage_session' session.code %}">
+
+                    Cancel
+
+                </a>
+
+
+            </div>
+
+
+        </form>
+
+
+
+    </div>
+
+
+</div>
+
+
+</body>
+
+</html>

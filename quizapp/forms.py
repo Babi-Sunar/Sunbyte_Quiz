@@ -166,15 +166,24 @@ class QuestionForm(forms.ModelForm):
 # Up to 6 choices per question (covers "four option" and general MCQ).
 # True/False questions are auto-generated in the view, not through this formset.
 ChoiceFormSet = inlineformset_factory(
-    Question, Choice,
-    fields=('text', 'image', 'is_correct'),
-    extra=4, max_num=6, min_num=2, validate_min=True,
-    can_delete=True,
+    Question,
+    Choice,
+    fields=("text", "image", "is_correct"),
+    extra=4,
+    max_num=4,
+    min_num=4,
+    validate_min=True,
+    validate_max=True,
+    can_delete=False,
     widgets={
-        'text': forms.TextInput(attrs={'class': 'form-input', 'placeholder': 'Option text'}),
+        "text": forms.TextInput(
+            attrs={
+                "class": "form-input",
+                "placeholder": "Option text",
+            }
+        ),
     },
 )
-
 
 class TrueFalseAnswerForm(forms.Form):
     correct_answer = forms.ChoiceField(

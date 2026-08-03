@@ -1,0 +1,157 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html>
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <title>My Quizzes</title>
+
+    <link rel="stylesheet" href="{% static 'quizapp/css/my_quizzes.css' %}">
+
+</head>
+
+
+<body>
+
+
+    <div class="container">
+
+
+        <div class="header">
+
+            <h1>
+                📚 My Quizzes
+            </h1>
+
+
+            <a href="{% url 'quizapp:dashboard' %}" class="back-btn">
+                ← Dashboard
+            </a>
+
+        </div>
+
+
+
+        <div class="quiz-container">
+
+
+
+            {% for quiz in quizzes %}
+
+
+            <div class="quiz-card">
+
+
+                <h2>
+                    {{ quiz.title }}
+                </h2>
+
+
+
+                <div class="quiz-info">
+
+
+                    <p>
+                        Session Code:
+                        <strong>
+                            {{ quiz.code }}
+                        </strong>
+                    </p>
+
+
+
+                    <p>
+                        Status:
+                        <strong class="status">
+                            {{ quiz.status|title }}
+                        </strong>
+                    </p>
+
+
+
+                    <p>
+                        Questions:
+                        <strong>
+                            {{ quiz.question_count }}
+                        </strong>
+                    </p>
+
+
+
+                    <p>
+                        Created:
+                        <strong>
+                            {{ quiz.created_at|date:"M d, Y" }}
+                        </strong>
+                    </p>
+
+
+                </div>
+
+
+
+
+                <div class="action-buttons">
+
+
+                    <a href="{% url 'quizapp:manage_session' quiz.code %}" class="manage-btn">
+
+                        ⚙️ Manage
+
+                    </a>
+
+
+
+
+
+                </div>
+
+
+
+            </div>
+
+
+
+            {% empty %}
+
+
+
+            <div class="empty-box">
+
+
+                <h2>
+                    No Quizzes Found
+                </h2>
+
+
+                <p>
+                    You have not created any quiz sessions yet.
+                </p>
+
+
+
+                <a href="{% url 'quizapp:create_session' %}">
+                    ➕ Create Quiz
+                </a>
+
+
+            </div>
+
+
+
+            {% endfor %}
+
+
+
+        </div>
+
+
+    </div>
+
+
+</body>
+
+</html>

@@ -20,12 +20,15 @@
     <div id="container">
 
         <h1>Manage Quiz Session</h1>
+        <a href="{% url 'quizapp:dashboard' %}" class="back-btn" style="color: #4a4638;position: relative ; left: 50vw;">
+            ← Dashboard
+        </a>
 
         <div class="card">
 
             <h2>{{ session.title }}</h2>
 
-            <p><strong>Session Code:</strong> {{ session.code }}</p>
+            <p><strong>Session Code:</strong> <span style="color: rgb(1, 255, 187);">{{ session.code }}</span></p>
 
             <p><strong>Status:</strong> {{ session.get_status_display }}</p>
 
@@ -39,8 +42,8 @@
         <div class="qr-box">
 
             <h3 style="color: #ffc300;     text-shadow: rgba(0, 0, 0, 0.16) 0px 3px 6px, rgba(0, 0, 0, 0.23) 0px 3px 6px;
-">Scan to Join</h3>
-<br>
+            ">Scan to Join</h3>
+            <br>
             <img src="{{ qr_image }}" alt="QR Code">
 
         </div>
@@ -49,20 +52,20 @@
         <div class="buttons">
 
             <a href="{% url 'quizapp:add_question' session.code %}" class="btn">
-                Add Question
+                ➕ Add Question
             </a>
 
             <a href="{% url 'quizapp:publish_session' session.code %}" class="btn">
-                Publish Session
+                🚀 Publish Session
             </a>
 
             <a href="{% url 'quizapp:end_session' session.code %}" class="btn danger">
-                End Session
+                ✖️ End Session
             </a>
 
         </div>
 
-        <h2>Questions</h2>
+        <h2 style="color: #ffc300;">Questions</h2><br>
 
         {% if questions %}
 
@@ -76,10 +79,10 @@
 
             <div class="question-actions">
 
-                <a href="#">Edit</a>
+                <a href="{% url 'quizapp:edit_question' session.code question.id %}">✏️ Edit</a>
 
                 <a href="{% url 'quizapp:delete_question' session.code question.id %}">
-                    Delete
+                    🗑️ Delete
                 </a>
 
             </div>

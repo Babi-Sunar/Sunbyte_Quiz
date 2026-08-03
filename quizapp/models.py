@@ -114,9 +114,8 @@ class QuizSession(models.Model):
 
 class Question(models.Model):
     TYPE_CHOICES = (
-        ('mcq', 'Multiple choice'),
-        ('true_false', 'True / False'),
-        ('four_option', 'Four option'),
+    ('mcq', 'Multiple Choice'),
+    ('true_false', 'True / False'),
     )
 
     session = models.ForeignKey(QuizSession, on_delete=models.CASCADE, related_name='questions')

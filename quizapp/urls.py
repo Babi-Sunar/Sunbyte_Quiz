@@ -11,7 +11,11 @@ urlpatterns = [
     path('logout/', views.logout_view, name='logout'),
     path('dashboard/', views.dashboard, name='dashboard'),
     # path('delete-account/', views.delete_account, name='delete_account'),
-
+    path(
+    'my-quizzes/',
+    views.my_quizzes,
+    name='my_quizzes'
+    ),
     # Joining — no account required
     path('session/join/', views.join_session, name='join_session'),
 
@@ -19,7 +23,8 @@ urlpatterns = [
     path('session/create/', views.create_session, name='create_session'),
     path('session/<str:code>/manage/', views.manage_session, name='manage_session'),
     path('session/<str:code>/questions/add/', views.add_question, name='add_question'),
-    path('session/<str:code>/questions/<int:question_id>/delete/', views.delete_question, name='delete_question'),
+    path('session/<str:code>/questions/<int:question_id>/edit/', views.edit_question, name='edit_question',),
+    path('session/<str:code>/questions/<int:question_id>/delete/',views.delete_question,name='delete_question',),
     path('session/<str:code>/publish/', views.publish_session, name='publish_session'),
     path('session/<str:code>/end/', views.end_session, name='end_session'),
 
