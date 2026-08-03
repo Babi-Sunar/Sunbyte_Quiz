@@ -1,0 +1,145 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Create Quiz Session | SunByte Quiz</title>
+
+    <link rel="stylesheet" href="{% static 'quizapp/css/create_session.css' %}">
+
+</head>
+
+<body>
+
+    <div class="container">
+
+        <h1>Create Quiz Session</h1>
+        {% if form.errors %}
+        <div style="color:red;">
+            {{ form.errors }}
+        </div>
+        {% endif %}
+
+        <form method="POST">
+
+            {% csrf_token %}
+
+            <!-- Quiz Title -->
+            <label>Quiz Title</label>
+
+            <input type="text" name="title" placeholder="Enter Quiz Title" required>
+
+            <!-- Category -->
+            <label>Category</label>
+
+            <select name="category" class="form-input">
+
+                <option value="">Select Category</option>
+
+                {% for category in categories %}
+                <option value="{{ category.id }}">
+                    {{ category.name }}
+                </option>
+                {% endfor %}
+
+            </select>
+            <!-- Timer Mode -->
+            <label>Timer Mode</label>
+
+            <select name="timer_mode">
+
+                <option value="none">No Timer</option>
+
+                <option value="per_quiz" selected>
+                    Whole Quiz
+                </option>
+
+                <option value="per_question">
+                    Per Question
+                </option>
+
+            </select>
+
+            <!-- Total Time -->
+
+            <label>Total Time (Minutes)</label>
+
+            <input type="number" name="total_time_minutes" value="30" min="1" step="1">
+
+            <!-- default time per question  -->
+            <label>Default Time Per Question (Seconds)</label>
+
+            <input type="number" name="default_time_per_question_seconds" value="60" min="5">
+            <!-- Marks Mode -->
+
+            <label>Marks Mode</label>
+
+            <select name="marks_mode">
+
+                <option value="uniform" selected>
+                    Uniform
+                </option>
+
+                <option value="per_question">
+                    Per Question
+                </option>
+
+            </select>
+
+            <!-- Default Marks -->
+
+            <label>Default Marks</label>
+
+            <input type="number" name="default_marks" value="1" min="1">
+
+            <!-- Negative Marking -->
+
+            <div class="checkbox">
+
+                <input type="checkbox" name="negative_marking" id="negative_marking">
+
+                <label for="negative_marking" style="color: #ffc300;">
+                    Enable Negative Marking
+                </label>
+
+            </div>
+
+            <!-- Negative Marks -->
+
+            <label>Negative Marks</label>
+
+            <input type="number" name="negative_marks" value="0" min="0" step="0.25">
+
+            <!-- Shuffle -->
+
+            <div class="checkbox">
+
+                <input type="checkbox" name="shuffle_questions" id="shuffle_questions">
+
+                <label for="shuffle_questions" style="color: #ffc300;">
+
+                    Shuffle Questions
+
+                </label>
+
+            </div>
+            <br><br>
+            <div style="display: flex; justify-content: center;">
+                <button type="submit" id="create-btn">
+
+                    Create Session
+
+                </button>
+            </div>
+            <br>
+        </form>
+
+    </div>
+
+</body>
+
+</html>

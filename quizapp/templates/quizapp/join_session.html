@@ -1,0 +1,53 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Join Session | SunByte Quiz</title>
+
+    <link rel="stylesheet" href="{% static 'quizapp/css/join_session.css' %}">
+
+</head>
+
+<body>
+
+    <div class="container" id="formContainer">
+
+        <h1>Join Quiz Session</h1>
+
+        <p>Enter the session code provided by the host.</p>
+        <form method="POST">
+
+            {% csrf_token %}
+
+            <input type="text" name="code" placeholder="Enter Session Code" maxlength="6" required autocomplete="off">
+
+            {% if not user.is_authenticated %}
+            <input type="text" name="display_name" placeholder="Enter Your Name" required>
+            {% endif %}
+            <br><br>
+            <button type="submit" id="join-btn">
+                Join Session
+            </button>
+
+        </form>
+        <br>
+        {% if messages %}
+        {% for message in messages %}
+        <p class="message">{{ message }}</p>
+        {% endfor %}
+        {% endif %}
+        <br><br><br><br>
+        <a href="{% url 'quizapp:dashboard' %}">
+            ← Back to Dashboard
+        </a>
+
+    </div>
+
+</body>
+
+</html>

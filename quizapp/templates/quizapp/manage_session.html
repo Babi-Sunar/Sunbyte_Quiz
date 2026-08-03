@@ -1,0 +1,101 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Manage Session | SunByte Quiz</title>
+
+    <link rel="stylesheet" href="{% static 'quizapp/css/manage_session.css' %}">
+
+</head>
+
+<body>
+
+    <div id="container">
+
+        <h1>Manage Quiz Session</h1>
+
+        <div class="card">
+
+            <h2>{{ session.title }}</h2>
+
+            <p><strong>Session Code:</strong> {{ session.code }}</p>
+
+            <p><strong>Status:</strong> {{ session.get_status_display }}</p>
+
+            <p><strong>Questions:</strong> {{ session.question_count }}</p>
+
+            <p><strong>Participants:</strong> {{ session.player_count }}</p>
+
+        </div>
+
+        <!-- qr code  -->
+        <div class="qr-box">
+
+            <h3 style="color: #ffc300;     text-shadow: rgba(0, 0, 0, 0.16) 0px 3px 6px, rgba(0, 0, 0, 0.23) 0px 3px 6px;
+">Scan to Join</h3>
+<br>
+            <img src="{{ qr_image }}" alt="QR Code">
+
+        </div>
+
+        <!-- buttons -->
+        <div class="buttons">
+
+            <a href="{% url 'quizapp:add_question' session.code %}" class="btn">
+                Add Question
+            </a>
+
+            <a href="{% url 'quizapp:publish_session' session.code %}" class="btn">
+                Publish Session
+            </a>
+
+            <a href="{% url 'quizapp:end_session' session.code %}" class="btn danger">
+                End Session
+            </a>
+
+        </div>
+
+        <h2>Questions</h2>
+
+        {% if questions %}
+
+        {% for question in questions %}
+
+        <div class="question-card">
+
+            <strong>Q{{ forloop.counter }}</strong>
+
+            {{ question.text }}
+
+            <div class="question-actions">
+
+                <a href="#">Edit</a>
+
+                <a href="{% url 'quizapp:delete_question' session.code question.id %}">
+                    Delete
+                </a>
+
+            </div>
+
+        </div>
+
+        {% endfor %}
+
+        {% else %}
+
+        <p>No questions added yet.</p>
+
+        {% endif %}
+
+    </div>
+
+</body>
+
+</html>

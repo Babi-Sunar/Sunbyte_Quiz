@@ -60,8 +60,11 @@ class QuizSession(models.Model):
 
     # ---- timer settings ----
     timer_mode = models.CharField(max_length=15, choices=TIMER_MODE_CHOICES, default='per_quiz')
-    total_time_minutes = models.PositiveIntegerField(
-        default=30, help_text='Used when timer mode is "whole quiz".'
+    total_time_minutes = models.DecimalField(
+    max_digits=5,
+    decimal_places=2,
+    default=30,
+    help_text='Used when timer mode is "whole quiz".'
     )
     default_time_per_question_seconds = models.PositiveIntegerField(
         default=60, help_text='Used when timer mode is "per question" and a question has no override.'

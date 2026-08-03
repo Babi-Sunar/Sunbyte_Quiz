@@ -6,28 +6,33 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Home</title>
-    <!-- css links -->
-    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+
+    <!-- CSS -->
+    <link rel="stylesheet" href="{% static 'quizapp/css/style.css' %}">
 </head>
 
 <body>
-    <!-- header -->
+
+    <!-- Header -->
     <header>
-        <!-- logo -->
-        <div id="logo"><a href="index.html">
-                <\>SunByte
 
-            </a></div>
+        <!-- Logo -->
+        <div id="logo">
+            <a href="{% url 'quizapp:home' %}">
+                &lt;/&gt;SunByte
+            </a>
+        </div>
 
-        <!-- login button -->
+        <!-- Login Button -->
         <div id="login-btn">
-            <a href="./login.html">Login</a>
+            <a href="{% url 'quizapp:login' %}">Login</a>
         </div>
 
-        <!-- signup button -->
+        <!-- Signup Button -->
         <div id="signup-btn">
-            <a href="./signup.html">Sign up</a>
+            <a href="{% url 'quizapp:signup' %}">Sign Up</a>
         </div>
+
     </header>
 
     <div class="background">
@@ -72,42 +77,98 @@
         <span></span>
     </div>
 
-    <!-- hero section -->
+    <!-- Hero -->
     <section id="hero">
+
         <span id="welcome-text">Welcome to</span>
-        <img id="hero-logo" src="./images/logo.png"
-            alt="Sunbyte Quiz" />
+
+        <img id="hero-logo" src="{% static 'quizapp/images/logo.png' %}" alt="SunByte Quiz">
+
         <div id="text"></div>
+
     </section>
 
-        <!-- contact section -->
+
+    <!-- join session button -->
+    <a href="{% url 'quizapp:join_session' %}" style="text-decoration: none; 
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: #04254147;
+    height: auto;">
+        <div class="join-btn" style="
+        width: 275px;
+    padding: 10px 20px;
+    background-color: #FFC300;
+    color: #003049;
+    border: none;
+    border-radius: 10px;
+    font-family: 'Poppins', sans-serif;
+    font-weight: 600;
+    font-size: 15px;
+    cursor: pointer;
+    box-shadow: rgba(0, 0, 0, 0.16) 0px 3px 6px, rgba(0, 0, 0, 0.23) 0px 3px 6px;
+    text-align: center;
+    font-size: 1.2rem;
+    font-family: poppins;">
+
+            Join Session
+        </div>
+    </a>
+
+    <!-- Contact -->
     <section id="contact-section">
+
         <h2>Contact Us</h2>
+
         <div id="mail-phone">
             <span>📞 +977 9866153193</span>
             <span>📧 info@sunbytequizzes.com</span>
         </div>
+
         <div id="social-media">
-            <a href="https://www.facebook.com/bobby.sunar.3114"><img src="./images/facebook.png" alt="facebook"
-                    class="contact-img" title="click to connect"
-                    style="background-color: rgba(12, 103, 188, 0.801);"></a>
-            <a href="https://www.linkedin.com/in/babi-sunar-17aa64287"><img src="./images/linkedin.png" alt="linkedin"
-                    class="contact-img" title="click to connect" style="background-color: rgb(9, 104, 176);"></a>
-            <a href="https://wa.me/9779866153193"><img src="./images/whatsapp.png" alt="whatsapp" class="contact-img"
-                    title="click to connect" style="background-color: rgba(3, 131, 20, 0.758);"></a>
-            <a href="https://github.com/Babi-Sunar"><img src="./images/git.png" alt="instagram" class="contact-img"
-                    title="click to connect" style="background-color: antiquewhite;"></a>
+
+            <a href="https://www.facebook.com/bobby.sunar.3114" target="_blank">
+                <img src="{% static 'quizapp/images/facebook.png' %}" alt="Facebook" class="contact-img"
+                    title="Click to connect" style="background-color: rgba(12,103,188,.8);">
+            </a>
+
+            <a href="https://www.linkedin.com/in/babi-sunar-17aa64287" target="_blank">
+                <img src="{% static 'quizapp/images/linkedin.png' %}" alt="LinkedIn" class="contact-img"
+                    title="Click to connect" style="background-color: rgb(9,104,176);">
+            </a>
+
+            <a href="https://wa.me/9779866153193" target="_blank">
+                <img src="{% static 'quizapp/images/whatsapp.png' %}" alt="WhatsApp" class="contact-img"
+                    title="Click to connect" style="background-color: rgba(3,131,20,.75);">
+            </a>
+
+            <a href="https://github.com/Babi-Sunar" target="_blank">
+                <img src="{% static 'quizapp/images/git.png' %}" alt="GitHub" class="contact-img"
+                    title="Click to connect" style="background-color: antiquewhite;">
+            </a>
+
+        </div>
+
     </section>
 
-    <!-- java script -->
-    <script src="./js/script.js"></script>
+    <!-- JavaScript -->
+    <script src="{% static 'quizapp/js/script.js' %}"></script>
+
     <script src="https://unpkg.com/typed.js@2.1.0/dist/typed.umd.js"></script>
+
     <script>
         var typed = new Typed('#text', {
-            strings: ['Your Ultimate Quiz Destination...', 'Challenge Your Knowledge.', 'Discover New Horizons...', 'Join the Fun Today!'],
+            strings: [
+                'Your Ultimate Quiz Destination...',
+                'Challenge Your Knowledge.',
+                'Discover New Horizons...',
+                'Join the Fun Today!'
+            ],
             typeSpeed: 50
         });
     </script>
+
 </body>
 
 </html>

@@ -8,12 +8,13 @@ from django.contrib.auth.models import User
 from django.db import transaction
 from django.shortcuts import get_object_or_404, redirect, render
 from django.utils import timezone
+from django.views.decorators.cache import never_cache
 
 from .forms import (
     ChoiceFormSet, EmailLoginForm, JoinSessionForm, QuestionForm,
     SessionSettingsForm, SignUpForm, TrueFalseAnswerForm,
 )
-from .models import Choice, Participant, Question, QuizSession, Response
+from .models import Choice, Participant, Question, QuizSession, Response, Category
 
 
 # =======================================================================
@@ -29,17 +30,31 @@ def signup_view(request):
 
     if request.method == 'POST':
         form = SignUpForm(request.POST)
+
         if form.is_valid():
             user = form.save()
-            login(request, user)
-            messages.success(request, f'Welcome to SunByte Quiz, {user.username}!')
+            # login(request, user)
+            messages.success(
+                request,
+                f'Welcome to SunByte Quiz, {user.username}!'
+            )
             return redirect('quizapp:dashboard')
+
+        else:
+            print(form.errors)
+
     else:
         form = SignUpForm()
 
     return render(request, 'quizapp/signup.html', {'form': form})
+# from django.http import HttpResponse
 
+# def signup_view(request):
+#     if request.method == "POST":
+#         return HttpResponse("Form submitted!")
 
+#     return render(request, "quizapp/signup.html")
+@never_cache
 def login_view(request):
     if request.user.is_authenticated:
         return redirect('quizapp:dashboard')
@@ -73,14 +88,14 @@ def login_view(request):
 def logout_view(request):
     logout(request)
     messages.info(request, 'You have been logged out.')
-    return redirect('quizapp:home')
+    return redirect('quizapp:login')
 
-
-@login_required
+@never_cache
+@login_required(login_url='quizapp:login')
 def dashboard(request):
     hosted_sessions = QuizSession.objects.filter(host=request.user)[:10]
     joined_sessions = Participant.objects.filter(user=request.user).select_related('session')[:10]
-    return render(request, 'quizapp/dashboard.html', {
+    return render(request, 'quizapp/user_dashboard.html', {
         'hosted_sessions': hosted_sessions,
         'joined_sessions': joined_sessions,
     })
@@ -147,8 +162,10 @@ def join_session(request):
 # =======================================================================
 # Session builder (host only)
 # =======================================================================
+@never_cache
 @login_required
 def create_session(request):
+    categories = Category.objects.all()
     if request.method == 'POST':
         form = SessionSettingsForm(request.POST)
         if form.is_valid():
@@ -160,25 +177,62 @@ def create_session(request):
     else:
         form = SessionSettingsForm()
 
-    return render(request, 'quizapp/create_session.html', {'form': form})
+    return render(
+        request,
+        "quizapp/create_session.html",
+        {
+            "form": form,
+            "categories": categories,
+        },)
 
 
 def _get_hosted_session_or_404(request, code):
     return get_object_or_404(QuizSession, code=code, host=request.user)
 
 
+
+# manage session
+import os
+import qrcode
+
+from django.conf import settings
+
+
+@never_cache
 @login_required
 def manage_session(request, code):
     session = _get_hosted_session_or_404(request, code)
     questions = session.questions.all()
-    join_url = request.build_absolute_uri(f'/session/join/?code={session.code}')
-    return render(request, 'quizapp/manage_session.html', {
-        'session': session,
-        'questions': questions,
-        'join_url': join_url,
-    })
 
+    join_url = request.build_absolute_uri(
+        f"/session/join/?code={session.code}"
+    )
 
+    # Generate QR code
+    qr = qrcode.make(join_url)
+
+    qr_folder = os.path.join(settings.MEDIA_ROOT, "qr_codes")
+    os.makedirs(qr_folder, exist_ok=True)
+
+    filename = f"{session.code}.png"
+    qr_path = os.path.join(qr_folder, filename)
+
+    qr.save(qr_path)
+
+    qr_image = settings.MEDIA_URL + "qr_codes/" + filename
+
+    return render(
+        request,
+        "quizapp/manage_session.html",
+        {
+            "session": session,
+            "questions": questions,
+            "join_url": join_url,
+            "qr_image": qr_image,
+        },
+    )
+
+@never_cache
 @login_required
 def add_question(request, code):
     session = _get_hosted_session_or_404(request, code)
@@ -235,6 +289,7 @@ def add_question(request, code):
     })
 
 
+@never_cache
 @login_required
 def delete_question(request, code, question_id):
     session = _get_hosted_session_or_404(request, code)

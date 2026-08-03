@@ -1,0 +1,267 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard | SunByte Quiz</title>
+
+    <link rel="stylesheet" href="{% static 'quizapp/css/user_dashboard.css' %}">
+</head>
+
+<body>
+
+    <!-- Header -->
+    <header>
+
+        <!-- Logo -->
+        <div id="logo">
+            <a href="{% url 'quizapp:home' %}">
+                &lt;\&gt;SunByte
+            </a>
+        </div>
+
+        <!-- User -->
+        <a href="." style="text-decoration: none;">
+            <div class="settings-btn">
+                <img src="{% static 'quizapp/images/user_img.jpg' %}" alt="User" id="user-icon">
+                <span id="userame">{{ user.first_name|default:user.username }}</span>
+            </div>
+        </a>
+
+        <!-- Menu -->
+        <div class="menu-btn" id="menuBtn" onclick="toggleMenu(event)">
+            <span></span>
+            <span></span>
+            <span></span>
+        </div>
+
+        <!-- Navigation -->
+        <nav class="nav-class" id="nav">
+
+            <a href=".">Home</a>
+
+            <a href="#contact-section">Contact Us</a>
+
+            <a href="#connect-section">Connect With Us</a>
+
+            <a href="#" onclick="confirmLogout(event)">Logout</a>
+
+            <a href="#">Delete Account</a>
+
+        </nav>
+
+    </header>
+
+    <div id="horizontal-line"></div>
+
+    <!-- Hero -->
+    <section id="hero">
+
+        <h2>Welcome, {{ user.first_name|default:user.username }}</h2>
+
+        <h1>SunByte Quizzes</h1>
+
+        <p id="text"></p>
+
+    </section>
+
+
+
+    <!-- Main -->
+
+    <section id="first-section">
+
+        <div id="join-session">
+
+            <button onclick="window.location.href='{% url 'quizapp:join_session' %}'">
+
+                Join Session
+
+            </button>
+
+        </div>
+
+        <div id="create-session">
+
+            <button onclick="window.location.href='{% url 'quizapp:create_session' %}'">
+
+                Create Session
+
+            </button>
+
+        </div>
+
+    </section>
+
+    <!-- Contact -->
+
+    <section id="contact-section">
+
+        <h2>Contact Us</h2>
+
+        <div id="mail-phone">
+
+            <span>📞 +977 9866153193</span>
+
+            <span>📧 info@sunbytequizzes.com</span>
+
+        </div>
+
+        <div id="social-media">
+
+            <a href="https://www.facebook.com/bobby.sunar.3114" target="_blank">
+
+                <img src="{% static 'quizapp/images/facebook.png' %}" class="contact-img" alt="Facebook">
+
+            </a>
+
+            <a href="https://www.linkedin.com/in/babi-sunar-17aa64287" target="_blank">
+
+                <img src="{% static 'quizapp/images/linkedin.png' %}" class="contact-img" alt="LinkedIn">
+
+            </a>
+
+            <a href="https://wa.me/9779866153193" target="_blank">
+
+                <img src="{% static 'quizapp/images/whatsapp.png' %}" class="contact-img" alt="WhatsApp">
+
+            </a>
+
+            <a href="https://github.com/Babi-Sunar" target="_blank">
+
+                <img src="{% static 'quizapp/images/git.png' %}" class="contact-img" alt="GitHub">
+
+            </a>
+
+        </div>
+
+    </section>
+
+    <!-- Connect -->
+
+    <section id="connect-section">
+
+        <h2>Connect With Us</h2>
+
+        <form id="connect-form">
+
+            {% csrf_token %}
+
+            <input type="text" id="name" name="name" placeholder="Your Name" required>
+
+            <input type="email" id="email" name="email" placeholder="Your Email" required>
+
+            <textarea id="message" name="message" placeholder="Your Message" required></textarea>
+
+            <button id="connect-form-btn" type="submit">
+
+                Send Message
+
+            </button>
+
+        </form>
+
+        <p id="connect-text"></p>
+
+    </section>
+
+    <div id="horizontal-line"></div>
+
+    <!-- Footer -->
+
+    <footer>
+
+        <div id="upper-footer">
+
+            <div id="footer-logo">
+
+                <a href="{% url 'quizapp:home' %}">
+                    &lt;\&gt;SunByte
+                </a>
+
+            </div>
+
+            <div id="footer-nav">
+
+                <a href="{% url 'quizapp:home' %}">Home</a>
+
+                <a href="#contact-section">Contact Us</a>
+
+                <a href="#connect-section">Connect With Us</a>
+
+            </div>
+
+        </div>
+
+        <p id="lower-footer">
+
+            &copy; 2026 SunByte Quizzes. All rights reserved.
+
+        </p>
+
+    </footer>
+
+    <script src="{% static 'quizapp/js/user_dashboard.js' %}"></script>
+
+    <script src="https://unpkg.com/typed.js@2.1.0/dist/typed.umd.js"></script>
+
+    <script>
+
+        new Typed('#text', {
+
+            strings: [
+
+                'Your Ultimate Quiz Destination...',
+
+                'Challenge Your Knowledge...',
+
+                'Discover New Horizons...',
+
+                'Join the Fun Today!'
+
+            ],
+
+            typeSpeed: 35,
+
+            loop: true
+
+        });
+
+        new Typed('#connect-text', {
+
+            strings: [
+
+                'Be Connected, Stay Informed...',
+
+                'We Value Your Feedback...',
+
+                'Reach Out to Us Anytime...',
+
+                'Your Voice Matters to Us!'
+
+            ],
+
+            typeSpeed: 35,
+
+            loop: true
+
+        });
+
+    </script>
+
+    <!-- confirm logout script -->
+    <script>
+        function confirmLogout(event) {
+            event.preventDefault();
+
+            if (confirm("Are you sure you want to logout?")) {
+                window.location.href = "{% url 'quizapp:logout' %}";
+            }
+        }
+    </script>
+
+</body>
+
+</html>

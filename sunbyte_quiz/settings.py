@@ -21,8 +21,8 @@ SECRET_KEY = os.environ.get(
 DEBUG = os.environ.get('DJANGO_DEBUG', 'True') == 'True'
 
 # ALLOWED_HOSTS = os.environ.get('DJANGO_ALLOWED_HOSTS', '127.0.0.1,localhost').split(',')
-#ALLOWED_HOSTS = ['*']
-ALLOWED_HOSTS = ['localhost', '127.0.0.1', '10.20.20.198']
+ALLOWED_HOSTS = ['*']
+# ALLOWED_HOSTS = ['localhost', '127.0.0.1', '192.168.1.7']
 
 # -----------------------------------------------------------------------
 # APPLICATION DEFINITION
@@ -74,13 +74,13 @@ WSGI_APPLICATION = 'sunbyte_quiz.wsgi.application'
 # -----------------------------------------------------------------------
 # Install the driver with:  pip install mysqlclient
 # Create the database first, e.g.:
-#   CREATE DATABASE sunbyte_quiz CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+#   CREATE DATABASE quiz_db CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': os.environ.get('DB_NAME', 'sunbyte_quiz'),
+        'NAME': os.environ.get('DB_NAME', 'quiz_db'),
         'USER': os.environ.get('DB_USER', 'root'),
-        'PASSWORD': os.environ.get('DB_PASSWORD', 'G@raw12345ggg'),
+        'PASSWORD': os.environ.get('DB_PASSWORD', '#itmp123!STD'),
         'HOST': os.environ.get('DB_HOST', '127.0.0.1'),
         'PORT': os.environ.get('DB_PORT', '3306'),
         'OPTIONS': {
@@ -93,10 +93,10 @@ DATABASES = {
 # PASSWORD VALIDATION
 # -----------------------------------------------------------------------
 AUTH_PASSWORD_VALIDATORS = [
-    {'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator'},
-    {'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator'},
-    {'NAME': 'django.contrib.auth.password_validation.CommonPasswordValidator'},
-    {'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator'},
+    # {'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator'},
+    # {'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator'},
+    # {'NAME': 'django.contrib.auth.password_validation.CommonPasswordValidator'},
+    # {'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator'},
 ]
 
 # -----------------------------------------------------------------------
@@ -125,3 +125,8 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 LOGIN_URL = 'quizapp:login'
 LOGIN_REDIRECT_URL = 'quizapp:dashboard'
 LOGOUT_REDIRECT_URL = 'quizapp:home'
+
+
+# qr code generation settings
+MEDIA_URL = "/media/"
+MEDIA_ROOT = BASE_DIR / "media"

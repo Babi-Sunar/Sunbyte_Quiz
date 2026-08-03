@@ -23,8 +23,8 @@ class SignUpForm(UserCreationForm):
         self.fields['username'].widget.attrs.update({'placeholder': 'Username', 'class': 'form-input'})
         self.fields['password1'].widget.attrs.update({'placeholder': 'Password', 'class': 'form-input'})
         self.fields['password1'].label = 'Password'
-        self.fields['password2'].widget.attrs.update({'placeholder': 'Conform Password', 'class': 'form-input'})
-        self.fields['password2'].label = 'Conform Password'
+        self.fields['password2'].widget.attrs.update({'placeholder': 'Confirm Password', 'class': 'form-input'})
+        self.fields['password2'].label = 'Confirm Password'
         for field in self.fields.values():
             field.help_text = None
 
@@ -35,6 +35,7 @@ class SignUpForm(UserCreationForm):
         return email
 
     def save(self, commit=True):
+        
         user = super().save(commit=False)
         user.email = self.cleaned_data['email']
         if commit:
@@ -108,7 +109,11 @@ class SessionSettingsForm(forms.ModelForm):
             'title': forms.TextInput(attrs={'placeholder': 'e.g. Engineering Entrance Mock Test 1', 'class': 'form-input'}),
             'category': forms.Select(attrs={'class': 'form-input'}),
             'timer_mode': forms.Select(attrs={'class': 'form-input'}),
-            'total_time_minutes': forms.NumberInput(attrs={'class': 'form-input', 'min': 1}),
+            'total_time_minutes': forms.NumberInput(attrs={
+            'class': 'form-input',
+            'min': 1,
+            'step': 1
+            }),
             'default_time_per_question_seconds': forms.NumberInput(attrs={'class': 'form-input', 'min': 5}),
             'marks_mode': forms.Select(attrs={'class': 'form-input'}),
             'default_marks': forms.NumberInput(attrs={'class': 'form-input', 'step': '0.5', 'min': 0}),
