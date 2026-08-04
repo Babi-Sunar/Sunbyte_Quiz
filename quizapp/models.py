@@ -40,6 +40,12 @@ class QuizSession(models.Model):
         ('active', 'Live - open to join & attempt'),
         ('ended', 'Ended'),
     )
+    QUIZ_STATE_CHOICES = (
+    ('waiting', 'Waiting to Start'),
+    ('running', 'Running'),
+    ('paused', 'Paused'),
+    ('finished', 'Finished'),
+)
     TIMER_MODE_CHOICES = (
         ('none', 'No timer'),
         ('per_quiz', 'One timer for the whole quiz'),
@@ -57,7 +63,14 @@ class QuizSession(models.Model):
     code = models.CharField(max_length=6, unique=True, default=generate_session_code, editable=False)
     host = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='hosted_sessions')
     status = models.CharField(max_length=10, choices=STATUS_CHOICES, default='draft')
-
+    quiz_state = models.CharField(
+    max_length=10,
+    choices=QUIZ_STATE_CHOICES,
+    default='waiting',
+    )
+    current_question = models.PositiveIntegerField(
+    default=0
+)
     # ---- timer settings ----
     timer_mode = models.CharField(max_length=15, choices=TIMER_MODE_CHOICES, default='per_quiz')
     total_time_minutes = models.DecimalField(

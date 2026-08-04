@@ -16,6 +16,42 @@ urlpatterns = [
     views.my_quizzes,
     name='my_quizzes'
     ),
+    path(
+    "session/<str:code>/delete/",
+    views.delete_session,
+    name="delete_session",
+    ),
+    path(
+    "session/<str:code>/results/",
+    views.session_results,
+    name="session_results",
+    ),
+    path(
+    "host-session/<str:code>/host/",
+    views.host_room,
+    name="host_room",
+    ),
+    path(
+    "session/<str:code>/start/",
+    views.start_quiz,
+    name="start_quiz",
+    ),
+    path(
+    "session/<str:code>/pause/",
+    views.pause_quiz,
+    name="pause_quiz",
+    ),
+
+    path(
+    "session/<str:code>/resume/",
+    views.resume_quiz,
+    name="resume_quiz",
+    ),
+    path(
+    "session/<str:code>/next-question/",
+    views.next_question,
+    name="next_question",
+    ),
     # Joining — no account required
     path('session/join/', views.join_session, name='join_session'),
 

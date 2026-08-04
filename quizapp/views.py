@@ -602,7 +602,16 @@ def publish_session(request, code):
             )
 
         session.status = "active"
-        session.save(update_fields=["status"])
+        session.current_question = 0
+        session.quiz_state = "waiting"
+
+        session.save(
+        update_fields=[
+        "status",
+        "current_question",
+        "quiz_state",
+    ]
+)
 
         messages.success(
             request,
@@ -610,7 +619,7 @@ def publish_session(request, code):
         )
 
         return redirect(
-            "quizapp:manage_session",
+            "quizapp:host_room",
             code=session.code,
         )
 
@@ -669,6 +678,234 @@ def my_quizzes(request):
         }
     )
 
+# delete session 
+@login_required
+def delete_session(request, code):
+    session = get_object_or_404(QuizSession, code=code)
+
+    if session.status == "live":
+        messages.error(request, "End the session before deleting it.")
+        return redirect("quizapp:manage_session", code=code)
+
+    session.delete()
+
+    messages.success(request, "Session deleted successfully.")
+    return redirect("quizapp:dashboard")
+
+from django.db.models import Avg, Max
+@login_required
+def session_results(request, code):
+    session = get_object_or_404(QuizSession, code=code)
+
+    participants = session.participants.filter(
+        submitted=True
+    ).order_by(
+        "-total_marks",
+        "submitted_at"
+    )
+
+    stats = participants.aggregate(
+        highest_score=Max("total_marks"),
+        average_score=Avg("total_marks"),
+    )
+
+    context = {
+        "session": session,
+        "participants": participants,
+        "highest_score": stats["highest_score"] or 0,
+        "average_score": round(stats["average_score"], 2) if stats["average_score"] else 0,
+    }
+
+    return render(request, "quizapp/session_results.html", context)
+
+# host session room
+@never_cache
+@login_required
+def host_room(request, code):
+
+    session = _get_hosted_session_or_404(request, code)
+
+    join_url = request.build_absolute_uri(
+        f"/session/join/?code={session.code}"
+    )
+
+    # Generate QR code
+    qr = qrcode.make(join_url)
+
+    qr_folder = os.path.join(settings.MEDIA_ROOT, "qr_codes")
+    os.makedirs(qr_folder, exist_ok=True)
+
+    filename = f"{session.code}.png"
+    qr_path = os.path.join(qr_folder, filename)
+
+    qr.save(qr_path)
+
+    qr_image = settings.MEDIA_URL + "qr_codes/" + filename
+
+    context = {
+        "session": session,
+        "qr_image": qr_image,
+    }
+
+    return render(
+        request,
+        "quizapp/hostSession_room.html",
+        context,
+    )
+    
+@never_cache
+@login_required
+def start_quiz(request, code):
+
+    session = _get_hosted_session_or_404(request, code)
+
+    if request.method == "POST":
+
+        if session.status != "active":
+            messages.error(
+                request,
+                "Session is not active."
+            )
+            return redirect(
+                "quizapp:host_room",
+                code=session.code,
+            )
+
+        session.quiz_state = "running"
+
+        session.save(
+            update_fields=[
+                "quiz_state",
+            ]
+        )
+
+        messages.success(
+            request,
+            "Quiz started successfully."
+        )
+
+    return redirect(
+        "quizapp:host_room",
+        code=session.code,
+    )
+
+@never_cache
+@login_required
+def pause_quiz(request, code):
+
+    session = _get_hosted_session_or_404(request, code)
+
+    if request.method == "POST":
+
+        if session.quiz_state == "running":
+
+            session.quiz_state = "paused"
+
+            session.save(
+                update_fields=[
+                    "quiz_state",
+                ]
+            )
+
+            messages.success(
+                request,
+                "Quiz paused."
+            )
+
+    return redirect(
+        "quizapp:host_room",
+        code=session.code,
+    )
+    
+@never_cache
+@login_required
+def resume_quiz(request, code):
+
+    session = _get_hosted_session_or_404(request, code)
+
+    if request.method == "POST":
+
+        if session.quiz_state == "paused":
+
+            session.quiz_state = "running"
+
+            session.save(
+                update_fields=[
+                    "quiz_state",
+                ]
+            )
+
+            messages.success(
+                request,
+                "Quiz resumed."
+            )
+
+    return redirect(
+        "quizapp:host_room",
+        code=session.code,
+    )
+    
+    
+@never_cache
+@login_required
+def next_question(request, code):
+
+    print("NEXT QUESTION VIEW CALLED")
+
+    session = _get_hosted_session_or_404(request, code)
+
+    if request.method == "POST":
+
+        if session.quiz_state != "running":
+            messages.error(
+                request,
+                "Start the quiz before moving to questions."
+            )
+
+            return redirect(
+                "quizapp:host_room",
+                code=session.code,
+            )
+
+        total_questions = session.question_count
+        print("CURRENT:", session.current_question)
+        print("TOTAL:", total_questions)
+        if session.current_question < total_questions:
+
+            session.current_question += 1
+
+            print("NEXT QUESTION VALUE:", session.current_question)
+
+            session.save(
+                update_fields=[
+                    "current_question",
+                ]
+            )
+
+            messages.success(
+                request,
+                f"Question {session.current_question} started."
+            )
+
+        else:
+
+            session.quiz_state = "finished"
+
+            session.save(
+                update_fields=[
+                    "quiz_state",
+                ]
+            )
+
+            messages.success(
+                request,
+                "Quiz finished."
+            )
+
+    return redirect(
+        "quizapp:host_room",
+        code=session.code,
+    )
 # =======================================================================
 # Lobby / taking the quiz / results
 # =======================================================================
