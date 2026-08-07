@@ -36,12 +36,6 @@
 
         </form>
         <br>
-        {% if messages %}
-        {% for message in messages %}
-        <p class="message">{{ message }}</p>
-        {% endfor %}
-        {% endif %}
-        <br><br><br><br>
         <a href="{% url 'quizapp:dashboard' %}">
             ← Back to Dashboard
         </a>

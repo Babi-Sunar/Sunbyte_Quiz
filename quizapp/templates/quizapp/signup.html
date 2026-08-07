@@ -15,7 +15,9 @@
 <body>
 
     <h2>Sign Up</h2>
-    
+        <a href="{% url 'quizapp:home' %}" class="back-btn" style="color: #4a4638;position: relative ; left: 60vw;">
+        ← Home
+    </a>
     {% if form.errors %}
     <script>
         {% for field in form %}
@@ -36,7 +38,7 @@
 
             <!-- Username -->
             <label id="username-label" class="input-label" for="username">Username:</label>
-            <input class="input-field" type="text" id="username" name="username" placeholder="Username" required><br>
+            <input class="input-field" type="text" id="username" name="username" placeholder="Username (without space)" required><br>
 
             <!-- Email -->
             <label class="input-label" id="email-label" for="email">Email:</label>
@@ -67,7 +69,7 @@
         </div>
     </form>
 
-    <br><br>
+    <br>
 
     <div id="signup-options">
 

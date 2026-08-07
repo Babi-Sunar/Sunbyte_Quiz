@@ -1,0 +1,402 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>{{ session.title }} | SunByte Quiz</title>
+
+    <link rel="stylesheet" href="{% static 'quizapp/css/take_quiz.css' %}">
+
+</head>
+
+<body>
+
+    <div class="container">
+
+        <!-- Header -->
+
+        <div class="quiz-header">
+
+            <h1>{{ session.title }}</h1>
+
+            <p>
+                Question {{ session.current_question|add:1 }}
+                / {{ session.question_count }}
+            </p>
+
+        </div>
+
+
+        <!-- Timer -->
+
+        <div class="timer-section">
+
+            <div class="timer-circle">
+
+                <span id="question-timer">
+
+                    {{ remaining_time }}
+
+                </span>
+
+            </div>
+
+        </div>
+
+
+        <!-- Question -->
+
+        {% if current_question %}
+
+        <div class="question-card">
+
+            <h2>
+
+                {{ current_question.text }}
+
+            </h2>
+
+
+            <!-- Image -->
+
+            {% if current_question.image %}
+
+            <img src="{{ current_question.image.url }}" class="question-image">
+
+            {% endif %}
+
+
+            <!-- Uploaded Video -->
+
+            {% if current_question.video_file %}
+
+            <video controls class="question-video">
+
+                <source src="{{ current_question.video_file.url }}">
+
+            </video>
+
+            {% endif %}
+
+
+            <!-- Video URL -->
+
+            {% if current_question.video_url %}
+
+            <div class="video-link">
+
+                <a href="{{ current_question.video_url }}" target="_blank">
+
+                    ▶ Watch Video
+
+                </a>
+
+            </div>
+
+            {% endif %}
+
+
+            <!-- Choices -->
+
+            <form method="POST" id="answerForm">
+
+                {% csrf_token %}
+
+                <div class="choices">
+
+                    {% for choice in current_question.choices.all %}
+
+                    <label class="choice-card">
+
+                        <input type="radio" name="answer" value="{{ choice.id }}" class="answer-option"
+                            data-question="{{ current_question.id }}">
+
+                        <div class="choice-content">
+
+                            {% if choice.image %}
+
+                            <img src="{{ choice.image.url }}" class="choice-image" alt="Option Image">
+
+                            {% endif %}
+
+                            {% if choice.text %}
+
+                            <div class="choice-text">
+
+                                {{ choice.text }}
+
+                            </div>
+
+                            {% endif %}
+
+                        </div>
+
+                    </label>
+
+                    {% endfor %}
+
+                </div>
+
+            </form>
+
+        </div>
+
+        {% else %}
+
+        <div class="question-card">
+
+            <h2>
+
+                Waiting for next question...
+
+            </h2>
+
+        </div>
+
+        {% endif %}
+
+
+        <!-- Footer -->
+
+        <div class="footer">
+
+            <p>
+
+                Please wait until the timer ends.
+                The next question will appear automatically.
+
+            </p>
+
+        </div>
+
+    </div>
+
+
+    <!-- submit button -->
+    {% if session.current_question|add:1 == session.question_count %}
+
+    <div class="submit-section">
+
+        <button type="button" id="submitQuizBtn" class="submit-btn">
+
+            ✅ Submit Quiz
+
+        </button>
+
+    </div>
+
+    {% endif %}
+
+
+    <!-- synchronization -->
+    <script>
+        // timer circle 
+        const timerCircle = document.querySelector(".timer-circle");
+        const timerText = document.getElementById("question-timer");
+
+        let totalTime = {{ remaining_time }};
+        let timeLeft = totalTime;
+
+        function updateTimer() {
+
+            timerText.textContent = timeLeft;
+
+            const progress = (timeLeft / totalTime) * 100;
+
+            timerCircle.style.background =
+                `conic-gradient(
+            #FFC300 ${progress}%,
+            #ddd ${progress}%
+        )`;
+
+        }
+
+        updateTimer();
+
+        setInterval(() => {
+
+            if (timeLeft > 0) {
+
+                timeLeft--;
+
+                updateTimer();
+
+            }
+
+        }, 1000);
+
+        const sessionCode = "{{ session.code }}";
+
+        // Current question shown on this page
+        let currentQuestion = {{ session.current_question }};
+
+        // Timer state
+        let remainingSeconds = {{ remaining_time|default:0 }};
+        const timerEl = document.getElementById("question-timer");
+
+        function renderTimer() {
+
+            if (timerEl) {
+                timerEl.textContent = remainingSeconds > 0 ? remainingSeconds : 0;
+            }
+
+        }
+
+        renderTimer();
+
+        // Tick the timer down every second, locally
+        setInterval(() => {
+
+            if (remainingSeconds > 0) {
+
+                remainingSeconds -= 1;
+                renderTimer();
+
+            }
+
+        }, 1000);
+
+        function syncQuiz() {
+
+            fetch(`/session/${sessionCode}/quiz-status/`)
+                .then(response => response.json())
+                .then(data => {
+
+                    // Host moved to another question
+                    if (data.current_question != currentQuestion) {
+
+                        location.reload();
+                        return;
+
+                    }
+
+                    // Quiz finished
+                    if (data.quiz_state === "finished") {
+
+                        location.reload();
+                        return;
+
+                    }
+
+                    // Re-sync timer with server truth (handles pause/resume, drift)
+                    if (
+                        data.timer_mode === "per_question" &&
+                        data.question_started_at
+                    ) {
+
+                        const elapsed =
+                            (Date.now() / 1000) - data.question_started_at;
+
+                        const serverRemaining = Math.max(
+                            0,
+                            Math.floor(data.question_time - elapsed)
+                        );
+
+                        // Only correct if drifted by more than 1 second
+                        if (Math.abs(serverRemaining - remainingSeconds) > 1) {
+
+                            remainingSeconds = serverRemaining;
+                            renderTimer();
+
+                        }
+
+                    }
+
+                })
+                .catch(error => {
+
+                    console.log(error);
+
+                });
+
+        }
+
+        // Check twice every second
+        setInterval(syncQuiz, 500);
+
+
+        // save answer
+        const csrfTokenInput = document.querySelector(
+            "#answerForm [name=csrfmiddlewaretoken]"
+        );
+
+        const csrfToken = csrfTokenInput ? csrfTokenInput.value : "";
+
+
+        document
+            .querySelectorAll(".answer-option")
+            .forEach(option => {
+
+                option.addEventListener("change", function () {
+
+                    fetch(
+                        "/session/{{ session.code }}/save-answer/",
+                        {
+
+                            method: "POST",
+
+                            headers: {
+
+                                "X-CSRFToken": csrfToken,
+
+                                "Content-Type":
+                                    "application/x-www-form-urlencoded",
+
+                            },
+
+                            body:
+
+                                "question_id=" +
+                                this.dataset.question +
+
+                                "&choice_id=" +
+
+                                this.value,
+
+                        }
+
+                    )
+
+                        .then(response => response.json())
+
+                        .then(data => {
+
+                            if (data.success) {
+
+                                console.log("Answer Saved");
+
+                            }
+
+                        });
+
+                });
+
+            });
+
+        const submitBtn = document.getElementById("submitQuizBtn");
+
+        if (submitBtn) {
+
+            submitBtn.addEventListener("click", function () {
+
+                if (confirm("Are you sure you want to submit your quiz?")) {
+
+                    window.location.href =
+                        `/session/${sessionCode}/submit/`;
+
+                }
+
+            });
+
+        }
+
+
+    </script>
+</body>
+
+</html>

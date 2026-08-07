@@ -4,6 +4,7 @@ import uuid
 
 from django.conf import settings
 from django.db import models
+from django.utils import timezone
 
 
 def generate_session_code():
@@ -70,7 +71,16 @@ class QuizSession(models.Model):
     )
     current_question = models.PositiveIntegerField(
     default=0
-)
+    )
+
+    question_started_at = models.DateTimeField(
+    null=True,
+    blank=True
+    )
+    quiz_started_at = models.DateTimeField(
+    null=True,
+    blank=True
+    )
     # ---- timer settings ----
     timer_mode = models.CharField(max_length=15, choices=TIMER_MODE_CHOICES, default='per_quiz')
     total_time_minutes = models.DecimalField(

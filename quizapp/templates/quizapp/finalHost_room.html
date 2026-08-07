@@ -1,0 +1,364 @@
+<!-- hosts quiz control room -->
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Quiz Control Room | SunByte Quiz</title>
+
+    <link rel="stylesheet" href="{% static 'quizapp/css/finalHost_room.css' %}">
+
+</head>
+
+<body>
+
+    <div class="container">
+
+        <h1>🎮 Quiz Control Room</h1>
+        <div class="timer-circle" id="timer-circle">
+            <span id="question-timer">
+                {{ remaining_time }}
+            </span>
+        </div>
+        <br>
+        <!-- Current Question -->
+
+        <div class="session-card">
+
+            <div class="session-left">
+
+                <h2>
+                    ❓ Question {{ session.current_question|add:1 }}
+                    / {{ session.question_count }}
+                </h2>
+
+                {% if current_question %}
+
+                <p style="font-size:1.4rem; font-weight:600; margin-top:20px;">
+                    {{ current_question.text }}
+                </p>
+
+                {% if current_question.image %}
+
+                <img src="{{ current_question.image.url }}" class="question-media">
+
+                {% endif %}
+
+
+                {% if current_question.video_file %}
+
+                <video class="question-media" controls>
+                    <source src="{{ current_question.video_file.url }}">
+                    Your browser does not support video.
+                </video>
+
+                {% endif %}
+
+
+                {% if current_question.video_url %}
+
+                <iframe class="question-media" src="{{ current_question.video_url }}" allowfullscreen>
+                </iframe>
+
+                {% endif %}
+
+                <div class="host-options">
+
+                    {% for choice in current_question.choices.all %}
+
+                    <div class="participant-card option-card">
+
+                        <div class="option-number">
+
+                            {{ forloop.counter }}.
+
+                        </div>
+
+                        <div class="option-content">
+
+                            {% if choice.image %}
+
+                            <img src="{{ choice.image.url }}" alt="Option Image" class="option-image">
+
+                            {% endif %}
+
+                            {% if choice.text %}
+
+                            <div class="option-text">
+
+                                {{ choice.text }}
+
+                            </div>
+
+                            {% endif %}
+
+                            {% if choice.is_correct %}
+
+                            <span class="correct-answer-badge">
+
+                                ✓ Correct Answer
+
+                            </span>
+
+                            {% endif %}
+
+                        </div>
+
+                    </div>
+
+                    {% empty %}
+
+                    <p>No options available.</p>
+
+                    {% endfor %}
+
+                </div>
+
+                {% else %}
+
+                <p>No question available.</p>
+
+                {% endif %}
+
+            </div>
+
+        </div>
+
+
+        <!-- Statistics -->
+        <div class="stats">
+
+            <div class="stat-box">
+                <h3>Participants</h3>
+                <p id="participant-count">{{ session.player_count }}</p>
+            </div>
+
+        </div>
+
+
+        <!-- Progress -->
+
+        <div class="progress-section">
+
+            <h2>📚 Quiz Progress</h2>
+
+            <div class="progress-bar">
+
+                <div class="progress-fill"
+                    style="width:{% widthratio session.current_question|add:1 session.question_count 100 %}%;">
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- Controls -->
+
+        <div class="controls">
+
+            {% if session.quiz_state == "running" %}
+
+            <form method="POST" action="{% url 'quizapp:next_question' session.code %}">
+                {% csrf_token %}
+                <button type="submit" class="btn next">
+                    ⏭ Next Question
+                </button>
+            </form>
+
+            <form method="POST" action="{% url 'quizapp:pause_quiz' session.code %}">
+                {% csrf_token %}
+                <button type="submit" class="btn pause">
+                    ⏸ Pause Quiz
+                </button>
+            </form>
+
+            <a href="{% url 'quizapp:end_session' session.code %}" class="btn danger">
+                ⏹ End Quiz
+            </a>
+
+            {% elif session.quiz_state == "paused" %}
+
+            <form method="POST" action="{% url 'quizapp:resume_quiz' session.code %}">
+                {% csrf_token %}
+                <button type="submit" class="btn start">
+                    ▶ Resume Quiz
+                </button>
+            </form>
+
+            <a href="{% url 'quizapp:end_session' session.code %}" class="btn danger">
+                ⏹ End Quiz
+            </a>
+
+            {% elif session.quiz_state == "finished" %}
+
+            <a href="{% url 'quizapp:session_results' session.code %}" class="btn start">
+                📊 View Results
+            </a>
+
+            {% endif %}
+
+        </div>
+
+
+        <!-- Activity -->
+
+        <div class="activity">
+
+            <h2>📡 Live Activity</h2>
+
+            <div class="activity-box">
+
+                <p>Quiz is running...</p>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <script>
+
+
+        const sessionCode = "{{ session.code }}";
+
+        function updateParticipantCount() {
+
+            fetch(`/session/${sessionCode}/participant-count/`)
+                .then(response => response.json())
+                .then(data => {
+
+                    document.getElementById("participant-count").textContent = data.count;
+
+                });
+
+        }
+
+        setInterval(updateParticipantCount, 2000);
+
+        // Timer
+        let timeLeft = Number("{{ remaining_time|default:'0' }}");
+
+        const timerText = document.getElementById("question-timer");
+        const timerCircle = document.getElementById("timer-circle");
+
+        const totalTime = Number("{{ question_time|default:'0' }}");
+
+
+
+        console.log("Timer value:", timeLeft);
+
+
+        function updateTimer() {
+
+            if (timerText) {
+
+                let minutes = Math.floor(timeLeft / 60);
+                let seconds = timeLeft % 60;
+
+
+                if (minutes > 0) {
+
+                    timerText.textContent =
+                        `${minutes}:${seconds.toString().padStart(2, '0')}`;
+
+                }
+                else {
+
+                    timerText.textContent = seconds;
+
+                }
+
+            }
+
+
+            if (timerCircle && totalTime > 0) {
+
+                let progress = (timeLeft / totalTime) * 100;
+
+
+                timerCircle.style.background =
+                    `conic-gradient(
+                #FFC300 ${progress}%,
+                #ddd ${progress}%
+            )`;
+
+            }
+
+        }
+
+
+
+        updateTimer();
+
+
+
+        let timerInterval = setInterval(() => {
+
+
+            if (timeLeft > 0) {
+
+                timeLeft--;
+
+                updateTimer();
+
+            }
+
+        }, 1000);
+
+        setInterval(() => {
+
+            fetch(`/session/${sessionCode}/check-question-timer/`)
+                .then(response => response.json())
+                .then(data => {
+
+                    if (data.changed || data.finished) {
+
+                        location.reload();
+
+                    }
+
+                })
+                .catch(error => console.log(error));
+
+        }, 1000);
+
+
+
+
+
+        // Prevent browser back button
+
+        history.pushState(null, "", location.href);
+
+
+        window.addEventListener("popstate", function () {
+
+            let confirmEnd = confirm(
+                "Do you want to end quiz?"
+            );
+
+
+            if (confirmEnd) {
+
+                window.location.href =
+                    "{% url 'quizapp:end_session' session.code %}";
+
+            }
+            else {
+
+                history.pushState(null, "", location.href);
+
+            }
+
+        });
+    </script>
+
+</body>
+
+</html>

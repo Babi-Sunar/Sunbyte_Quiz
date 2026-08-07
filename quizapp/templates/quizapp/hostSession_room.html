@@ -1,3 +1,4 @@
+<!-- host room before start quiz -->
 {% load static %}
 <!DOCTYPE html>
 <html lang="en">
@@ -46,7 +47,7 @@
                 <p><strong>Questions:</strong> {{ session.question_count }}</p>
 
                 <p><strong>Participants:</strong>
-                    <span id="participant-count">{{ session.player_count }}</span>
+                    <span id="joined-count">{{ session.player_count }}</span>
                 </p>
 
             </div>
@@ -69,7 +70,7 @@
 
             <div class="stat-box">
                 <h3>Joined</h3>
-                <p id="joined-count">{{ session.player_count }}</p>
+                <p id="participant-count">{{ session.player_count }}</p>
             </div>
 
             <div class="stat-box">
@@ -77,17 +78,7 @@
                 <p>{{ session.question_count }}</p>
             </div>
 
-            <div class="stat-box">
-                <h3>Answered</h3>
-                <p id="answered-count">0</p>
-            </div>
 
-            <div class="stat-box">
-                <h3>Current Question</h3>
-                <p id="current-question">
-                    {{ session.current_question }} / {{ session.question_count }}
-                </p>
-            </div>
 
         </div>
 
@@ -99,7 +90,7 @@
 
             <h2>👥 Participants</h2>
 
-            <div class="participant-list">
+            <div class="participant-list" id="participant-list">
 
                 {% for participant in session.participants.all %}
 
@@ -143,59 +134,14 @@
 
         <div class="controls">
 
-
             {% if session.quiz_state == "waiting" %}
 
             <form method="POST" action="{% url 'quizapp:start_quiz' session.code %}">
                 {% csrf_token %}
-
                 <button type="submit" class="btn start">
                     ▶ Start Quiz
                 </button>
-
             </form>
-
-
-            {% elif session.quiz_state == "running" %}
-
-            <form method="POST" action="{% url 'quizapp:next_question' session.code %}">
-                {% csrf_token %}
-
-                <button type="submit" class="btn next">
-                    ⏭ Next Question
-                </button>
-
-            </form>
-
-            <form method="POST" action="{% url 'quizapp:pause_quiz' session.code %}">
-                {% csrf_token %}
-
-                <button type="submit" class="btn pause">
-                    ⏸ Pause Quiz
-                </button>
-
-            </form>
-
-            <a href="{% url 'quizapp:end_session' session.code %}" class="btn danger">
-                ⏹ End Quiz
-            </a>
-
-
-            {% elif session.quiz_state == "paused" %}
-
-            <form method="POST" action="{% url 'quizapp:resume_quiz' session.code %}">
-                {% csrf_token %}
-
-                <button type="submit" class="btn start">
-                    ▶ Resume Quiz
-                </button>
-
-            </form>
-
-            <a href="{% url 'quizapp:end_session' session.code %}" class="btn danger">
-                ⏹ End Quiz
-            </a>
-
 
             {% elif session.quiz_state == "finished" %}
 
@@ -203,9 +149,7 @@
                 📊 View Results
             </a>
 
-
             {% endif %}
-
 
         </div>
 
@@ -232,6 +176,65 @@
         </div>
 
     </div>
+    <script>
+        const sessionCode = "{{ session.code }}";
+
+        function updateParticipantCount() {
+
+            fetch(`/session/${sessionCode}/participant-count/`)
+                .then(response => response.json())
+                .then(data => {
+
+                    document.getElementById("participant-count").textContent = data.count;
+                    document.getElementById("joined-count").textContent = data.count;
+
+                })
+                .catch(error => console.log(error));
+
+        }
+
+        setInterval(updateParticipantCount, 2000);
+
+        //live reload name
+
+        function updateParticipantList() {
+
+            fetch(`/session/${sessionCode}/participant-list/`)
+                .then(response => response.json())
+                .then(data => {
+
+                    const container =
+                        document.getElementById("participant-list");
+
+                    container.innerHTML = "";
+
+                    data.participants.forEach(participant => {
+
+                        container.innerHTML += `
+                    <div class="participant-card">
+
+                        <span>
+                            👤 ${participant.display_name}
+                        </span>
+
+                        <span class="joined">
+                            Joined
+                        </span>
+
+                    </div>
+                `;
+
+                    });
+
+                })
+                .catch(error => console.log(error));
+
+        }
+
+        updateParticipantList();
+
+        setInterval(updateParticipantList, 500);
+    </script>
 
 </body>
 

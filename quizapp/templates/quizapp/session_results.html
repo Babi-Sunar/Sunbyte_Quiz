@@ -1,3 +1,4 @@
+<!-- for host -->
 {% load static %}
 <!DOCTYPE html>
 <html lang="en">
@@ -143,7 +144,13 @@
 
 
         <!-- Actions -->
+        <a href="{% url 'quizapp:download_results_pdf' session.code %}" style="position: relative; left: 33vw;" class="download-btn">
 
+            📄 Download PDF
+
+        </a>
+        <br>
+        <br>
         <div class="buttons">
 
             <a href="{% url 'quizapp:publish_session' session.code %}" class="btn">

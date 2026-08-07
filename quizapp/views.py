@@ -601,27 +601,43 @@ def publish_session(request, code):
                 code=session.code,
             )
 
+
+        # Clear previous participants when starting a fresh session
+        session.participants.all().delete()
+
+
+        # Reset session state
         session.status = "active"
         session.current_question = 0
         session.quiz_state = "waiting"
 
+        # Reset timers
+        session.question_started_at = None
+        session.quiz_started_at = None
+
+
         session.save(
-        update_fields=[
-        "status",
-        "current_question",
-        "quiz_state",
-    ]
-)
+            update_fields=[
+                "status",
+                "current_question",
+                "quiz_state",
+                "question_started_at",
+                "quiz_started_at",
+            ]
+        )
+
 
         messages.success(
             request,
             "Session published successfully. Participants can now join using the session code or QR code."
         )
 
+
         return redirect(
             "quizapp:host_room",
             code=session.code,
         )
+
 
     return render(
         request,
@@ -753,6 +769,17 @@ def host_room(request, code):
         context,
     )
     
+# live count
+from django.http import JsonResponse
+
+@login_required
+def participant_count(request, code):
+    session = _get_hosted_session_or_404(request, code)
+
+    return JsonResponse({
+        "count": session.player_count
+    })
+    
 @never_cache
 @login_required
 def start_quiz(request, code):
@@ -766,29 +793,135 @@ def start_quiz(request, code):
                 request,
                 "Session is not active."
             )
+
             return redirect(
-                "quizapp:host_room",
+                "quizapp:final_room",
                 code=session.code,
             )
 
+
         session.quiz_state = "running"
 
-        session.save(
-            update_fields=[
-                "quiz_state",
-            ]
-        )
+
+        # Start timer depending on mode
+
+        if session.timer_mode == "per_question":
+
+            session.question_started_at = timezone.now()
+
+
+        elif session.timer_mode == "per_quiz":
+
+            session.quiz_started_at = timezone.now()
+
+
+        session.save()
+
 
         messages.success(
             request,
             "Quiz started successfully."
         )
 
+
     return redirect(
-        "quizapp:host_room",
-        code=session.code,
+        "quizapp:final_room",
+        code=code
     )
 
+from django.utils import timezone
+
+
+@login_required
+def final_room(request, code):
+    session = _get_hosted_session_or_404(request, code)
+
+    questions = list(
+        session.questions.prefetch_related("choices").order_by("order")
+    )
+
+    current_question = None
+    current_question_number = 0
+    question_time = None
+    remaining_time = None
+
+    if questions and 0 <= session.current_question < len(questions):
+
+        current_question = questions[session.current_question]
+
+        # Display number (Question 1, Question 2...)
+        current_question_number = session.current_question + 1
+
+
+        # ==========================
+        # TIMER HANDLING
+        # ==========================
+
+        if session.timer_mode == "per_question":
+
+            question_time = (
+                current_question.time_limit_seconds
+                or session.default_time_per_question_seconds
+            )
+
+            remaining_time = question_time
+
+            if session.question_started_at:
+
+                elapsed = (
+                    timezone.now() - session.question_started_at
+                ).total_seconds()
+
+                remaining_time = max(
+                    0,
+                    int(question_time - elapsed)
+                )
+
+
+        elif session.timer_mode == "none":
+
+            # No timer mode
+            question_time = None
+            remaining_time = None
+
+
+        elif session.timer_mode == "per_quiz":
+
+            # Whole quiz timer (minutes → seconds)
+
+            question_time = int(
+                session.total_time_minutes * 60
+            )
+
+            remaining_time = question_time
+
+
+            if session.quiz_started_at:
+
+                elapsed = (
+                    timezone.now() - session.quiz_started_at
+                ).total_seconds()
+
+
+                remaining_time = max(
+                    0,
+                    int(question_time - elapsed)
+                )
+
+
+    return render(
+        request,
+        "quizapp/finalHost_room.html",
+        {
+            "session": session,
+            "current_question": current_question,
+            "current_question_number": current_question_number,
+            "question_time": question_time,
+            "remaining_time": remaining_time,
+        },
+    )
+    
+    
 @never_cache
 @login_required
 def pause_quiz(request, code):
@@ -813,7 +946,7 @@ def pause_quiz(request, code):
             )
 
     return redirect(
-        "quizapp:host_room",
+        "quizapp:final_room",
         code=session.code,
     )
     
@@ -841,11 +974,13 @@ def resume_quiz(request, code):
             )
 
     return redirect(
-        "quizapp:host_room",
+        "quizapp:final_room",
         code=session.code,
     )
     
     
+from django.utils import timezone
+
 @never_cache
 @login_required
 def next_question(request, code):
@@ -863,28 +998,32 @@ def next_question(request, code):
             )
 
             return redirect(
-                "quizapp:host_room",
+                "quizapp:final_room",
                 code=session.code,
             )
 
         total_questions = session.question_count
+
         print("CURRENT:", session.current_question)
         print("TOTAL:", total_questions)
-        if session.current_question < total_questions:
+
+        if session.current_question < total_questions - 1:
 
             session.current_question += 1
+            session.question_started_at = timezone.now()
 
             print("NEXT QUESTION VALUE:", session.current_question)
 
             session.save(
                 update_fields=[
                     "current_question",
+                    "question_started_at",
                 ]
             )
 
             messages.success(
                 request,
-                f"Question {session.current_question} started."
+                f"Question {session.current_question + 1} started."
             )
 
         else:
@@ -903,29 +1042,182 @@ def next_question(request, code):
             )
 
     return redirect(
-        "quizapp:host_room",
+        "quizapp:final_room",
         code=session.code,
     )
+
+@never_cache
+@login_required
+def check_question_timer(request, code):
+
+    session = _get_hosted_session_or_404(request, code)
+
+    if session.quiz_state != "running":
+        return JsonResponse({
+            "status": "not_running"
+        })
+
+
+    # ==========================
+    # NO TIMER MODE
+    # ==========================
+    if session.timer_mode == "none":
+
+        return JsonResponse({
+            "changed": False
+        })
+
+
+    # ==========================
+    # WHOLE QUIZ TIMER MODE
+    # ==========================
+    if session.timer_mode == "per_quiz":
+
+        if not session.quiz_started_at:
+            return JsonResponse({
+                "changed": False
+            })
+
+
+        total_seconds = int(
+            session.total_time_minutes * 60
+        )
+
+
+        elapsed = (
+            timezone.now() - session.quiz_started_at
+        ).total_seconds()
+
+
+        if elapsed >= total_seconds:
+
+            session.quiz_state = "finished"
+
+            session.save(
+                update_fields=[
+                    "quiz_state",
+                ]
+            )
+
+            return JsonResponse({
+                "finished": True
+            })
+
+
+        return JsonResponse({
+            "changed": False
+        })
+
+
+    # ==========================
+    # PER QUESTION TIMER MODE
+    # ==========================
+    if session.timer_mode == "per_question":
+
+        questions = list(
+            session.questions.order_by("order")
+        )
+
+
+        if not questions:
+            return JsonResponse({
+                "changed": False
+            })
+
+
+        current_question = questions[
+            session.current_question
+        ]
+
+
+        question_time = (
+            current_question.time_limit_seconds
+            or session.default_time_per_question_seconds
+        )
+
+
+        if not session.question_started_at:
+            return JsonResponse({
+                "changed": False
+            })
+
+
+        elapsed = (
+            timezone.now() - session.question_started_at
+        ).total_seconds()
+
+
+        if elapsed >= question_time:
+
+
+            if session.current_question < len(questions) - 1:
+
+                session.current_question += 1
+
+                session.question_started_at = timezone.now()
+
+                session.save(
+                    update_fields=[
+                        "current_question",
+                        "question_started_at",
+                    ]
+                )
+
+
+                return JsonResponse({
+                    "changed": True
+                })
+
+
+            else:
+
+                session.quiz_state = "finished"
+
+                session.save(
+                    update_fields=[
+                        "quiz_state",
+                    ]
+                )
+
+
+                return JsonResponse({
+                    "finished": True
+                })
+
+
+    return JsonResponse({
+        "changed": False
+    })
+    # NOt used
 # =======================================================================
 # Lobby / taking the quiz / results
 # =======================================================================
 def session_room(request, code):
     session = get_object_or_404(QuizSession, code=code)
+
     is_host = request.user.is_authenticated and session.host_id == request.user.id
+
     participant = get_current_participant(request, session)
 
     if not is_host and participant is None:
         return redirect(f"/session/join/?code={session.code}")
 
     if participant is not None and participant.submitted:
-        return redirect('quizapp:result_detail', code=session.code)
+        return redirect(
+            'quizapp:result_detail',
+            code=session.code
+        )
 
-    return render(request, 'quizapp/session_room.html', {
-        'session': session,
-        'is_host': is_host,
-        'participant': participant,
-        'participants': session.participants.all(),
-    })
+    return render(
+        request,
+        'quizapp/session_room.html',
+        {
+            'session': session,
+            'is_host': is_host,
+            'participant': participant,
+            'participants': session.participants.all(),
+        }
+    )
 
 
 def take_quiz(request, code):
@@ -940,7 +1232,17 @@ def take_quiz(request, code):
     if participant.submitted:
         return redirect('quizapp:result_detail', code=session.code)
 
-    questions = list(session.questions.prefetch_related('choices').all())
+    questions = list(
+        session.questions
+        .prefetch_related("choices")
+        .order_by("order")
+    )
+
+    current_question = None
+
+    if questions and 0 <= session.current_question < len(questions):
+        current_question = questions[session.current_question]
+    
     if session.shuffle_questions:
         rng = random.Random(participant.id)
         rng.shuffle(questions)
@@ -998,14 +1300,100 @@ def take_quiz(request, code):
     if session.timer_mode == 'per_quiz':
         total_seconds = session.total_time_minutes * 60
 
+    question_time = None
+    remaining_time = 0
+
+    if current_question:
+
+        question_time = (
+            current_question.time_limit_seconds
+            or session.default_time_per_question_seconds
+        )
+
+        if session.timer_mode == "per_question":
+
+            if session.question_started_at:
+
+                elapsed = (
+                    timezone.now() -
+                    session.question_started_at
+                ).total_seconds()
+
+                remaining_time = max(
+                    0,
+                    int(question_time - elapsed)
+                )
+
+            else:
+
+                remaining_time = question_time
     return render(request, 'quizapp/take_quiz.html', {
         'session': session,
         'participant': participant,
-        'questions': questions,
+        "current_question": current_question,
+        "question_time": question_time,
+        "remaining_time": remaining_time,
         'total_seconds': total_seconds,
     })
 
 
+# live update of participant name
+def participant_list(request, code):
+
+    session = get_object_or_404(QuizSession, code=code)
+
+    participants = list(
+
+        session.participants.values(
+            "display_name"
+        )
+
+    )
+
+    return JsonResponse({
+
+        "participants": participants
+
+    })
+def quiz_status(request, code):
+
+    session = get_object_or_404(
+        QuizSession,
+        code=code
+    )
+
+    data = {
+
+        "current_question": session.current_question,
+
+        "quiz_state": session.quiz_state,
+
+        "timer_mode": session.timer_mode,
+
+        "question_started_at": (
+            session.question_started_at.timestamp()
+            if session.question_started_at
+            else None
+        ),
+
+        "question_time": session.default_time_per_question_seconds,
+
+    }
+
+    return JsonResponse(data)
+def session_status(request, code):
+
+    session = get_object_or_404(
+        QuizSession,
+        code=code
+    )
+
+    return JsonResponse({
+
+        "state": session.quiz_state
+
+    })
+    
 def result_detail(request, code):
     session = get_object_or_404(QuizSession, code=code)
     participant = get_current_participant(request, session)
@@ -1017,10 +1405,290 @@ def result_detail(request, code):
     leaderboard = session.participants.filter(submitted=True).order_by('-total_marks', 'submitted_at')
     responses = participant.responses.select_related('question', 'selected_choice')
 
+    total_possible = session.total_possible_marks()
+
+    if total_possible and total_possible > 0:
+        percentage = round((participant.total_marks / total_possible) * 100, 2)
+    else:
+        percentage = 0
+
+    total_participants = leaderboard.count()
+
     return render(request, 'quizapp/result_detail.html', {
         'session': session,
         'participant': participant,
         'leaderboard': leaderboard,
         'responses': responses,
-        'total_possible': session.total_possible_marks(),
+        'total_possible': total_possible,
+        'percentage': percentage,
+        'total_participants': total_participants,
     })
+
+# auto next question
+@never_cache
+@login_required
+def check_question_timer(request, code):
+
+    session = _get_hosted_session_or_404(request, code)
+
+    # Only for per-question timer
+    if (
+        session.timer_mode != "per_question"
+        or session.quiz_state != "running"
+        or not session.question_started_at
+    ):
+        return JsonResponse({
+            "changed": False,
+            "finished": False,
+        })
+
+    questions = list(
+        session.questions.order_by("order")
+    )
+
+    if not questions:
+        return JsonResponse({
+            "changed": False,
+            "finished": False,
+        })
+
+    current_question = questions[session.current_question]
+
+    question_time = (
+        current_question.time_limit_seconds
+        or session.default_time_per_question_seconds
+    )
+
+    elapsed = (
+        timezone.now() - session.question_started_at
+    ).total_seconds()
+
+    # Time not over yet
+    if elapsed < question_time:
+
+        return JsonResponse({
+            "changed": False,
+            "finished": False,
+        })
+
+    # Move to next question
+    if session.current_question < len(questions) - 1:
+
+        session.current_question += 1
+        session.question_started_at = timezone.now()
+
+        session.save(update_fields=[
+            "current_question",
+            "question_started_at",
+        ])
+
+        return JsonResponse({
+            "changed": True,
+            "finished": False,
+        })
+
+    # Last question completed
+    session.quiz_state = "finished"
+
+    session.save(update_fields=[
+        "quiz_state",
+    ])
+
+    return JsonResponse({
+        "changed": False,
+        "finished": True,
+    })
+    
+# save answers for user
+from django.views.decorators.http import require_POST
+@require_POST
+def save_answer(request, code):
+
+    session = get_object_or_404(
+        QuizSession,
+        code=code
+    )
+
+    participant = get_current_participant(
+        request,
+        session
+    )
+
+    if participant is None:
+
+        return JsonResponse(
+            {"success": False},
+            status=403
+        )
+
+    question = get_object_or_404(
+        Question,
+        id=request.POST.get("question_id"),
+        session=session
+    )
+
+    choice = get_object_or_404(
+        Choice,
+        id=request.POST.get("choice_id"),
+        question=question
+    )
+
+    marks = question.effective_marks()
+
+    if choice.is_correct:
+        is_correct = True
+        marks_awarded = marks
+    else:
+        is_correct = False
+        marks_awarded = -session.negative_marks if session.negative_marking else Decimal('0')
+
+    Response.objects.update_or_create(
+
+        participant=participant,
+        question=question,
+
+        defaults={
+
+            "selected_choice": choice,
+            "is_correct": is_correct,
+            "marks_awarded": marks_awarded,
+
+        }
+
+    )
+
+    return JsonResponse({
+
+        "success": True
+
+    })
+    
+def submit_quiz(request, code):
+
+    session = get_object_or_404(QuizSession, code=code)
+    participant = get_current_participant(request, session)
+
+    if participant is None:
+        messages.error(request, 'We could not find your participant record.')
+        return redirect('quizapp:join_session')
+
+    if not participant.submitted:
+
+        questions = list(session.questions.all())
+        responses = {
+            r.question_id: r
+            for r in participant.responses.select_related('selected_choice')
+        }
+
+        correct_count = 0
+        wrong_count = 0
+        not_attempted_count = 0
+        total_marks = Decimal('0')
+
+        for question in questions:
+            response = responses.get(question.id)
+
+            if response is None or response.selected_choice is None:
+                not_attempted_count += 1
+                continue
+
+            if response.is_correct:
+                correct_count += 1
+            else:
+                wrong_count += 1
+
+            total_marks += response.marks_awarded
+
+        participant.submitted = True
+        participant.submitted_at = timezone.now()
+        participant.total_marks = total_marks
+        participant.correct_count = correct_count
+        participant.wrong_count = wrong_count
+        participant.not_attempted_count = not_attempted_count
+        participant.save()
+
+        session.recompute_ranks()
+
+    return redirect(
+        'quizapp:result_detail',
+        code=session.code,
+    )
+    
+# save result pdf
+from django.http import HttpResponse
+from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer, Table
+from reportlab.lib.styles import getSampleStyleSheet
+
+
+@login_required
+def download_results_pdf(request, code):
+
+    session = get_object_or_404(
+        QuizSession,
+        code=code,
+        host=request.user
+    )
+
+    participants = session.participants.filter(
+        submitted=True
+    ).order_by(
+        "rank"
+    )
+
+
+    response = HttpResponse(
+        content_type="application/pdf"
+    )
+
+    response["Content-Disposition"] = (
+        f'attachment; filename="{session.code}_results.pdf"'
+    )
+
+
+    doc = SimpleDocTemplate(response)
+
+
+    styles = getSampleStyleSheet()
+
+    content = []
+
+
+    content.append(
+        Paragraph(
+            f"SunByte Quiz Result<br/>{session.title}",
+            styles["Title"]
+        )
+    )
+
+    content.append(Spacer(1,20))
+
+
+    data = [
+        [
+            "Rank",
+            "Participant",
+            "Score"
+        ]
+    ]
+
+
+    for p in participants:
+
+        data.append(
+            [
+                p.rank,
+                p.display_name,
+                p.total_marks
+            ]
+        )
+
+
+    table = Table(data)
+
+    content.append(table)
+
+
+    doc.build(content)
+
+
+    return response

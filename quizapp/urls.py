@@ -52,6 +52,52 @@ urlpatterns = [
     views.next_question,
     name="next_question",
     ),
+    path(
+    "session/<str:code>/participant-count/",
+    views.participant_count,
+    name="participant_count",
+    ),
+    path(
+    "session/<str:code>/final-room/",
+    views.final_room,
+    name="final_room",
+    ),
+    path(
+    "session/<str:code>/check-question-timer/",
+    views.check_question_timer,
+    name="check_question_timer",
+    ),
+    path(
+    "session/<str:code>/status/",
+    views.session_status,
+    name="session_status"
+    ),
+    path(
+    "session/<str:code>/quiz-status/",
+    views.quiz_status,
+    name="quiz_status",
+    ),
+    path(
+    "session/<str:code>/participant-list/",
+    views.participant_list,
+    name="participant_list",
+    ),
+    path(
+    "session/<str:code>/save-answer/",
+    views.save_answer,
+    name="save_answer",
+    ),
+
+    path(
+    "session/<str:code>/submit/",
+    views.submit_quiz,
+    name="submit_quiz",
+    ),
+    path(
+    "session/<str:code>/results/pdf/",
+    views.download_results_pdf,
+    name="download_results_pdf",
+    ),
     # Joining — no account required
     path('session/join/', views.join_session, name='join_session'),
 

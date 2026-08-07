@@ -3,133 +3,423 @@
 <html lang="en">
 
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Edit Question</title>
 
-    <link rel="stylesheet" href="{% static 'quizapp/css/question_form.css' %}">
+    <meta charset="UTF-8">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>
+
+        Edit Question | SunByte Quiz
+
+    </title>
+
+    <link rel="stylesheet" href="{% static 'quizapp/css/edit_question.css' %}">
+
 </head>
 
 <body>
 
-    <div class="container">
+    <div class="page">
 
-        <h1>Edit Question</h1>
-
-        <p class="session-name" style="text-shadow: rgba(0,0,0,.16) 0 3px 6px,rgba(0,0,0,.23) 0 3px 6px;">
-            Session: {{ session.title }}
-        </p>
-
-        <form method="POST" enctype="multipart/form-data">
+        <form method="POST" enctype="multipart/form-data" class="editor-card">
 
             {% csrf_token %}
 
-            <!-- Question Type -->
-            <p class="label">
-                {{ form.question_type.label }}<br>
-                {{ form.question_type }}
-            </p>
+            <!-- ========================= -->
+            <!-- Header -->
+            <!-- ========================= -->
 
+            <div class="page-header">
+
+                <div>
+
+                    <h1>
+
+                        ✏️ Edit Question
+
+                    </h1>
+
+                    <p>
+
+                        {{ session.title }}
+
+                    </p>
+
+                </div>
+
+            </div>
+
+
+            <!-- ========================= -->
             <!-- Question -->
-            <p class="label">
-                {{ form.text.label }}<br>
-                {{ form.text }}
-            </p>
+            <!-- ========================= -->
 
-            <!-- Question Image -->
-            <p class="label">
-                {{ form.image.label }}<br>
-                {{ form.image }}
-            </p>
+            <section class="card">
 
-            <!-- Video Upload -->
-            <p class="label">
-                {{ form.video_file.label }}<br>
-                {{ form.video_file }}
-            </p>
+                <h2>
 
-            <!-- Video URL -->
-            <p class="label">
-                {{ form.video_url.label }}<br>
-                {{ form.video_url }}
-            </p>
+                    Question Details
 
-            <!-- Marks -->
-            <p class="label">
-                {{ form.marks.label }}<br>
-                {{ form.marks }}
-            </p>
+                </h2>
 
-            <!-- Time -->
-            <p class="label">
-                {{ form.time_limit_seconds.label }}<br>
-                {{ form.time_limit_seconds }}
-            </p>
+                <div class="field">
 
-            <!-- ======================= -->
-            <!-- Multiple Choice -->
-            <!-- ======================= -->
+                    <label>
 
-            <div id="choice-section">
+                        Question Type
 
-                {% if formset %}
-                    {{ formset.management_form }}
+                    </label>
 
-                    {% for choice_form in formset %}
+                    {{ form.question_type }}
 
-                    <div class="choice-row">
+                </div>
 
-                        <h3>
-                            {% if forloop.counter == 1 %}
-                                Option A
-                            {% elif forloop.counter == 2 %}
-                                Option B
-                            {% elif forloop.counter == 3 %}
-                                Option C
-                            {% elif forloop.counter == 4 %}
-                                Option D
-                            {% endif %}
-                        </h3>
+                <div class="field">
 
-                        {{ choice_form.id }}
+                    <label>
 
-                        <p class="label">
-                            {{ choice_form.text }}
-                        </p>
+                        Question
 
-                        <p class="label">
-                            {{ choice_form.image }}
-                        </p>
+                    </label>
 
-                        <label class="correct-label">
-                            {{ choice_form.is_correct }}
-                            Correct Answer
+                    {{ form.text }}
+
+                </div>
+
+            </section>
+
+
+
+            <!-- ========================= -->
+            <!-- Media -->
+            <!-- ========================= -->
+
+            <section class="card">
+
+                <h2>
+
+                    Media
+
+                </h2>
+
+
+                <!-- Current Image -->
+
+                {% if question.image %}
+
+                <div class="preview-box">
+
+                    <p>
+
+                        Current Image
+
+                    </p>
+
+                    <img src="{{ question.image.url }}" id="image-preview" class="preview-image">
+
+                </div>
+
+                {% else %}
+
+                <div class="preview-box">
+
+                    <img id="image-preview" class="preview-image hidden">
+
+                </div>
+
+                {% endif %}
+
+
+                <div class="field">
+
+                    <label>
+
+                        Replace Image
+
+                    </label>
+
+                    {{ form.image }}
+
+                </div>
+
+
+
+                {% if question.video_file %}
+
+                <div class="preview-box">
+
+                    <p>
+
+                        Current Video
+
+                    </p>
+
+                    <video controls class="preview-video">
+
+                        <source src="{{ question.video_file.url }}">
+
+                    </video>
+
+                </div>
+
+                {% endif %}
+
+
+                <div class="field">
+
+                    <label>
+
+                        Upload Video
+
+                    </label>
+
+                    {{ form.video_file }}
+
+                </div>
+
+
+                <div class="field">
+
+                    <label>
+
+                        Video URL
+
+                    </label>
+
+                    {{ form.video_url }}
+
+                </div>
+
+            </section>
+
+
+
+            <!-- ========================= -->
+            <!-- Question Settings -->
+            <!-- ========================= -->
+
+            <section class="card">
+
+                <h2>
+
+                    Settings
+
+                </h2>
+
+                <div class="settings-grid">
+
+                    <div class="field">
+
+                        <label>
+
+                            Marks
+
                         </label>
+
+                        {{ form.marks }}
 
                     </div>
 
-                    {% if not forloop.last %}
-                        <hr>
+                    <div class="field">
+
+                        <label>
+
+                            Time (seconds)
+
+                        </label>
+
+                        {{ form.time_limit_seconds }}
+
+                    </div>
+
+                </div>
+
+            </section>
+
+            <!-- ========================= -->
+            <!-- Multiple Choice -->
+            <!-- ========================= -->
+
+            <section class="card" id="choice-section">
+
+                <div class="section-title">
+
+                    <h2>
+
+                        Multiple Choice Options
+
+                    </h2>
+
+                    <p>
+
+                        Select exactly one correct answer.
+
+                    </p>
+
+                </div>
+
+                {% if formset %}
+
+                {{ formset.management_form }}
+
+                {% for choice_form in formset %}
+
+                <div class="option-card">
+
+                    {{ choice_form.id }}
+
+                    <div class="option-header">
+
+                        <div class="option-badge">
+
+                            {% if forloop.counter == 1 %}
+                            A
+                            {% elif forloop.counter == 2 %}
+                            B
+                            {% elif forloop.counter == 3 %}
+                            C
+                            {% else %}
+                            D
+                            {% endif %}
+
+                        </div>
+
+                        <h3>
+
+                            Option
+
+                            {% if forloop.counter == 1 %}
+                            A
+                            {% elif forloop.counter == 2 %}
+                            B
+                            {% elif forloop.counter == 3 %}
+                            C
+                            {% else %}
+                            D
+                            {% endif %}
+
+                        </h3>
+
+                    </div>
+
+
+                    <div class="field">
+
+                        <label>
+
+                            Option Text
+
+                        </label>
+
+                        {{ choice_form.text }}
+
+                    </div>
+
+
+                    {% if choice_form.instance.image %}
+
+                    <div class="preview-box">
+
+                        <p>
+
+                            Current Image
+
+                        </p>
+
+                        <img src="{{ choice_form.instance.image.url }}" class="choice-preview">
+
+                    </div>
+
                     {% endif %}
 
-                    {% endfor %}
+
+                    <div class="field">
+
+                        <label>
+
+                            Option Image
+
+                        </label>
+
+                        {{ choice_form.image }}
+
+                    </div>
+
+
+                    <label class="correct-answer">
+
+                        {{ choice_form.is_correct }}
+
+                        <span>
+
+                            Correct Answer
+
+                        </span>
+
+                    </label>
+
+                </div>
+
+                {% endfor %}
+
                 {% endif %}
 
+            </section>
+
+
+
+            <!-- ========================= -->
+            <!-- True False -->
+            <!-- ========================= -->
+
+            <section class="card" id="tf-section">
+
+                <div class="section-title">
+
+                    <h2>
+
+                        True / False
+
+                    </h2>
+
+                    <p>
+
+                        Select the correct answer.
+
+                    </p>
+
+                </div>
+
+                <div class="tf-container">
+
+                    {{ tf_form.as_p }}
+
+                </div>
+
+            </section>
+
+
+
+            <!-- ========================= -->
+            <!-- Footer Buttons -->
+            <!-- ========================= -->
+
+            <div class="bottom-actions">
+
+                <button type="submit" class="save-btn large">
+
+                    💾 Save Changes
+
+                </button>
+
+                <a href="{% url 'quizapp:manage_session' session.code %}" class="cancel-btn">
+
+                    Cancel
+
+                </a>
+
             </div>
-
-            <!-- ======================= -->
-            <!-- True / False -->
-            <!-- ======================= -->
-
-            <div id="tf-section">
-
-                {{ tf_form.as_p }}
-
-            </div>
-
-            <button type="submit">
-                Update Question
-            </button>
 
         </form>
 
@@ -139,30 +429,66 @@
 
         document.addEventListener("DOMContentLoaded", function () {
 
-            const type = document.getElementById("id_question_type");
-            const choiceSection = document.getElementById("choice-section");
-            const tfSection = document.getElementById("tf-section");
+            /* ===========================
+               Question Type Switch
+            ============================ */
 
-            const tfInputs = tfSection.querySelectorAll("input");
-            const choiceInputs = choiceSection.querySelectorAll("input, textarea, select");
+            const questionType =
+                document.getElementById("id_question_type");
+
+            const choiceSection =
+                document.getElementById("choice-section");
+
+            const tfSection =
+                document.getElementById("tf-section");
+
+            const choiceInputs =
+                choiceSection.querySelectorAll(
+                    "input, textarea, select"
+                );
+
+            const tfInputs =
+                tfSection.querySelectorAll(
+                    "input, textarea, select"
+                );
 
             function updateQuestionType() {
 
-                if (type.value === "true_false") {
+                if (questionType.value === "true_false") {
 
                     choiceSection.style.display = "none";
                     tfSection.style.display = "block";
 
-                    tfInputs.forEach(input => input.disabled = false);
-                    choiceInputs.forEach(input => input.disabled = true);
+                    choiceInputs.forEach(input => {
 
-                } else {
+                        input.disabled = true;
 
-                    choiceSection.style.display = "block";
+                    });
+
+                    tfInputs.forEach(input => {
+
+                        input.disabled = false;
+
+                    });
+
+                }
+
+                else {
+
                     tfSection.style.display = "none";
+                    choiceSection.style.display = "block";
 
-                    tfInputs.forEach(input => input.disabled = true);
-                    choiceInputs.forEach(input => input.disabled = false);
+                    tfInputs.forEach(input => {
+
+                        input.disabled = true;
+
+                    });
+
+                    choiceInputs.forEach(input => {
+
+                        input.disabled = false;
+
+                    });
 
                 }
 
@@ -170,7 +496,182 @@
 
             updateQuestionType();
 
-            type.addEventListener("change", updateQuestionType);
+            questionType.addEventListener(
+                "change",
+                updateQuestionType
+            );
+
+
+            /* ===========================
+            Question Image Preview
+            ============================ */
+
+            const questionImageInput =
+                document.getElementById("id_image");
+
+            const imagePreview =
+                document.getElementById("image-preview");
+
+            if (questionImageInput) {
+
+                questionImageInput.addEventListener(
+                    "change",
+                    function () {
+
+                        const file =
+                            this.files[0];
+
+                        if (!file) return;
+
+                        const reader =
+                            new FileReader();
+
+                        reader.onload = function (e) {
+
+                            imagePreview.src =
+                                e.target.result;
+
+                            imagePreview.classList.remove(
+                                "hidden"
+                            );
+
+                        }
+
+                        reader.readAsDataURL(file);
+
+                    }
+
+                );
+
+            }
+
+
+            /* ===========================
+               Option Image Preview
+            ============================ */
+
+            document
+                .querySelectorAll(
+                    "input[type=file]"
+                )
+                .forEach(input => {
+
+                    if (
+                        input.id === "id_image" ||
+                        input.id === "id_video_file"
+                    ) return;
+
+                    input.addEventListener(
+                        "change",
+                        function () {
+
+                            const file =
+                                this.files[0];
+
+                            if (!file) return;
+
+                            let preview =
+                                this.closest(".option-card")
+                                    .querySelector(".choice-preview");
+
+                            if (!preview) {
+
+                                preview =
+                                    document.createElement("img");
+
+                                preview.className =
+                                    "choice-preview";
+
+                                this.closest(".option-card")
+                                    .appendChild(preview);
+
+                            }
+
+                            const reader =
+                                new FileReader();
+
+                            reader.onload =
+                                function (e) {
+
+                                    preview.src =
+                                        e.target.result;
+
+                                }
+
+                            reader.readAsDataURL(file);
+
+                        }
+
+                    );
+
+                });
+
+
+            /* ===========================
+               Only One Correct Answer
+            ============================ */
+
+            const correctBoxes =
+                document.querySelectorAll(
+                    ".correct-answer input[type=checkbox]"
+                );
+
+            correctBoxes.forEach(box => {
+
+                box.addEventListener(
+                    "change",
+                    function () {
+
+                        if (!this.checked)
+                            return;
+
+                        correctBoxes.forEach(other => {
+
+                            if (other !== this) {
+
+                                other.checked = false;
+
+                            }
+
+                        });
+
+                    }
+
+                );
+
+            });
+
+
+            /* ===========================
+               Smooth Card Hover
+            ============================ */
+
+            document
+                .querySelectorAll(".card")
+                .forEach(card => {
+
+                    card.addEventListener(
+                        "mouseenter",
+                        () => {
+
+                            card.style.transform =
+                                "translateY(-3px)";
+
+                        }
+                    );
+
+                    card.addEventListener(
+                        "mouseleave",
+                        () => {
+
+                            card.style.transform =
+                                "translateY(0px)";
+
+                        }
+                    );
+
+                });
+
 
         });
 

@@ -1,0 +1,159 @@
+<!-- waiting room for participant before quiz starts -->
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>session_room</title>
+    <link rel="stylesheet" href="{% static 'quizapp/css/session_room.css' %}">
+</head>
+
+<body>
+    {% if session.quiz_state == "waiting" %}
+
+    <div class="waiting-container">
+
+        <div class="quiz-header">
+
+            <h1>
+                🎮 {{ session.title }}
+            </h1>
+
+            <p class="subtitle">
+                You have joined the quiz successfully.
+            </p>
+
+        </div>
+
+
+        <div class="waiting-card">
+
+            <div class="waiting-icon">
+                ⏳
+            </div>
+
+
+            <h2>
+                Waiting for the host to start...
+            </h2>
+
+
+            <p>
+                The quiz will begin automatically when the host starts the session.
+            </p>
+
+
+            <p>
+                Please stay on this page.
+            </p>
+
+
+        </div>
+
+
+        <div class="session-info">
+
+            <div class="info-box">
+
+                <h3>
+                    Quiz Code
+                </h3>
+
+                <p>
+                    {{ session.code }}
+                </p>
+
+            </div>
+
+
+            <div class="info-box">
+
+                <h3>
+                    Questions
+                </h3>
+
+                <p>
+                    {{ session.question_count }}
+                </p>
+
+            </div>
+
+
+            <div class="info-box">
+
+                <h3>
+                    Joined Players
+                </h3>
+
+                <p>
+                    {{ session.player_count }}
+                </p>
+
+            </div>
+
+        </div>
+
+
+        <div class="waiting-message">
+
+            <p>
+                🚀 Get ready! The host will start the quiz soon.
+            </p>
+
+        </div>
+
+
+    </div>
+
+    {% endif %}
+    <script>
+
+        const sessionCode = "{{ session.code }}";
+
+
+        function checkQuizStatus() {
+
+            fetch(`/session/${sessionCode}/status/`)
+
+                .then(response => response.json())
+
+                .then(data => {
+
+
+                    if (data.state === "running") {
+
+                        window.location.href =
+                            "{% url 'quizapp:take_quiz' session.code %}";
+
+                    }
+
+
+                    if (data.state === "finished") {
+
+                        location.reload();
+
+                    }
+
+
+                })
+
+                .catch(error => {
+
+                    console.log(error);
+
+                });
+
+        }
+
+
+        setInterval(checkQuizStatus, 500);
+
+        
+
+
+    </script>
+</body>
+
+</html>

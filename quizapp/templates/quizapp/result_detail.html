@@ -1,0 +1,168 @@
+<!-- for participants -->
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Result | {{ session.title }} | SunByte Quiz</title>
+
+    <link rel="stylesheet" href="{% static 'quizapp/css/result_detail.css' %}">
+
+</head>
+
+<body>
+
+    <div class="container">
+
+        <!-- Header -->
+
+        <div class="result-header">
+
+            <h1>{{ session.title }}</h1>
+
+            <p>Your Quiz Result</p>
+
+        </div>
+
+
+
+
+        <!-- Score summary -->
+
+        <div class="score-card">
+
+            <div class="score-main">
+
+                <div class="score-value">
+                    {{ participant.total_marks }} <span>/ {{ total_possible }}</span>
+                </div>
+
+                <div class="score-label">Total Marks</div>
+
+            </div>
+
+            <div class="score-side">
+
+                <div class="percentage-circle">
+                    <span>{{ percentage }}%</span>
+                </div>
+
+                {% if participant.rank %}
+                <div class="rank-badge">
+                    🏆 Rank {{ participant.rank }} <span>of {{ total_participants }}</span>
+                </div>
+                {% endif %}
+
+            </div>
+
+        </div>
+
+
+        <!-- Breakdown -->
+
+        <div class="stats-grid">
+
+            <div class="stat-box correct">
+                <h3>Correct</h3>
+                <p>{{ participant.correct_count }}</p>
+            </div>
+
+            <div class="stat-box wrong">
+                <h3>Wrong</h3>
+                <p>{{ participant.wrong_count }}</p>
+            </div>
+
+            <div class="stat-box skipped">
+                <h3>Skipped</h3>
+                <p>{{ participant.not_attempted_count }}</p>
+            </div>
+
+        </div>
+
+
+        <!-- Leaderboard preview -->
+
+        <div class="section-card">
+
+            <h2>Leaderboard</h2>
+
+            <div class="leaderboard-list">
+
+                {% for p in leaderboard|slice:":5" %}
+
+                <div class="leaderboard-item {% if p.id == participant.id %}me{% endif %}">
+
+                    <span class="lb-rank">#{{ p.rank }}</span>
+
+                    <span class="lb-name">{{ p.display_name }}</span>
+
+                    <span class="lb-marks">{{ p.total_marks }}</span>
+
+                </div>
+
+                {% endfor %}
+
+            </div>
+
+        </div>
+
+
+        <!-- Per-question review -->
+
+        <div class="section-card">
+
+            <h2>Answer Review</h2>
+
+            <div class="review-list">
+
+                {% for response in responses %}
+
+                <div
+                    class="review-item {% if response.is_correct %}correct{% elif response.selected_choice %}wrong{% else %}skipped{% endif %}">
+
+                    <div class="review-question">
+
+                        <span class="q-number">Q{{ forloop.counter }}</span>
+
+                        <span class="q-text">{{ response.question.text }}</span>
+
+                    </div>
+
+                    <div class="review-answer">
+
+                        {% if response.selected_choice %}
+                        <p>Your answer: <strong>{{ response.selected_choice.text }}</strong></p>
+                        {% else %}
+                        <p class="skipped-text">Not attempted</p>
+                        {% endif %}
+
+                        <p class="marks-awarded">
+                            {% if response.marks_awarded >= 0 %}+{% endif %}{{ response.marks_awarded }} marks
+                        </p>
+
+                    </div>
+
+                </div>
+
+                {% endfor %}
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <!-- back button -->
+    <a href="{% if user.is_authenticated %}{% url 'quizapp:dashboard' %}{% else %}{% url 'quizapp:home' %}{% endif %}"
+        style="display:inline-flex;align-items:center;justify-content:center;padding:12px 30px;background:#FFC300;color:#111;text-decoration:none;font-size:16px;font-weight:600;border-radius:50px;border:2px solid #e6b000;box-shadow:0 6px 16px rgba(255,195,0,.35); position: relative; left: 25vw;">
+        🏠 Home
+    </a>
+
+</body>
+
+</html>
