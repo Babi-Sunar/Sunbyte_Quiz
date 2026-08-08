@@ -1,0 +1,1 @@
+web: gunicorn sunbyte_quiz.wsgi

@@ -1,0 +1,194 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: "Poppins", sans-serif;
+}
+
+body {
+    min-height: 100vh;
+    background: #117373;
+    background: linear-gradient(0deg,
+            rgba(17, 115, 115, 1) 0%,
+            rgba(155, 127, 127, 1) 39%,
+            rgba(194, 130, 130, 1) 62%);
+    background-repeat: no-repeat;
+    background-size: cover;
+    padding: 4vh 5vw;
+
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+}
+
+.container h1 {
+    color: #FFC300;
+    text-shadow: rgba(0, 0, 0, 0.16) 0px 3px 6px, rgba(0, 0, 0, 0.23) 0px 3px 6px;
+}
+
+#formContainer {
+    width: 100%;
+    max-width: 600px;
+    padding: 30px;
+    margin: 30px 0;
+    background: rgba(29, 49, 83, 0.15);
+    border-radius: 20px;
+    border: 1px solid #FFC300;
+    box-shadow:
+        rgba(50, 50, 93, 0.25) 0px 30px 60px -12px inset,
+        rgba(0, 0, 0, 0.30) 0px 18px 36px -18px inset;
+}
+
+#formContainer h1 {
+    color: #FFC300;
+    text-align: center;
+    margin-bottom: 10px;
+    text-shadow:
+        rgba(0, 0, 0, .2) 0px 3px 6px;
+}
+
+#formContainer p {
+    color: #FFC300;
+    text-shadow: rgba(0, 0, 0, 0.16) 0px 3px 6px, rgba(0, 0, 0, 0.23) 0px 3px 6px;
+    text-align: center;
+    margin-bottom: 30px;
+}
+
+label {
+    display: block;
+    color: #FFC300;
+    text-shadow: rgba(0, 0, 0, 0.16) 0px 3px 6px, rgba(0, 0, 0, 0.23) 0px 3px 6px;
+    font-weight: 500;
+    margin-top: 18px;
+    margin-bottom: 8px;
+
+}
+
+input,
+select {
+    width: 100%;
+    padding: 12px;
+    border-radius: 10px;
+    border: 1px solid #FFC300;
+    background: rgba(255, 228, 196, .55);
+    font-size: 16px;
+    outline: none;
+    box-shadow:
+        rgb(70, 79, 88) 3px 3px 6px inset,
+        rgba(156, 114, 114, .5) -3px -3px 6px inset;
+}
+
+input:focus,
+select:focus {
+    border-color: #FFD60A;
+    box-shadow: 0 0 8px rgba(255, 195, 0, .5);
+}
+
+.checkbox {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-top: 18px;
+}
+
+.checkbox input {
+    width: 18px;
+    height: 18px;
+    cursor: pointer;
+}
+
+.checkbox label {
+    margin: 0;
+    color: white;
+    cursor: pointer;
+}
+
+#create_btn {
+    width: 100%;
+    margin-top: 30px;
+    padding: 12px;
+    border: none;
+    border-radius: 100px;
+    background-color: #FFC300;
+    color: #003566;
+    font-size: 18px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: .3s;
+    box-shadow:
+        rgba(255, 195, 0, .35) 0 -25px 18px -14px inset,
+        rgba(255, 195, 0, .20) 0 1px 2px,
+        rgba(255, 195, 0, .20) 0 2px 4px,
+        rgba(255, 195, 0, .20) 0 4px 8px,
+        rgba(255, 195, 0, .20) 0 8px 16px,
+        rgba(255, 195, 0, .20) 0 16px 32px;
+}
+
+#create_btn:hover {
+    background: #FFD60A;
+    transform: scale(1.03);
+    box-shadow:
+        rgba(255, 214, 10, .45) 0 -25px 18px -14px inset,
+        rgba(255, 214, 10, .30) 0 1px 2px,
+        rgba(255, 214, 10, .30) 0 2px 4px,
+        rgba(255, 214, 10, .30) 0 4px 8px,
+        rgba(255, 214, 10, .30) 0 8px 16px,
+        rgba(255, 214, 10, .30) 0 16px 32px;
+}
+
+@media (min-width: 768px) {
+    #formContainer {
+        padding: 40px;
+    }
+}
+
+#create-btn {
+    background-color: #FFC300;
+    border-radius: 100px;
+
+    box-shadow:
+        rgba(255, 195, 0, 0.35) 0 -25px 18px -14px inset,
+        rgba(255, 195, 0, 0.20) 0 1px 2px,
+        rgba(255, 195, 0, 0.20) 0 2px 4px,
+        rgba(255, 195, 0, 0.20) 0 4px 8px,
+        rgba(255, 195, 0, 0.20) 0 8px 16px,
+        rgba(255, 195, 0, 0.20) 0 16px 32px;
+
+    color: #003566;
+
+    cursor: pointer;
+    display: inline-block;
+
+    font-family: inherit;
+
+    padding: 10px 24px;
+
+    text-align: center;
+    text-decoration: none;
+
+    transition: all 250ms;
+
+    border: none;
+
+    font-size: 16px;
+    font-weight: 600;
+
+    user-select: none;
+    -webkit-user-select: none;
+    touch-action: manipulation;
+}
+
+#create-btn:hover {
+
+    background-color: #FFD60A;
+
+    box-shadow:
+        rgba(255, 214, 10, 0.45) 0 -25px 18px -14px inset,
+        rgba(255, 214, 10, 0.30) 0 1px 2px,
+        rgba(255, 214, 10, 0.30) 0 2px 4px,
+        rgba(255, 214, 10, 0.30) 0 4px 8px,
+        rgba(255, 214, 10, 0.30) 0 8px 16px,
+        rgba(255, 214, 10, 0.30) 0 16px 32px;
+
+    transform: scale(1.05) rotate(-1deg);
+}

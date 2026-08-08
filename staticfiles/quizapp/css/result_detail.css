@@ -1,0 +1,328 @@
+/* ==========================
+   SunByte Quiz - Result Detail (Mobile First)
+========================== */
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: "Poppins", sans-serif;
+}
+
+body {
+    min-height: 100vh;
+    padding: 16px;
+    color: #fff;
+    background: linear-gradient(180deg,
+            #117373 0%,
+            #9b7f7f 45%,
+            #c2b18b 100%);
+}
+
+.container {
+    max-width: 700px;
+    margin: auto;
+}
+
+/* ==========================
+   Header
+========================== */
+
+.result-header {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.result-header h1 {
+    color: #FFC300;
+    font-size: 1.5rem;
+    text-shadow: 0 4px 10px rgba(0, 0, 0, .35);
+    margin-bottom: 6px;
+    word-break: break-word;
+}
+
+.result-header p {
+    font-size: .95rem;
+    opacity: .9;
+}
+
+/* ==========================
+   Score Card
+========================== */
+
+.score-card {
+    background: rgba(255, 255, 255, .12);
+    backdrop-filter: blur(15px);
+    border-radius: 20px;
+    padding: 22px;
+    margin-bottom: 20px;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, .25);
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    align-items: center;
+    text-align: center;
+}
+
+.score-value {
+    font-size: 2.4rem;
+    font-weight: 800;
+    color: #FFC300;
+}
+
+.score-value span {
+    font-size: 1.2rem;
+    font-weight: 500;
+    color: #fff;
+    opacity: .85;
+}
+
+.score-label {
+    font-size: .9rem;
+    opacity: .85;
+    margin-top: 4px;
+}
+
+.score-side {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+}
+
+.percentage-circle {
+    width: 90px;
+    height: 90px;
+    border-radius: 50%;
+    background: #fff;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, .25);
+}
+
+.percentage-circle span {
+    color: #117373;
+    font-size: 1.3rem;
+    font-weight: 800;
+}
+
+.rank-badge {
+    background: #FFC300;
+    color: #222;
+    font-weight: 700;
+    padding: 8px 16px;
+    border-radius: 30px;
+    font-size: .95rem;
+}
+
+.rank-badge span {
+    font-weight: 500;
+    opacity: .8;
+}
+
+/* ==========================
+   Stats Grid
+========================== */
+
+.stats-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 12px;
+    margin-bottom: 24px;
+}
+
+.stat-box {
+    background: rgba(255, 255, 255, .12);
+    backdrop-filter: blur(10px);
+    border-radius: 16px;
+    padding: 14px 8px;
+    text-align: center;
+    box-shadow: 0 8px 18px rgba(0, 0, 0, .2);
+}
+
+.stat-box h3 {
+    font-size: .8rem;
+    opacity: .9;
+    margin-bottom: 6px;
+}
+
+.stat-box p {
+    font-size: 1.5rem;
+    font-weight: 700;
+}
+
+.stat-box.correct p {
+    color: #00d084;
+}
+
+.stat-box.wrong p {
+    color: #ff6b6b;
+}
+
+.stat-box.skipped p {
+    color: #FFC300;
+}
+
+/* ==========================
+   Section Cards (Leaderboard / Review)
+========================== */
+
+.section-card {
+    background: rgba(255, 255, 255, .12);
+    backdrop-filter: blur(12px);
+    border-radius: 20px;
+    padding: 20px;
+    margin-bottom: 20px;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, .25);
+}
+
+.section-card h2 {
+    color: #FFC300;
+    font-size: 1.15rem;
+    margin-bottom: 16px;
+}
+
+/* Leaderboard */
+
+.leaderboard-list {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.leaderboard-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    background: rgba(255, 255, 255, .08);
+    border-radius: 12px;
+    padding: 10px 14px;
+    font-size: .95rem;
+}
+
+.leaderboard-item.me {
+    background: #FFC300;
+    color: #222;
+    font-weight: 700;
+}
+
+.lb-rank {
+    min-width: 34px;
+    font-weight: 700;
+    color: inherit;
+}
+
+.lb-name {
+    flex: 1;
+    word-break: break-word;
+}
+
+.lb-marks {
+    font-weight: 700;
+}
+
+/* Answer review */
+
+.review-list {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+}
+
+.review-item {
+    border-radius: 14px;
+    padding: 14px;
+    background: rgba(255, 255, 255, .08);
+    border-left: 5px solid #ddd;
+}
+
+.review-item.correct {
+    border-left-color: #00d084;
+}
+
+.review-item.wrong {
+    border-left-color: #ff6b6b;
+}
+
+.review-item.skipped {
+    border-left-color: #FFC300;
+}
+
+.review-question {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 8px;
+    align-items: baseline;
+}
+
+.q-number {
+    font-weight: 700;
+    color: #FFC300;
+    min-width: 34px;
+}
+
+.q-text {
+    font-size: .95rem;
+    word-break: break-word;
+}
+
+.review-answer p {
+    font-size: .9rem;
+    opacity: .95;
+    margin-top: 4px;
+}
+
+.skipped-text {
+    font-style: italic;
+    opacity: .8;
+}
+
+.marks-awarded {
+    font-weight: 700;
+    margin-top: 6px;
+}
+
+/* ==========================
+   Tablet & Desktop
+========================== */
+
+@media (min-width: 600px) {
+
+    .result-header h1 {
+        font-size: 2rem;
+    }
+
+    .score-card {
+        flex-direction: row;
+        justify-content: space-between;
+        text-align: left;
+    }
+
+    .score-main {
+        text-align: left;
+    }
+
+    .score-side {
+        align-items: flex-end;
+    }
+
+    .score-value {
+        font-size: 3rem;
+    }
+
+    .percentage-circle {
+        width: 100px;
+        height: 100px;
+    }
+}
+
+@media (min-width: 900px) {
+    .container {
+        max-width: 800px;
+    }
+
+    .result-header h1 {
+        font-size: 2.4rem;
+    }
+}

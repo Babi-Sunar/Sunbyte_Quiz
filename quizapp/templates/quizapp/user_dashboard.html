@@ -48,8 +48,9 @@
 
             <a href="#" onclick="confirmLogout(event)">Logout</a>
 
-            <a href="#">Delete Account</a>
-
+            <a href="{% url 'quizapp:delete_account' %}">
+                Delete Account
+            </a>
         </nav>
 
     </header>
@@ -90,7 +91,8 @@
                 Create Session
 
             </button>
-            <a href="{% url 'quizapp:my_quizzes' %}" class="dashboard-btn" style=" color: #554614;position: relative; top:10px;">
+            <a href="{% url 'quizapp:my_quizzes' %}" class="dashboard-btn"
+                style=" color: #554614;position: relative; top:10px;">
                 📚 My Quizzes
             </a>
         </div>

@@ -1,0 +1,340 @@
+/* SunByte Quiz - Participant Waiting Room */
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: "Poppins", sans-serif;
+}
+
+
+body {
+
+    min-height: 100vh;
+
+    background:
+        linear-gradient(135deg,
+            #062f2f,
+            #117373,
+            #0b1f2a);
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    padding: 20px;
+
+    color: white;
+
+}
+
+
+/* Main Container */
+
+.waiting-container {
+
+    width: 100%;
+    max-width: 500px;
+
+    text-align: center;
+
+}
+
+
+
+/* Quiz Header */
+
+.quiz-header {
+
+    margin-bottom: 25px;
+
+}
+
+
+.quiz-header h1 {
+
+    font-size: 2rem;
+
+    color: #FFC300;
+
+    text-shadow:
+        0 0 10px rgba(255, 195, 0, 0.6);
+
+}
+
+
+.subtitle {
+
+    margin-top: 10px;
+
+    font-size: 1rem;
+
+    color: #d7eeee;
+
+}
+
+
+
+/* Waiting Card */
+
+.waiting-card {
+
+    background:
+
+        rgba(255, 255, 255, 0.12);
+
+
+    backdrop-filter: blur(15px);
+
+    border-radius: 25px;
+
+    padding: 35px 25px;
+
+
+    border:
+
+        1px solid rgba(255, 255, 255, 0.2);
+
+
+    box-shadow:
+
+        0 15px 40px rgba(0, 0, 0, 0.35);
+
+
+    animation:
+
+        slideUp 0.8s ease;
+
+}
+
+
+
+.waiting-icon {
+
+    font-size: 4rem;
+
+    margin-bottom: 15px;
+
+    animation:
+
+        pulse 1.5s infinite;
+
+}
+
+
+
+.waiting-card h2 {
+
+    color: white;
+
+    font-size: 1.5rem;
+
+    margin-bottom: 15px;
+
+}
+
+
+
+.waiting-card p {
+
+    color:
+
+        #d8eeee;
+
+    line-height: 1.6;
+
+}
+
+
+
+/* Information Cards */
+
+.session-info {
+
+    display: grid;
+
+    grid-template-columns: repeat(3, 1fr);
+
+    gap: 12px;
+
+    margin-top: 25px;
+
+}
+
+
+
+.info-box {
+
+
+    background:
+
+        rgba(255, 255, 255, 0.1);
+
+
+    border-radius: 18px;
+
+    padding: 15px 8px;
+
+
+    border:
+
+        1px solid rgba(255, 255, 255, 0.15);
+
+
+}
+
+
+
+.info-box h3 {
+
+    font-size: 0.8rem;
+
+    color: #FFC300;
+
+    margin-bottom: 8px;
+
+}
+
+
+
+.info-box p {
+
+    font-size: 1.3rem;
+
+    font-weight: 700;
+
+}
+
+
+
+/* Bottom Message */
+
+.waiting-message {
+
+
+    margin-top: 25px;
+
+
+    background:
+
+        rgba(255, 195, 0, 0.15);
+
+
+    border-radius: 15px;
+
+
+    padding: 15px;
+
+
+    color: #fff;
+
+
+    border:
+
+        1px solid rgba(255, 195, 0, 0.4);
+
+}
+
+
+
+/* Animations */
+
+
+@keyframes pulse {
+
+
+    0% {
+
+        transform: scale(1);
+
+    }
+
+
+    50% {
+
+        transform: scale(1.15);
+
+    }
+
+
+    100% {
+
+        transform: scale(1);
+
+    }
+
+}
+
+
+
+@keyframes slideUp {
+
+
+    from {
+
+        opacity: 0;
+
+        transform: translateY(30px);
+
+    }
+
+
+    to {
+
+        opacity: 1;
+
+        transform: translateY(0);
+
+    }
+
+}
+
+
+
+/* Mobile Optimization */
+
+@media(max-width:450px) {
+
+
+    .quiz-header h1 {
+
+        font-size: 1.6rem;
+
+    }
+
+
+    .waiting-card {
+
+        padding: 30px 18px;
+
+    }
+
+
+    .waiting-card h2 {
+
+        font-size: 1.25rem;
+
+    }
+
+
+    .session-info {
+
+        gap: 8px;
+
+    }
+
+
+    .info-box {
+
+        padding: 12px 5px;
+
+    }
+
+
+    .info-box p {
+
+        font-size: 1.1rem;
+
+    }
+
+}

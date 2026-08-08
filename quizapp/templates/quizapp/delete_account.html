@@ -1,11 +1,321 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>delete_account</title>
+
+    <title>Delete Account | SunByte Quiz</title>
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: "Poppins", sans-serif;
+        }
+
+        body {
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+
+            background: linear-gradient(135deg,
+                    #117373,
+                    #0d5f5f);
+        }
+
+        .delete-account-page {
+            width: 100%;
+            max-width: 480px;
+        }
+
+        .delete-account-card {
+            background: #ffffff;
+            border-radius: 22px;
+            padding: 35px 30px;
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.25);
+            text-align: center;
+        }
+
+        /* Warning Icon */
+
+        .warning-icon {
+            width: 75px;
+            height: 75px;
+
+            margin: 0 auto 20px;
+
+            display: flex;
+            justify-content: center;
+            align-items: center;
+
+            background: #fff3cd;
+            border-radius: 50%;
+
+            font-size: 38px;
+        }
+
+        /* Heading */
+
+        h1 {
+            color: #222;
+            font-size: 30px;
+            margin-bottom: 15px;
+            font-weight: 700;
+        }
+
+        .warning-text {
+            color: #333;
+            font-size: 17px;
+            font-weight: 600;
+            margin-bottom: 10px;
+        }
+
+        .description {
+            color: #666;
+            font-size: 14px;
+            line-height: 1.6;
+            margin-bottom: 28px;
+        }
+
+        /* Form */
+
+        form {
+            text-align: left;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            color: #333;
+            font-size: 14px;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+
+        .form-group input[type="password"] {
+            width: 100%;
+            height: 50px;
+
+            padding: 0 15px;
+
+            border: 2px solid #ddd;
+            border-radius: 10px;
+
+            font-size: 15px;
+            outline: none;
+
+            transition: 0.2s;
+        }
+
+        .form-group input[type="password"]:focus {
+            border-color: #117373;
+            box-shadow: 0 0 0 3px rgba(17, 115, 115, 0.12);
+        }
+
+        /* Confirmation */
+
+        .confirmation {
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+
+            margin-bottom: 25px;
+
+            color: #555;
+            font-size: 13px;
+            line-height: 1.5;
+        }
+
+        .confirmation input {
+            width: 17px;
+            height: 17px;
+
+            margin-top: 2px;
+
+            accent-color: #117373;
+            cursor: pointer;
+            flex-shrink: 0;
+        }
+
+        .confirmation label {
+            cursor: pointer;
+        }
+
+        /* Delete Button */
+
+        .delete-btn {
+            width: 100%;
+            height: 52px;
+
+            border: none;
+            border-radius: 10px;
+
+            background: #dc3545;
+            color: white;
+
+            font-size: 15px;
+            font-weight: 700;
+
+            cursor: pointer;
+
+            transition: 0.2s;
+        }
+
+        .delete-btn:hover {
+            background: #bb2d3b;
+            transform: translateY(-1px);
+        }
+
+        .delete-btn:active {
+            transform: translateY(0);
+        }
+
+        /* Cancel Button */
+
+        .cancel-btn {
+            display: block;
+
+            width: 100%;
+            height: 50px;
+
+            margin-top: 12px;
+
+            border: 2px solid #117373;
+            border-radius: 10px;
+
+            color: #117373;
+
+            text-decoration: none;
+
+            text-align: center;
+            line-height: 46px;
+
+            font-size: 15px;
+            font-weight: 600;
+
+            transition: 0.2s;
+        }
+
+        .cancel-btn:hover {
+            background: #117373;
+            color: white;
+        }
+
+        /* Mobile */
+
+        @media (max-width: 500px) {
+
+            body {
+                padding: 15px;
+            }
+
+            .delete-account-card {
+                padding: 30px 22px;
+                border-radius: 18px;
+            }
+
+            .warning-icon {
+                width: 65px;
+                height: 65px;
+                font-size: 32px;
+            }
+
+            h1 {
+                font-size: 26px;
+            }
+
+            .warning-text {
+                font-size: 16px;
+            }
+
+            .description {
+                font-size: 13px;
+            }
+
+            .form-group input[type="password"] {
+                height: 52px;
+                font-size: 15px;
+            }
+
+            .delete-btn,
+            .cancel-btn {
+                height: 52px;
+            }
+
+            .cancel-btn {
+                line-height: 48px;
+            }
+        }
+    </style>
 </head>
+
 <body>
-    <h1>Delete account</h1>
+
+    <div class="delete-account-page">
+
+        <div class="delete-account-card">
+
+            <div class="warning-icon">
+                ⚠️
+            </div>
+
+            <h1>Delete Account</h1>
+
+            <p class="warning-text">
+                Are you sure you want to delete your account?
+            </p>
+
+            <p class="description">
+                This action is permanent and cannot be undone.
+                Your account and associated data may be permanently removed.
+            </p>
+
+            <form method="POST">
+
+                {% csrf_token %}
+
+                <div class="form-group">
+
+                    <label for="password">
+                        Enter your password
+                    </label>
+
+                    <input type="password" id="password" name="password" placeholder="Enter your password" required>
+
+                </div>
+
+                <div class="confirmation">
+
+                    <input type="checkbox" id="confirm_delete" name="confirm_delete" required>
+
+                    <label for="confirm_delete">
+                        I understand that deleting my account
+                        is permanent and cannot be undone.
+                    </label>
+
+                </div>
+
+                <button type="submit" class="delete-btn">
+                    Delete My Account
+                </button>
+
+                <a href="{% url 'quizapp:dashboard' %}" class="cancel-btn">
+                    Cancel
+                </a>
+
+            </form>
+
+        </div>
+
+    </div>
+
 </body>
+
 </html>

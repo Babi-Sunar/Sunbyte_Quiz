@@ -98,6 +98,11 @@ urlpatterns = [
     views.download_results_pdf,
     name="download_results_pdf",
     ),
+    path(
+    "delete-account/",
+    views.delete_account,
+    name="delete_account"
+    ),
     # Joining — no account required
     path('session/join/', views.join_session, name='join_session'),
 

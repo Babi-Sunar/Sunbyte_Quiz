@@ -1,0 +1,113 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: "Poppins", sans-serif;
+}
+
+body {
+    min-height: 100vh;
+    background: linear-gradient(0deg,
+            rgba(17, 115, 115, 1) 0%,
+            rgba(155, 127, 127, 1) 39%,
+            rgba(194, 130, 130, 1) 62%);
+    padding: 25px 30px;
+}
+
+#container {
+    max-width: 900px;
+    margin: auto;
+}
+
+h1 {
+    color: #FFC300;
+    text-shadow: rgba(0, 0, 0, 0.16) 0px 3px 6px, rgba(0, 0, 0, 0.23) 0px 3px 6px;
+    text-align: center;
+    margin-bottom: 15px;
+}
+
+.card {
+    color: #f1db92;
+    text-shadow: rgba(0, 0, 0, 0.16) 0px 3px 6px, rgba(0, 0, 0, 0.23) 0px 3px 6px;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    padding: 20px;
+    height: 25vh;
+    max-width: 400px;
+    background: rgba(30, 64, 123, 0.144);
+    border-radius: 20px;
+    box-shadow: rgba(50, 50, 93, 0.25) 0px 30px 60px -12px inset, rgba(0, 0, 0, 0.3) 0px 18px 36px -18px inset;
+    border: #FFC300 solid 0.5px;
+
+}
+
+.card p {
+    margin-top: 10px;
+}
+
+.buttons {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    flex-wrap: wrap;
+    margin-top: 2vh;
+    margin-bottom: 25px;
+
+}
+
+.btn {
+    flex: 1;
+    min-width: 180px;
+    text-align: center;
+    text-decoration: none;
+    padding: 10px 20px;
+    background-color: #FFC300;
+    color: #003049;
+    border: none;
+    border-radius: 10px;
+    font-family: 'Poppins', sans-serif;
+    font-weight: 600;
+    font-size: 15px;
+    cursor: pointer;
+    box-shadow: rgba(0, 0, 0, 0.16) 0px 3px 6px, rgba(0, 0, 0, 0.23) 0px 3px 6px;
+}
+
+.danger {
+    background: #dc3545;
+    color: white;
+}
+
+.question-card {
+    background: white;
+    border-radius: 10px;
+    padding: 18px;
+    margin-bottom: 15px;
+}
+
+.question-actions {
+    margin-top: 12px;
+}
+
+.question-actions a {
+    margin-right: 15px;
+    color: #003566;
+    text-decoration: none;
+    font-weight: bold;
+}
+
+/* qr code */
+.qr-box{
+
+    margin-top:10px;
+    text-align:center;
+
+}
+
+.qr-box img{
+    width:200px;
+    background:white;
+    padding:10px;
+    border-radius:12px;
+
+}

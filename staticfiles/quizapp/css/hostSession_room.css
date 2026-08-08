@@ -1,0 +1,414 @@
+/* ===========================
+   SunByte Quiz - Host Room
+=========================== */
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: "Poppins", sans-serif;
+}
+
+body {
+    min-height: 100vh;
+    padding: 18px;
+    color: #fff;
+    background: linear-gradient(180deg,
+            #117373 0%,
+            #9b7f7f 45%,
+            #c2b18b 100%);
+}
+
+.container {
+    max-width: 1100px;
+    margin: auto;
+}
+
+/* ===========================
+   Heading
+=========================== */
+
+h1 {
+    text-align: center;
+    color: #FFC300;
+    font-size: 2.3rem;
+    margin-bottom: 20px;
+    text-shadow: 0 3px 8px rgba(0, 0, 0, .35);
+}
+
+/* ===========================
+   Back Button
+=========================== */
+
+.back-btn {
+    display: inline-block;
+    text-decoration: none;
+    background: #FFC300;
+    color: #333;
+    font-weight: 700;
+    padding: 14px 22px;
+    border-radius: 12px;
+    margin-bottom: 20px;
+    transition: .3s;
+}
+
+.back-btn:hover {
+    transform: translateY(-2px);
+}
+
+/* ===========================
+   Session Card
+=========================== */
+
+.session-card {
+    background: rgba(255, 255, 255, .12);
+    backdrop-filter: blur(14px);
+    border-radius: 22px;
+    padding: 25px;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    align-items: center;
+    gap: 20px;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, .25);
+    margin-bottom: 25px;
+}
+
+.session-left {
+    flex: 1;
+}
+
+.session-left h2 {
+    color: #FFC300;
+    font-size: 2rem;
+    margin-bottom: 12px;
+}
+
+.session-left p {
+    font-size: 1.15rem;
+    margin: 10px 0;
+}
+
+.code {
+    color: #00ffd5;
+    font-weight: bold;
+}
+
+.status {
+    color: #7CFC00;
+    font-weight: bold;
+}
+
+.session-right {
+    text-align: center;
+}
+
+.session-right h3 {
+    color: #FFC300;
+    margin-bottom: 12px;
+}
+
+.session-right img {
+    width: 170px;
+    background: white;
+    padding: 10px;
+    border-radius: 15px;
+}
+
+/* ===========================
+   Statistics
+=========================== */
+
+.stats {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 16px;
+    margin-bottom: 30px;
+}
+
+.stat-box {
+    background: rgba(255, 255, 255, .12);
+    backdrop-filter: blur(10px);
+    border-radius: 18px;
+    text-align: center;
+    padding: 22px;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, .2);
+}
+
+.stat-box h3 {
+    color: #FFC300;
+    margin-bottom: 10px;
+    font-size: 1.1rem;
+}
+
+.stat-box p {
+    font-size: 2rem;
+    font-weight: bold;
+}
+
+/* ===========================
+   Participants
+=========================== */
+
+.participants-section,
+.progress-section,
+.activity {
+    background: rgba(255, 255, 255, .12);
+    backdrop-filter: blur(10px);
+    border-radius: 20px;
+    padding: 25px;
+    margin-bottom: 25px;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, .2);
+}
+
+.participants-section h2,
+.progress-section h2,
+.activity h2 {
+    color: #FFC300;
+    margin-bottom: 18px;
+}
+
+.participant-list {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+}
+
+.participant-card {
+    background: rgba(255, 255, 255, .08);
+    border-radius: 14px;
+    padding: 16px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.joined {
+    color: #00ff7f;
+    font-weight: 600;
+}
+
+/* ===========================
+   Progress Bar
+=========================== */
+
+.progress-bar {
+    width: 100%;
+    height: 18px;
+    border-radius: 50px;
+    background: rgba(255, 255, 255, .18);
+    overflow: hidden;
+}
+
+.progress-fill {
+    width: 0%;
+    height: 100%;
+    border-radius: 50px;
+    background: #FFC300;
+    transition: .4s;
+}
+
+/* ===========================
+   Controls
+=========================== */
+
+.controls {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 16px;
+    margin-bottom: 30px;
+}
+
+.btn {
+    text-decoration: none;
+    text-align: center;
+    padding: 18px;
+    border-radius: 14px;
+    font-size: 1.1rem;
+    font-weight: 700;
+    transition: .3s;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, .2);
+}
+
+.btn:hover {
+    transform: translateY(-4px);
+}
+
+.start {
+    background: #28a745;
+    color: #fff;
+}
+
+.next {
+    background: #007bff;
+    color: #fff;
+}
+
+.pause {
+    background: #ffc107;
+    color: #222;
+}
+
+.danger {
+    background: #dc3545;
+    color: #fff;
+}
+
+/* ===========================
+   Activity
+=========================== */
+
+.activity-box {
+    max-height: 260px;
+    overflow-y: auto;
+    background: rgba(255, 255, 255, .08);
+    border-radius: 14px;
+    padding: 18px;
+}
+
+.activity-box p {
+    margin: 10px 0;
+    font-size: 1.05rem;
+}
+
+/* ===========================
+   Mobile
+=========================== */
+
+@media(max-width:768px) {
+
+    body {
+        padding: 15px;
+    }
+
+    h1 {
+        font-size: 2.5rem;
+    }
+
+    .back-btn {
+        width: 100%;
+        text-align: center;
+        font-size: 1.15rem;
+        padding: 18px;
+    }
+
+    .session-card {
+        flex-direction: column;
+        text-align: center;
+    }
+
+    .session-left h2 {
+        font-size: 2.2rem;
+    }
+
+    .session-left p {
+        font-size: 1.3rem;
+    }
+
+    .session-right img {
+        width: 220px;
+    }
+
+    .stats {
+        grid-template-columns: 1fr 1fr;
+    }
+
+    .stat-box {
+        padding: 24px;
+    }
+
+    .stat-box h3 {
+        font-size: 1.2rem;
+    }
+
+    .stat-box p {
+        font-size: 2.2rem;
+    }
+
+    .participant-card {
+        font-size: 1.15rem;
+        padding: 18px;
+    }
+
+    .controls {
+        grid-template-columns: 1fr;
+    }
+
+    .btn {
+        font-size: 1.25rem;
+        padding: 20px;
+    }
+
+    .participants-section h2,
+    .progress-section h2,
+    .activity h2 {
+        font-size: 1.7rem;
+    }
+
+    .activity-box p {
+        font-size: 1.15rem;
+    }
+}
+
+.controls {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    width: 100%;
+    margin-top: 20px;
+}
+
+.controls form {
+    width: 100%;
+}
+
+.btn {
+    width: 100%;
+    min-height: 55px;
+    padding: 14px 20px;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    border: none;
+    border-radius: 12px;
+
+    font-size: 18px;
+    font-weight: 600;
+
+    text-decoration: none;
+    cursor: pointer;
+
+    box-sizing: border-box;
+
+    background: #ffc300;
+    color: #1b1b1b;
+
+    transition: 0.3s ease;
+}
+
+button.btn {
+    font-family: inherit;
+    appearance: none;
+}
+
+.btn.start {
+    background: #00d084;
+    color: white;
+}
+
+.btn.next {
+    background: #ffc300;
+    color: #222;
+}
+
+.btn.pause {
+    background: #ff9800;
+    color: white;
+}
+
+.btn.danger {
+    background: #ff3b30;
+    color: white;
+}

@@ -1,0 +1,492 @@
+@import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700;800;900&family=Poppins:wght@300;400;500;600;700;800&display=swap');
+
+
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:"Poppins",sans-serif;
+}
+
+
+body{
+
+    min-height:100vh;
+
+    background:#117373;
+
+    background:
+    linear-gradient(
+        0deg,
+        rgba(17,115,115,1) 0%,
+        rgba(155,127,127,1) 39%,
+        rgba(194,130,130,1) 62%
+    );
+
+
+    background-repeat:no-repeat;
+    background-size:cover;
+
+
+    display:flex;
+    justify-content:center;
+    align-items:center;
+
+
+    padding:40px;
+
+}
+
+
+
+/* Container */
+
+.container{
+
+    width:100%;
+    max-width:900px;
+
+    display:flex;
+    justify-content:center;
+    align-items:center;
+
+}
+
+
+
+/* Main Card */
+
+.card{
+
+
+    width:100%;
+
+
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+
+
+    background:rgba(29,49,83,.18);
+
+
+    backdrop-filter:blur(15px);
+
+
+    border:1px solid #dc3545;
+
+
+    border-radius:30px;
+
+
+    padding:55px 45px;
+
+
+
+    box-shadow:
+
+    rgba(50,50,93,.25) 0 30px 60px -12px inset,
+
+    rgba(0,0,0,.30) 0 18px 36px -18px inset,
+
+    rgba(220,53,69,.25) 0 0 25px;
+
+
+
+}
+
+
+
+/* Heading */
+
+
+h1{
+
+
+    font-family:"Orbitron",sans-serif;
+
+
+    font-size:4rem;
+
+
+    text-align:center;
+
+
+    color:#ff4d4d;
+
+
+    margin-bottom:25px;
+
+
+
+    text-shadow:
+
+    rgba(0,0,0,.35) 0 4px 8px;
+
+
+}
+
+
+
+/* Warning */
+
+
+.warning{
+
+
+    color:white;
+
+
+    text-align:center;
+
+
+    font-size:2rem;
+
+
+    line-height:1.7;
+
+
+    margin-bottom:35px;
+
+
+}
+
+
+
+
+/* Session Information */
+
+
+.session-box{
+
+
+    width:85%;
+
+
+    background:rgba(255,255,255,.12);
+
+
+
+    border:1px solid rgba(220,53,69,.5);
+
+
+
+    border-radius:20px;
+
+
+
+    padding:35px;
+
+
+
+    margin-bottom:40px;
+
+
+}
+
+
+
+.session-box h3{
+
+
+    color:#FFC300;
+
+
+    font-size:3rem;
+
+
+    margin-bottom:20px;
+
+
+
+    text-shadow:
+
+    rgba(0,0,0,.25) 0 3px 6px;
+
+
+}
+
+
+
+.session-box p{
+
+
+    color:#f2ff8d;
+
+
+    font-size:2rem;
+
+
+    line-height:1.8;
+
+
+}
+
+
+
+.session-box strong{
+
+
+    color:white;
+
+
+}
+
+
+
+.active{
+
+
+    color:#00ff88 !important;
+
+}
+
+
+
+/* Buttons */
+
+
+.button-group{
+
+
+    width:100%;
+
+
+    display:flex;
+
+
+    flex-direction:column;
+
+
+    align-items:center;
+
+
+    gap:20px;
+
+
+}
+
+
+
+
+/* End Button */
+
+
+.end-btn{
+
+
+    width:45vw;
+
+    max-width:500px;
+
+
+    padding:15px 25px;
+
+
+
+    background:#dc3545;
+
+
+
+    color:white;
+
+
+
+    border:none;
+
+
+
+    border-radius:15px;
+
+
+
+    font-size:2rem;
+
+
+
+    font-weight:700;
+
+
+
+    cursor:pointer;
+
+
+
+    transition:.3s;
+
+
+
+    box-shadow:
+
+
+    rgba(220,53,69,.35) 0 8px 20px;
+
+
+
+}
+
+
+
+
+.end-btn:hover{
+
+
+    background:#c82333;
+
+
+    transform:translateY(-5px);
+
+
+
+    box-shadow:
+
+    rgba(220,53,69,.55) 0 15px 30px;
+
+
+}
+
+
+
+
+/* Cancel */
+
+
+.cancel-btn{
+
+
+    width:45vw;
+
+    max-width:500px;
+
+
+    padding:15px 25px;
+
+
+
+    text-align:center;
+
+
+    text-decoration:none;
+
+
+    background:rgba(255,255,255,.15);
+
+
+
+    color:white;
+
+
+
+    border-radius:15px;
+
+
+
+    font-size:2rem;
+
+
+
+    font-weight:600;
+
+
+
+    transition:.3s;
+
+
+
+}
+
+
+
+
+.cancel-btn:hover{
+
+
+    background:#FFC300;
+
+
+    color:#003049;
+
+
+    transform:translateY(-5px);
+
+
+}
+
+
+
+
+/* Mobile */
+
+
+@media(max-width:600px){
+
+
+    body{
+
+        padding:20px;
+
+    }
+
+
+
+    .card{
+
+        padding:35px 20px;
+
+    }
+
+
+
+    h1{
+
+        font-size:2.5rem;
+
+    }
+
+
+
+    .warning{
+
+        font-size:1.2rem;
+
+    }
+
+
+
+    .session-box{
+
+        width:100%;
+
+        padding:25px;
+
+    }
+
+
+
+    .session-box h3{
+
+        font-size:2rem;
+
+    }
+
+
+
+    .session-box p{
+
+        font-size:1.2rem;
+
+    }
+
+
+
+    .end-btn,
+    .cancel-btn{
+
+        width:100%;
+
+        font-size:1.3rem;
+
+    }
+
+
+}

@@ -1,0 +1,126 @@
+@import url('https://fonts.googleapis.com/css2?family=Bungee+Spice&family=Exo:ital,wght@0,100..900;1,100..900&family=Merriweather:ital,opsz,wght@0,18..144,300..900;1,18..144,300..900&family=Montserrat:ital,wght@0,100..900;1,100..900&family=Orbitron:wght@400..900&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap');
+
+@import url('https://fonts.googleapis.com/css2?family=Bungee+Spice&family=Edu+AU+VIC+WA+NT+Arrows:wght@400..700&family=Exo:ital,wght@0,100..900;1,100..900&family=Merriweather:ital,opsz,wght@0,18..144,300..900;1,18..144,300..900&family=Montserrat:ital,wght@0,100..900;1,100..900&family=Nabla&family=Orbitron:wght@400..900&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap');
+
+
+
+
+* {
+    margin: 0;
+    padding: 0px;
+    box-sizing: border-box;
+    font-family: "Poppins", sans-serif;
+}
+
+body {
+    min-height: 100vh;
+    background: #117373;
+    background: linear-gradient(0deg, rgba(17, 115, 115, 1) 0%, rgba(155, 127, 127, 1) 39%, rgba(194, 130, 130, 1) 62%);
+    background-repeat: no-repeat;
+    background-size: cover;
+    padding: 2vh 5vw;
+}
+
+/* signup title */
+h2 {
+    font-family: 'Poppins', cursive;
+    font-size: 2.5rem;
+    color: #FFC300;
+    text-align: center;
+    margin-bottom: 20px;
+    font-weight: 600;
+    text-shadow: rgba(0, 0, 0, 0.16) 0px 3px 6px, rgba(0, 0, 0, 0.23) 0px 3px 6px;
+}
+
+/* form */
+#signupForm {
+    height: 65vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+
+}
+
+/* email and password container */
+#input-section {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    padding: 20px;
+    height: 55vh;
+    max-width: 400px;
+    background: rgba(29, 49, 83, 0.144);
+    border-radius: 20px;
+    box-shadow: rgba(50, 50, 93, 0.25) 0px 30px 60px -12px inset, rgba(0, 0, 0, 0.3) 0px 18px 36px -18px inset;
+    border: #FFC300 solid 0.5px;
+}
+
+
+/* input labels */
+.input-label {
+    font-size: 1.2rem;
+    color: #FFC300;
+    display: block;
+    font-weight: 500;
+    text-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
+}
+
+/* input fields */
+.input-field {
+    width: 100%;
+    padding: 10px;
+    border: #FFC300 solid 1px;
+    border-radius: 10px;
+    background: rgba(255, 255, 255, 0.8);
+    font-size: 1rem;
+    background-color: rgba(255, 228, 196, 0.564);
+    box-shadow: rgb(70, 79, 88) 3px 3px 6px 0px inset, rgba(156, 114, 114, 0.5) -3px -3px 6px 1px inset;
+}
+
+/* remember */
+#remember-label {
+    color: #FFC300;
+    text-shadow: rgba(0, 0, 0, 0.16) 0px 3px 6px, rgba(0, 0, 0, 0.23) 0px 3px 6px;
+}
+
+/* signup button */
+#signup-btn {
+    width: 150px;
+    background-color: #ffcc23da;
+    border-radius: 100px;
+    box-shadow: rgba(0, 0, 0, 0.17) 0px -23px 25px 0px inset, rgba(0, 0, 0, 0.15) 0px -36px 30px 0px inset, rgba(0, 0, 0, 0.1) 0px -79px 40px 0px inset, rgba(0, 0, 0, 0.06) 0px 2px 1px, rgba(0, 0, 0, 0.09) 0px 4px 2px, rgba(0, 0, 0, 0.09) 0px 8px 4px, rgba(0, 0, 0, 0.09) 0px 16px 8px, rgba(0, 0, 0, 0.09) 0px 32px 16px;
+    color: #ffd95b;
+    cursor: pointer;
+    display: inline-block;
+    font-family: 'poppins';
+    padding: 7px 20px;
+    text-align: center;
+    text-decoration: none;
+    transition: all 250ms;
+    border: solid rgb(255, 200, 0) 0.5px;
+    font-size: 16px;
+    user-select: none;
+    -webkit-user-select: none;
+    touch-action: manipulation;
+    text-shadow: rgba(0, 0, 0, 0.16) 0px 3px 6px, rgba(0, 0, 0, 0.23) 0px 3px 6px;
+}
+
+#signup-btn:hover {
+    box-shadow: rgba(187, 185, 44, 0.35) 0 -25px 18px -14px inset, rgba(187, 144, 44, 0.25) 0 1px 2px, rgba(187, 163, 44, 0.25) 0 2px 4px, rgba(187, 180, 44, 0.25) 0 4px 8px, rgba(187, 175, 44, 0.25) 0 8px 16px, rgba(187, 170, 44, 0.25) 0 16px 32px;
+    transform: scale(1.05) rotate(-1deg);
+}
+
+#signup-btn-container {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    position: relative;
+    top:20px;
+}
+
+/* signup-options */
+#signup-options {
+    position: relative;
+    top: 35px;
+    text-align: center;
+}

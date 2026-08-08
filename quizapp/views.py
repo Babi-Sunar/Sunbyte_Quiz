@@ -770,7 +770,7 @@ def host_room(request, code):
     )
     
 # live count
-from django.http import JsonResponse
+from django.http import JsonResponse, request
 
 @login_required
 def participant_count(request, code):
@@ -1692,3 +1692,58 @@ def download_results_pdf(request, code):
 
 
     return response
+
+
+# delete account 
+from django.contrib.auth import authenticate, logout
+from django.contrib import messages
+from django.shortcuts import render, redirect
+from django.contrib.auth.decorators import login_required
+
+
+from django.contrib.auth import logout
+from django.contrib import messages
+from django.shortcuts import render, redirect
+from django.contrib.auth.decorators import login_required
+
+
+@login_required
+def delete_account(request):
+
+    if request.method == "POST":
+        password = request.POST.get("password")
+        confirm_delete = request.POST.get("confirm_delete")
+
+        # Make sure checkbox is checked
+        if not confirm_delete:
+            messages.error(
+                request,
+                "Please confirm that you understand the account will be permanently deleted."
+            )
+            return redirect("delete_account")
+
+        # Verify password directly against the logged-in user (safer than authenticate())
+        if not request.user.check_password(password):
+            messages.error(
+                request,
+                "Incorrect password. Account was not deleted."
+            )
+            return redirect("delete_account")
+
+        # Store user before deleting
+        user = request.user
+
+        # Log out first
+        logout(request)
+
+        # Permanently delete account (cascades to related models automatically)
+        user.delete()
+
+        messages.success(
+            request,
+            "Your account has been permanently deleted."
+        )
+
+        return redirect("quizapp:home")
+
+    return render(request, "quizapp/delete_account.html")
