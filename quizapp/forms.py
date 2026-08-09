@@ -151,17 +151,65 @@ class SessionSettingsForm(forms.ModelForm):
 
 
 class QuestionForm(forms.ModelForm):
+
     class Meta:
         model = Question
-        fields = ('question_type', 'text', 'image', 'video_file', 'video_url', 'marks', 'time_limit_seconds')
-        widgets = {
-            'question_type': forms.Select(attrs={'class': 'form-input', 'id': 'id_question_type'}),
-            'text': forms.Textarea(attrs={'class': 'form-input', 'rows': 3, 'placeholder': 'Question text'}),
-            'video_url': forms.URLInput(attrs={'class': 'form-input', 'placeholder': 'https://youtube.com/... (optional)'}),
-            'marks': forms.NumberInput(attrs={'class': 'form-input', 'step': '0.5', 'placeholder': 'Uses session default if left blank'}),
-            'time_limit_seconds': forms.NumberInput(attrs={'class': 'form-input', 'placeholder': 'Uses session default if left blank'}),
-        }
 
+        fields = (
+            'question_type',
+            'text',
+            'image',
+            'video_file',
+            'video_url',
+            'marks',
+            'time_limit_seconds'
+        )
+
+        widgets = {
+            'question_type': forms.Select(
+                attrs={
+                    'class': 'form-input',
+                    'id': 'id_question_type'
+                }
+            ),
+
+            'text': forms.Textarea(
+                attrs={
+                    'class': 'form-input',
+                    'rows': 3,
+                    'placeholder': 'Question text'
+                }
+            ),
+
+            'video_file': forms.FileInput(
+                attrs={
+                    'class': 'form-input',
+                    'accept': 'video/*'
+                }
+            ),
+
+            'video_url': forms.URLInput(
+                attrs={
+                    'class': 'form-input',
+                    'placeholder': 'https://youtube.com/... (optional)'
+                }
+            ),
+
+            'marks': forms.NumberInput(
+                attrs={
+                    'class': 'form-input',
+                    'step': '0.5',
+                    'placeholder': 'Uses session default if left blank'
+                }
+            ),
+
+            'time_limit_seconds': forms.NumberInput(
+                attrs={
+                    'class': 'form-input',
+                    'placeholder': 'Uses session default if left blank'
+                }
+            ),
+        }
 
 # Up to 6 choices per question (covers "four option" and general MCQ).
 # True/False questions are auto-generated in the view, not through this formset.
