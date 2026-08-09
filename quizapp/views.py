@@ -261,15 +261,20 @@ def add_question(request, code):
                 question = form.save(commit=False)
                 question.order = next_order
                 question.session = session
-                
+
                 print("VIDEO FILE:", question.video_file)
                 print("VIDEO NAME:", question.video_file.name if question.video_file else "NONE")
-                
+
                 print("=== SAVING QUESTION ===")
-                
-                question.save()
-                
-                print("=== QUESTION SAVED ===")
+
+                try:
+                    question.save()
+                    print("=== QUESTION SAVED ===")
+                except Exception as e:
+                    print("=== VIDEO UPLOAD ERROR ===")
+                    print(type(e).__name__)
+                    print(str(e))
+                    raise
 
                 # ==================================
                 # TRUE / FALSE
