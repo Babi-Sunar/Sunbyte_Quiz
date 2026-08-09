@@ -188,83 +188,84 @@
                 </p>
 
 
-                <!-- Option Image -->
+                <!-- ================================= -->
+
+                <!-- OPTION IMAGE -->
+
+                <!-- ================================= -->
 
                 <p class="label">
-
                     {{ choice_form.image }}
-
 
                     {% if choice_form.instance.image %}
 
                     <!-- Existing image -->
 
-                    <img src="{{ choice_form.instance.image.url }}" alt="Option Image" style="
-                    display: block;
-                    width: 100%;
-                    max-width: 400px;
-                    max-height: 220px;
-                    object-fit: contain;
-                    margin-top: 8px;
-                    border-radius: 10px;
-                ">
+                <div class="existing-choice-image-container">
 
+                    <img src="{{ choice_form.instance.image.url }}" alt="Option Image" class="current-choice-image"
+                        style="
+				display: block;
+				width: 100%;
+				max-width: 400px;
+				max-height: 220px;
+				object-fit: contain;
+				margin-top: 8px;
+				border-radius: 10px;
+			">
 
-                    <!-- Flag for removing existing image -->
-
-                    <input type="hidden" name="remove_choice_image_{{ choice_form.instance.id }}"
-                        id="remove_choice_image_{{ choice_form.instance.id }}" value="0">
-
-
-                    <button type="button" class="remove-existing-choice-image"
-                        data-choice-id="{{ choice_form.instance.id }}" style="
-                    margin-top: 8px;
-                    padding: 7px 12px;
-                    background: #ff4d4d;
-                    color: white;
-                    border: none;
-                    border-radius: 7px;
-                    font-size: 12px;
-                    font-weight: 600;
-                    cursor: pointer;
-                ">
+                    <button type="button" class="remove-existing-choice-image" style="
+				margin-top: 8px;
+				padding: 7px 12px;
+				background: #ff4d4d;
+				color: white;
+				border: none;
+				border-radius: 7px;
+				font-size: 12px;
+				font-weight: 600;
+				cursor: pointer;
+			">
                         ✕ Remove Current Image
                     </button>
 
-                    {% endif %}
+                </div>
+
+                {% endif %}
 
 
-                    <!-- Remove newly selected image -->
+                <!-- Remove newly selected image -->
 
-                    <button type="button" class="clear-choice-image-btn" style="
-                display: none;
-                margin-top: 8px;
-                padding: 7px 12px;
-                background: #ff4d4d;
-                color: white;
-                border: none;
-                border-radius: 7px;
-                font-size: 12px;
-                font-weight: 600;
-                cursor: pointer;
-            ">
-                        ✕ Remove Selected Image
-                    </button>
+                <button type="button" class="clear-choice-image-btn" style="
+		display: none;
+		margin-top: 8px;
+		padding: 7px 12px;
+		background: #ff4d4d;
+		color: white;
+		border: none;
+		border-radius: 7px;
+		font-size: 12px;
+		font-weight: 600;
+		cursor: pointer;
+	">
+                    ✕ Remove Selected Image
+                </button>
 
 
-                    <!-- New image preview -->
+                <!-- New image preview -->
 
-                    <img class="new-choice-preview" src="" alt="New Option Image" style="
-                display: none;
-                width: 100%;
-                max-width: 400px;
-                max-height: 220px;
-                object-fit: contain;
-                margin-top: 10px;
-                border-radius: 10px;
-            ">
+                <img class="new-choice-preview" src="" alt="New Option Image" style="
+		display: none;
+		width: 100%;
+		max-width: 400px;
+		max-height: 220px;
+		object-fit: contain;
+		margin-top: 10px;
+		border-radius: 10px;
+	">
+                
 
                 </p>
+
 
 
                 <!-- Correct Answer -->
@@ -676,79 +677,69 @@
 
 
     /* =========================================================
-       REMOVE EXISTING OPTION IMAGE
-    ========================================================= */
+    REMOVE EXISTING OPTION IMAGE
+ ========================================================= */
 
     document.addEventListener("DOMContentLoaded", function () {
 
-        const button =
-            document.getElementById(
-                "removeQuestionImageBtn"
-            );
-
-        const imageContainer =
-            document.getElementById(
-                "current-question-image"
-            );
-
-        const imageInput =
-            document.getElementById(
-                "id_image"
-            );
-
-        const clearButton =
-            document.getElementById(
-                "clearImageBtn"
+        const buttons =
+            document.querySelectorAll(
+                ".remove-existing-choice-image"
             );
 
 
-        if (!button || !imageContainer) {
-            return;
-        }
+        buttons.forEach(function (button) {
+
+            button.addEventListener(
+                "click",
+                function () {
+
+                    const container =
+                        this.closest(
+                            ".existing-choice-image-container"
+                        );
 
 
-        button.addEventListener(
-            "click",
+                    if (!container) {
+                        return;
+                    }
+
+
+                    // Hide existing option image
+                    // and its remove button
+                    container.style.display = "none";
+
+                }
+            );
+
+        });
+
+    });
+
+
+    // Show the normal clear button
+    // when a new image is selected
+
+    if (imageInput && clearButton) {
+
+        imageInput.addEventListener(
+            "change",
             function () {
 
-                // Hide current image
-                imageContainer.style.display = "none";
+                if (
+                    this.files &&
+                    this.files.length > 0
+                ) {
 
-                // Hide remove button
-                button.style.display = "none";
+                    clearButton.style.display =
+                        "inline-block";
 
-                // Keep file input available
-                if (imageInput) {
-                    imageInput.style.display = "block";
                 }
 
             }
         );
 
-
-        // Show the normal clear button
-        // when a new image is selected
-
-        if (imageInput && clearButton) {
-
-            imageInput.addEventListener(
-                "change",
-                function () {
-
-                    if (
-                        this.files &&
-                        this.files.length > 0
-                    ) {
-
-                        clearButton.style.display =
-                            "inline-block";
-
-                    }
-
-                }
-            );
-
-        }
+    }
 
     });
 

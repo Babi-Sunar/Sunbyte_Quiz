@@ -1,6 +1,11 @@
 /* =========================================================
-SUNBYTE QUIZ - QUESTION / EDIT QUESTION FORM
-Mobile First
+   SUNBYTE QUIZ - QUESTION / EDIT QUESTION FORM
+   Mobile First
+   Larger Touch-Friendly UI
+========================================================= */
+
+/* =========================================================
+   RESET
 ========================================================= */
 
 * {
@@ -9,77 +14,119 @@ Mobile First
     box-sizing: border-box;
 }
 
+
+/* =========================================================
+   BODY
+========================================================= */
+
 body {
     min-height: 100vh;
+
     background: linear-gradient(135deg,
             #117373 0%,
             #0d5f5f 45%,
             #083f3f 100%);
+
     font-family: "Poppins", sans-serif;
     color: #ffffff;
-    padding: 20px 12px 40px;
+
+    padding: 24px 14px 50px;
+
+    overflow-x: hidden;
 }
 
+
 /* =========================================================
-MAIN CONTAINER
+   MAIN CONTAINER
 ========================================================= */
 
 .container {
     width: 100%;
-    max-width: 650px;
+    max-width: 680px;
+
     margin: 0 auto;
-    background: rgba(255, 255, 255, 0.97);
-    border-radius: 18px;
-    padding: 24px 16px 30px;
+
+    background: rgba(255, 255, 255, 0.98);
+
+    border-radius: 20px;
+
+    padding: 30px 18px 38px;
+
     box-shadow:
-        0 15px 35px rgba(0, 0, 0, 0.25),
-        0 5px 15px rgba(0, 0, 0, 0.15);
+        0 18px 40px rgba(0, 0, 0, 0.27),
+        0 6px 18px rgba(0, 0, 0, 0.16);
 }
 
+
 /* =========================================================
-HEADING
+   HEADING
 ========================================================= */
 
 .container h1 {
     text-align: center;
-    font-size: 27px;
+
+    font-size: 31px;
+    line-height: 1.25;
+
     font-weight: 800;
+
     color: #117373;
-    margin-bottom: 8px;
+
+    margin-bottom: 10px;
+
     letter-spacing: 0.3px;
 }
 
-.session-name {
-    text-align: center;
-    color: #555555;
-    font-size: 14px;
-    font-weight: 600;
-    margin-bottom: 25px;
-}
 
 /* =========================================================
-FORM
+   SESSION NAME
+========================================================= */
+
+.session-name {
+    text-align: center;
+
+    color: #555555;
+
+    font-size: 16px;
+    line-height: 1.5;
+
+    font-weight: 600;
+
+    margin-bottom: 30px;
+
+    word-break: break-word;
+}
+
+
+/* =========================================================
+   FORM
 ========================================================= */
 
 form {
     width: 100%;
 }
 
+
 /* =========================================================
-LABEL / FIELD GROUP
+   LABEL / FIELD GROUP
 ========================================================= */
 
 .label {
     display: block;
-    margin-bottom: 18px;
+
+    margin-bottom: 23px;
+
     color: #117373;
-    font-size: 14px;
+
+    font-size: 16px;
+    line-height: 1.65;
+
     font-weight: 700;
-    line-height: 1.6;
 }
 
+
 /* =========================================================
-INPUTS
+   INPUTS
 ========================================================= */
 
 .label input,
@@ -92,41 +139,71 @@ input[type="number"],
 input[type="file"],
 textarea {
     width: 100%;
-    margin-top: 7px;
-    padding: 12px 13px;
-    border: 2px solid #d8dddd;
-    border-radius: 10px;
+
+    margin-top: 9px;
+
+    padding: 15px 15px;
+
+    border: 2px solid #d5dddd;
+
+    border-radius: 11px;
+
     background: #ffffff;
+
     color: #333333;
+
     font-family: "Poppins", sans-serif;
-    font-size: 14px;
+
+    font-size: 16px;
+    line-height: 1.45;
+
     outline: none;
+
     transition:
         border-color 0.2s ease,
-        box-shadow 0.2s ease;
+        box-shadow 0.2s ease,
+        transform 0.15s ease;
 }
 
+
 /* =========================================================
-TEXTAREA
+   TEXT INPUT
+========================================================= */
+
+input[type="text"],
+input[type="number"] {
+    min-height: 52px;
+}
+
+
+/* =========================================================
+   TEXTAREA
 ========================================================= */
 
 textarea {
-    min-height: 120px;
+    min-height: 145px;
+
     resize: vertical;
+
     line-height: 1.6;
 }
 
+
 /* =========================================================
-SELECT
+   SELECT
 ========================================================= */
 
 select {
+    min-height: 52px;
+
     cursor: pointer;
+
     appearance: auto;
 }
 
+
 /* =========================================================
-FOCUS
+   FOCUS
 ========================================================= */
 
 .label input:focus,
@@ -138,57 +215,136 @@ input[type="text"]:focus,
 input[type="number"]:focus,
 textarea:focus {
     border-color: #117373;
-    box-shadow: 0 0 0 3px rgba(17, 115, 115, 0.12);
+
+    box-shadow:
+        0 0 0 4px rgba(17, 115, 115, 0.13);
 }
 
+
 /* =========================================================
-FILE INPUT
+   FILE INPUT
 ========================================================= */
 
 input[type="file"] {
+    min-height: 56px;
+
     padding: 9px;
-    background: #f8fafa;
+
+    background: #f7fafa;
+
     cursor: pointer;
-    font-size: 13px;
+
+    font-size: 15px;
 }
+
+
+/* =========================================================
+   FILE SELECT BUTTON
+========================================================= */
 
 input[type="file"]::file-selector-button {
     border: none;
+
     background: #117373;
+
     color: #ffffff;
-    padding: 8px 11px;
-    border-radius: 7px;
-    margin-right: 8px;
+
+    padding: 11px 14px;
+
+    border-radius: 8px;
+
+    margin-right: 10px;
+
     font-family: "Poppins", sans-serif;
-    font-size: 12px;
-    font-weight: 600;
+
+    font-size: 14px;
+
+    font-weight: 700;
+
     cursor: pointer;
+
+    transition:
+        background 0.2s ease,
+        transform 0.15s ease;
 }
+
+input[type="file"]::file-selector-button:hover {
+    background: #0d5f5f;
+}
+
+input[type="file"]::file-selector-button:active {
+    transform: scale(0.97);
+}
+
 
 /* =========================================================
-CURRENT IMAGE
+   CURRENT QUESTION IMAGE
 ========================================================= */
 
-#current-question-image,
-.current-choice-image {
-    margin-top: 8px;
+#current-question-image {
+    width: 100%;
+
+    margin-top: 12px;
+
+    padding: 14px;
+
+    background: #f7fafa;
+
+    border: 2px solid #e0e7e7;
+
+    border-radius: 13px;
 }
 
+
+/* =========================================================
+   CURRENT IMAGES
+========================================================= */
+
 #current-question-image img,
-.current-choice-image {
+.current-choice-image,
+.new-choice-preview,
+#questionNewPreview {
     display: block;
+
     width: 100%;
+
     max-width: 450px;
-    max-height: 250px;
+
+    max-height: 280px;
+
     object-fit: contain;
-    margin: 8px auto;
+
+    margin: 10px auto;
+
     border-radius: 12px;
+
     background: #f5f7f7;
+
     border: 1px solid #dfe5e5;
 }
 
+
 /* =========================================================
-IMAGE REMOVE BUTTONS
+   EXISTING OPTION IMAGE CONTAINER
+========================================================= */
+
+.existing-choice-image-container {
+    width: 100%;
+
+    margin-top: 10px;
+
+    padding: 12px;
+
+    background: #ffffff;
+
+    border: 2px solid #e0e7e7;
+
+    border-radius: 12px;
+}
+
+
+/* =========================================================
+   IMAGE REMOVE BUTTONS
 ========================================================= */
 
 #removeQuestionImageBtn,
@@ -196,43 +352,79 @@ IMAGE REMOVE BUTTONS
 #clearImageBtn,
 .clear-choice-image-btn {
     display: inline-block;
-    margin-top: 8px;
-    padding: 8px 12px !important;
+
+    margin-top: 10px;
+
+    padding: 10px 14px !important;
+
     border: none !important;
-    border-radius: 8px !important;
+
+    border-radius: 9px !important;
+
     font-family: "Poppins", sans-serif;
-    font-size: 12px !important;
+
+    font-size: 14px !important;
+
     font-weight: 700 !important;
+
+    line-height: 1.3;
+
     cursor: pointer;
+
     transition:
         transform 0.15s ease,
-        opacity 0.15s ease;
+        opacity 0.15s ease,
+        box-shadow 0.15s ease;
 }
 
 #removeQuestionImageBtn:hover,
 .remove-existing-choice-image:hover,
 #clearImageBtn:hover,
 .clear-choice-image-btn:hover {
-    opacity: 0.9;
+    opacity: 0.92;
+
     transform: translateY(-1px);
+
+    box-shadow:
+        0 4px 10px rgba(0, 0, 0, 0.12);
 }
 
+#removeQuestionImageBtn:active,
+.remove-existing-choice-image:active,
+#clearImageBtn:active,
+.clear-choice-image-btn:active {
+    transform: translateY(1px);
+}
+
+
 /* =========================================================
-CHOICE SECTION
+   CHOICE SECTION
 ========================================================= */
 
 #choice-section {
     width: 100%;
-    margin-top: 8px;
+
+    margin-top: 12px;
 }
+
+
+/* =========================================================
+   CHOICE ROW
+========================================================= */
 
 .choice-row {
     width: 100%;
-    padding: 18px 13px;
-    margin-bottom: 14px;
+
+    padding: 22px 15px;
+
+    margin-bottom: 18px;
+
     background: #f7fafa;
-    border: 2px solid #e0e7e7;
-    border-radius: 14px;
+
+    border: 2px solid #dfe7e7;
+
+    border-radius: 16px;
+
     transition:
         border-color 0.2s ease,
         box-shadow 0.2s ease;
@@ -240,108 +432,195 @@ CHOICE SECTION
 
 .choice-row:focus-within {
     border-color: #117373;
-    box-shadow: 0 5px 15px rgba(17, 115, 115, 0.08);
+
+    box-shadow:
+        0 7px 18px rgba(17, 115, 115, 0.10);
 }
 
+
 /* =========================================================
-OPTION HEADING
+   OPTION HEADING
 ========================================================= */
 
 .choice-row h3 {
-    font-size: 18px;
+    font-size: 21px;
+
+    line-height: 1.3;
+
     font-weight: 800;
+
     color: #117373;
-    margin-bottom: 10px;
+
+    margin-bottom: 15px;
 }
 
+
 /* =========================================================
-CHOICE LABEL
+   CHOICE LABEL
 ========================================================= */
 
 .choice-row .label {
-    margin-bottom: 14px;
+    margin-bottom: 17px;
+
+    font-size: 16px;
 }
 
+
 /* =========================================================
-CORRECT ANSWER
+   NEW IMAGE PREVIEW
+========================================================= */
+
+.new-choice-preview {
+    margin-top: 14px !important;
+
+    max-height: 280px;
+}
+
+
+/* =========================================================
+   CORRECT ANSWER
 ========================================================= */
 
 .correct-label {
     display: flex;
+
     align-items: center;
-    gap: 9px;
-    margin-top: 12px;
-    padding: 10px 12px;
-    border-radius: 9px;
-    background: rgba(255, 195, 0, 0.13);
+
+    gap: 11px;
+
+    margin-top: 16px;
+
+    padding: 13px 14px;
+
+    min-height: 50px;
+
+    border-radius: 10px;
+
+    background: rgba(255, 195, 0, 0.15);
+
     color: #117373;
-    font-size: 13px;
+
+    font-size: 15px;
+
     font-weight: 700;
+
     cursor: pointer;
 }
+
+
+/* =========================================================
+   CORRECT ANSWER CHECKBOX / RADIO
+========================================================= */
 
 .correct-label input[type="checkbox"],
 .correct-label input[type="radio"] {
-    width: 18px;
-    height: 18px;
+    width: 21px;
+
+    height: 21px;
+
     margin: 0;
+
+    flex-shrink: 0;
+
     accent-color: #117373;
+
     cursor: pointer;
 }
 
+
 /* =========================================================
-DIVIDER
+   DIVIDER
 ========================================================= */
 
 .choice-row+hr {
     border: none;
+
     height: 1px;
-    background: #e3e8e8;
-    margin: 8px 0 18px;
+
+    background: #dfe6e6;
+
+    margin: 10px 0 22px;
 }
 
+
 /* =========================================================
-TRUE / FALSE SECTION
+   TRUE / FALSE SECTION
 ========================================================= */
 
 #tf-section {
-    margin-top: 10px;
-    padding: 16px;
+    margin-top: 14px;
+
+    padding: 20px 16px;
+
     background: #f7fafa;
-    border: 2px solid #e0e7e7;
-    border-radius: 14px;
+
+    border: 2px solid #dfe7e7;
+
+    border-radius: 16px;
 }
+
+
+/* =========================================================
+   TRUE / FALSE LABEL
+========================================================= */
 
 #tf-section label {
     color: #117373;
-    font-size: 14px;
+
+    font-size: 16px;
+
     font-weight: 700;
 }
 
-#tf-section input,
-#tf-section select {
-    margin-top: 7px;
-}
 
 /* =========================================================
-SAVE BUTTON
+   TRUE / FALSE INPUTS
+========================================================= */
+
+#tf-section input,
+#tf-section select {
+    margin-top: 9px;
+
+    min-height: 50px;
+
+    font-size: 16px;
+}
+
+
+/* =========================================================
+   SAVE BUTTON
 ========================================================= */
 
 button[type="submit"] {
     display: block;
+
     width: 100%;
-    margin-top: 24px;
-    padding: 14px 18px;
+
+    margin-top: 30px;
+
+    padding: 17px 20px;
+
     border: none;
-    border-radius: 11px;
+
+    border-radius: 12px;
+
     background: #ffc300;
+
     color: #117373;
+
     font-family: "Poppins", sans-serif;
-    font-size: 16px;
+
+    font-size: 18px;
+
     font-weight: 800;
+
+    line-height: 1.3;
+
     cursor: pointer;
+
     box-shadow:
-        0 5px 12px rgba(0, 0, 0, 0.15);
+        0 6px 14px rgba(0, 0, 0, 0.16);
+
     transition:
         transform 0.15s ease,
         box-shadow 0.15s ease,
@@ -350,72 +629,92 @@ button[type="submit"] {
 
 button[type="submit"]:hover {
     background: #ffd333;
+
     transform: translateY(-1px);
+
     box-shadow:
-        0 7px 15px rgba(0, 0, 0, 0.18);
+        0 8px 18px rgba(0, 0, 0, 0.19);
 }
 
 button[type="submit"]:active {
     transform: translateY(1px);
 }
 
+
 /* =========================================================
-ERROR MESSAGES
+   ERROR MESSAGES
 ========================================================= */
 
 .errorlist {
     list-style: none;
-    margin-top: 5px;
+
+    margin-top: 7px;
+
     color: #d93025;
-    font-size: 12px;
+
+    font-size: 14px;
+
     font-weight: 600;
+
+    line-height: 1.5;
 }
 
 .errorlist li {
-    margin-bottom: 3px;
+    margin-bottom: 4px;
 }
 
+
 /* =========================================================
-HELP TEXT
+   HELP TEXT
 ========================================================= */
 
 .helptext {
     display: block;
-    margin-top: 5px;
+
+    margin-top: 7px;
+
     color: #777777;
-    font-size: 11px;
-    line-height: 1.5;
+
+    font-size: 13px;
+
+    line-height: 1.6;
 }
 
+
 /* =========================================================
-LAPTOP / DESKTOP
+   LAPTOP / DESKTOP
 ========================================================= */
 
 @media (min-width: 768px) {
 
     body {
-        padding: 45px 25px 60px;
+        padding: 50px 30px 70px;
     }
 
     .container {
-        max-width: 780px;
-        padding: 35px 38px 40px;
-        border-radius: 20px;
+        max-width: 850px;
+
+        padding: 42px 45px 50px;
+
+        border-radius: 22px;
     }
 
     .container h1 {
-        font-size: 32px;
-        margin-bottom: 8px;
+        font-size: 36px;
+
+        margin-bottom: 10px;
     }
 
     .session-name {
-        font-size: 15px;
-        margin-bottom: 30px;
+        font-size: 17px;
+
+        margin-bottom: 34px;
     }
 
     .label {
-        font-size: 15px;
-        margin-bottom: 21px;
+        font-size: 17px;
+
+        margin-bottom: 25px;
     }
 
     .label input,
@@ -427,62 +726,174 @@ LAPTOP / DESKTOP
     input[type="number"],
     input[type="file"],
     textarea {
-        font-size: 14px;
-        padding: 13px 14px;
+        font-size: 17px;
+
+        padding: 16px 17px;
+
+        border-radius: 12px;
+    }
+
+    input[type="text"],
+    input[type="number"],
+    select {
+        min-height: 56px;
     }
 
     textarea {
-        min-height: 140px;
+        min-height: 165px;
+    }
+
+    input[type="file"] {
+        min-height: 60px;
+
+        padding: 10px;
+    }
+
+    input[type="file"]::file-selector-button {
+        font-size: 15px;
+
+        padding: 12px 16px;
     }
 
     .choice-row {
-        padding: 22px 20px;
-        border-radius: 15px;
+        padding: 26px 23px;
+
+        border-radius: 17px;
+
+        margin-bottom: 21px;
     }
 
     .choice-row h3 {
-        font-size: 19px;
+        font-size: 23px;
+
+        margin-bottom: 17px;
+    }
+
+    .choice-row .label {
+        font-size: 17px;
     }
 
     .correct-label {
-        font-size: 14px;
-        padding: 11px 13px;
+        font-size: 16px;
+
+        padding: 14px 16px;
+
+        min-height: 54px;
+    }
+
+    .correct-label input[type="checkbox"],
+    .correct-label input[type="radio"] {
+        width: 23px;
+
+        height: 23px;
     }
 
     #tf-section {
-        padding: 20px;
+        padding: 24px 22px;
+    }
+
+    #tf-section label {
+        font-size: 17px;
     }
 
     button[type="submit"] {
-        width: 220px;
+        width: 260px;
+
         margin-left: auto;
+
         margin-right: auto;
-        padding: 14px 20px;
-        font-size: 16px;
+
+        padding: 17px 24px;
+
+        font-size: 18px;
     }
 
+    #removeQuestionImageBtn,
+    .remove-existing-choice-image,
+    #clearImageBtn,
+    .clear-choice-image-btn {
+        font-size: 14px !important;
 
+        padding: 11px 16px !important;
+    }
 }
 
+
 /* =========================================================
-LARGE LAPTOP / DESKTOP
+   LARGE LAPTOP / DESKTOP
 ========================================================= */
 
 @media (min-width: 1100px) {
 
+    body {
+        padding-top: 60px;
+
+        padding-bottom: 80px;
+    }
 
     .container {
-        max-width: 850px;
-        padding: 40px 50px 45px;
+        max-width: 920px;
+
+        padding: 48px 55px 58px;
     }
 
     .container h1 {
-        font-size: 34px;
+        font-size: 40px;
+    }
+
+    .session-name {
+        font-size: 18px;
+
+        margin-bottom: 38px;
+    }
+
+    .label {
+        font-size: 18px;
+
+        margin-bottom: 28px;
+    }
+
+    .label input,
+    .label textarea,
+    .label select,
+    .form-input,
+    select,
+    input[type="text"],
+    input[type="number"],
+    input[type="file"],
+    textarea {
+        font-size: 18px;
+
+        padding: 17px 18px;
+    }
+
+    textarea {
+        min-height: 180px;
     }
 
     .choice-row {
-        padding: 24px;
+        padding: 30px 27px;
     }
 
+    .choice-row h3 {
+        font-size: 25px;
+    }
 
+    .choice-row .label {
+        font-size: 18px;
+    }
+
+    .correct-label {
+        font-size: 17px;
+
+        padding: 15px 17px;
+    }
+
+    #tf-section {
+        padding: 27px 25px;
+    }
+
+    #tf-section label {
+        font-size: 18px;
+    }
 }
