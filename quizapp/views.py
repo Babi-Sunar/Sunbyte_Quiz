@@ -193,10 +193,9 @@ def _get_hosted_session_or_404(request, code):
 # manage session
 import os
 import qrcode
-
 from django.conf import settings
-
-
+import base64
+import io
 @never_cache
 @login_required
 def manage_session(request, code):
@@ -207,18 +206,15 @@ def manage_session(request, code):
         f"/session/join/?code={session.code}"
     )
 
-    # Generate QR code
+    # Generate QR code in memory
     qr = qrcode.make(join_url)
 
-    qr_folder = os.path.join(settings.MEDIA_ROOT, "qr_codes")
-    os.makedirs(qr_folder, exist_ok=True)
+    buffer = io.BytesIO()
+    qr.save(buffer, format="PNG")
 
-    filename = f"{session.code}.png"
-    qr_path = os.path.join(qr_folder, filename)
-
-    qr.save(qr_path)
-
-    qr_image = settings.MEDIA_URL + "qr_codes/" + filename
+    qr_image = base64.b64encode(
+        buffer.getvalue()
+    ).decode("utf-8")
 
     return render(
         request,
@@ -735,6 +731,11 @@ def session_results(request, code):
     return render(request, "quizapp/session_results.html", context)
 
 # host session room
+import base64
+import io
+import qrcode
+
+
 @never_cache
 @login_required
 def host_room(request, code):
@@ -745,18 +746,15 @@ def host_room(request, code):
         f"/session/join/?code={session.code}"
     )
 
-    # Generate QR code
+    # Generate QR code in memory
     qr = qrcode.make(join_url)
 
-    qr_folder = os.path.join(settings.MEDIA_ROOT, "qr_codes")
-    os.makedirs(qr_folder, exist_ok=True)
+    buffer = io.BytesIO()
+    qr.save(buffer, format="PNG")
 
-    filename = f"{session.code}.png"
-    qr_path = os.path.join(qr_folder, filename)
-
-    qr.save(qr_path)
-
-    qr_image = settings.MEDIA_URL + "qr_codes/" + filename
+    qr_image = base64.b64encode(
+        buffer.getvalue()
+    ).decode("utf-8")
 
     context = {
         "session": session,
