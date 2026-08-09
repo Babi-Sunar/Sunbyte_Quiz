@@ -145,6 +145,8 @@ class Question(models.Model):
     question_type = models.CharField(max_length=15, choices=TYPE_CHOICES, default='mcq')
     text = models.TextField()
     image = models.ImageField(upload_to='question_images/', null=True, blank=True)
+    video_file = models.FileField(upload_to='question_videos/', null=True, blank=True)
+    video_url = models.URLField(blank=True, help_text='YouTube / external video link (optional).')
 
     marks = models.DecimalField(
         max_digits=6, decimal_places=2, null=True, blank=True,
