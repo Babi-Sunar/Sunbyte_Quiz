@@ -104,8 +104,6 @@ class Migration(migrations.Migration):
                 ('question_type', models.CharField(choices=[('mcq', 'Multiple choice'), ('true_false', 'True / False'), ('four_option', 'Four option')], default='mcq', max_length=15)),
                 ('text', models.TextField()),
                 ('image', models.ImageField(blank=True, null=True, upload_to='question_images/')),
-                ('video_file', models.FileField(blank=True, null=True, upload_to='question_videos/')),
-                ('video_url', models.URLField(blank=True, help_text='YouTube / external video link (optional).')),
                 ('marks', models.DecimalField(blank=True, decimal_places=2, help_text='Leave blank to use the session default (used only when marks mode is per-question).', max_digits=6, null=True)),
                 ('time_limit_seconds', models.PositiveIntegerField(blank=True, help_text='Leave blank to use the session default (used only when timer mode is per-question).', null=True)),
                 ('order', models.PositiveIntegerField(default=0)),

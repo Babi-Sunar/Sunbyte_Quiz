@@ -229,14 +229,17 @@ def manage_session(request, code):
         },
     )
 
-import cloudinary.uploader
+
 @never_cache
 @login_required
 def add_question(request, code):
     session = _get_hosted_session_or_404(request, code)
 
     last_question = session.questions.order_by("-order").first()
-    next_order = 1 if last_question is None else last_question.order + 1
+    next_order = (
+        1 if last_question is None
+        else last_question.order + 1
+    )
 
     formset = None
     tf_form = None
@@ -245,6 +248,8 @@ def add_question(request, code):
 
         print("\n========== POST RECEIVED ==========\n")
 
+        # Question form
+        # request.FILES is still passed because images may be uploaded.
         form = QuestionForm(request.POST, request.FILES)
 
         if form.is_valid():
@@ -260,55 +265,6 @@ def add_question(request, code):
                 question = form.save(commit=False)
                 question.session = session
                 question.order = next_order
-
-                # ----------------------------------
-                # Handle video upload separately
-                # ----------------------------------
-
-                video = request.FILES.get("video_file")
-
-                if video:
-                    print("VIDEO FILE:", video.name)
-                    print("VIDEO SIZE:", video.size)
-
-                    try:
-                        print("=== UPLOADING VIDEO TO CLOUDINARY ===")
-
-                        result = cloudinary.uploader.upload(
-                            video,
-                            resource_type="video",
-                            folder="sunbyte_quiz/question_videos",
-                        )
-
-                        video_url = result.get("secure_url")
-
-                        print("CLOUDINARY VIDEO URL:", video_url)
-
-                        question.video_file = video_url
-
-                        print("=== VIDEO UPLOAD SUCCESSFUL ===")
-
-                    except Exception as e:
-
-                        print("=== VIDEO UPLOAD ERROR ===")
-                        print(type(e).__name__)
-                        print(str(e))
-
-                        messages.error(
-                            request,
-                            "There was a problem uploading the video."
-                        )
-
-                        return render(
-                            request,
-                            "quizapp/question_form.html",
-                            {
-                                "session": session,
-                                "form": form,
-                                "formset": ChoiceFormSet(),
-                                "tf_form": TrueFalseAnswerForm(),
-                            },
-                        )
 
                 # ----------------------------------
                 # Save question
@@ -342,7 +298,9 @@ def add_question(request, code):
 
                         print("✓ True/False form is valid")
 
-                        correct = tf_form.cleaned_data["correct_answer"]
+                        correct = tf_form.cleaned_data[
+                            "correct_answer"
+                        ]
 
                         Choice.objects.create(
                             question=question,
@@ -394,7 +352,8 @@ def add_question(request, code):
                         choices = formset.save(commit=False)
 
                         valid_choices = [
-                            c for c in choices
+                            c
+                            for c in choices
                             if (
                                 (c.text and c.text.strip())
                                 or c.image
@@ -402,7 +361,8 @@ def add_question(request, code):
                         ]
 
                         print(
-                            f"Choices received: {len(valid_choices)}"
+                            f"Choices received: "
+                            f"{len(valid_choices)}"
                         )
 
                         # ----------------------------------
@@ -522,6 +482,8 @@ def add_question(request, code):
             "tf_form": tf_form,
         },
     )
+
+
 @never_cache
 @login_required
 def delete_question(request, code, question_id):

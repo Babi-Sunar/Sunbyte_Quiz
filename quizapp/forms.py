@@ -159,8 +159,6 @@ class QuestionForm(forms.ModelForm):
             'question_type',
             'text',
             'image',
-            'video_file',
-            'video_url',
             'marks',
             'time_limit_seconds'
         )
@@ -181,19 +179,6 @@ class QuestionForm(forms.ModelForm):
                 }
             ),
 
-            'video_file': forms.FileInput(
-                attrs={
-                    'class': 'form-input',
-                    'accept': 'video/*'
-                }
-            ),
-
-            'video_url': forms.URLInput(
-                attrs={
-                    'class': 'form-input',
-                    'placeholder': 'https://youtube.com/... (optional)'
-                }
-            ),
 
             'marks': forms.NumberInput(
                 attrs={

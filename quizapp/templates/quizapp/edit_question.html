@@ -145,55 +145,6 @@
 
 
 
-                {% if question.video_file %}
-
-                <div class="preview-box">
-
-                    <p>
-
-                        Current Video
-
-                    </p>
-
-                    <video controls class="preview-video">
-
-                        <source src="{{ question.video_file.url }}">
-
-                    </video>
-
-                </div>
-
-                {% endif %}
-
-
-                <div class="field">
-
-                    <label>
-
-                        Upload Video
-
-                    </label>
-
-                    {{ form.video_file }}
-
-                </div>
-
-
-                <div class="field">
-
-                    <label>
-
-                        Video URL
-
-                    </label>
-
-                    {{ form.video_url }}
-
-                </div>
-
-            </section>
-
-
 
             <!-- ========================= -->
             <!-- Question Settings -->
@@ -557,8 +508,7 @@
                 .forEach(input => {
 
                     if (
-                        input.id === "id_image" ||
-                        input.id === "id_video_file"
+                        input.id === "id_image"
                     ) return;
 
                     input.addEventListener(

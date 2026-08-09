@@ -71,32 +71,6 @@
             {% endif %}
 
 
-            <!-- Uploaded Video -->
-            {% if current_question.video_file %}
-            <video controls class="question-video">
-                <source src="{{ current_question.video_file }}" type="video/mp4">
-                Your browser does not support video.
-            </video>
-            {% endif %}
-
-
-            <!-- Video URL -->
-
-            {% if current_question.video_url %}
-
-            <div class="video-link">
-
-                <a href="{{ current_question.video_url }}" target="_blank">
-
-                    ▶ Watch Video
-
-                </a>
-
-            </div>
-
-            {% endif %}
-
-
             <!-- Choices -->
 
             <form method="POST" id="answerForm">
