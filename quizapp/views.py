@@ -1869,3 +1869,4 @@ def delete_account(request):
         return redirect("quizapp:home")
 
     return render(request, "quizapp/delete_account.html")
+
