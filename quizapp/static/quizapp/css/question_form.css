@@ -202,3 +202,185 @@ button:hover {
         rgba(255, 214, 10, .30) 0 8px 16px,
         rgba(255, 214, 10, .30) 0 16px 32px;
 }
+
+
+/* =========================================
+   LARGE LAPTOP / DESKTOP
+   1024px and above
+   ========================================= */
+
+@media (min-width: 1024px) {
+
+    body {
+        padding: 50px 40px;
+    }
+
+    /* Main Card */
+    .container {
+        max-width: 950px;
+        padding: 40px 50px;
+        border-radius: 25px;
+    }
+
+    /* Heading */
+    .container h1 {
+        font-size: 2.5rem;
+        margin-bottom: 12px;
+    }
+
+    .session-name {
+        font-size: 1.15rem;
+        margin-bottom: 35px;
+    }
+
+    /* Labels */
+    .label {
+        font-size: 1.05rem;
+        margin-top: 22px;
+        margin-bottom: 10px;
+    }
+
+    /* Inputs */
+    input,
+    textarea,
+    select {
+        padding: 14px 16px;
+        font-size: 1rem;
+        border-radius: 12px;
+    }
+
+    textarea {
+        min-height: 150px;
+    }
+
+    input[type="file"] {
+        padding: 12px;
+    }
+
+    /* Choice Cards */
+    .choice-row {
+        padding: 20px;
+        margin-top: 22px;
+        border-radius: 15px;
+    }
+
+    .choice-row h4 {
+        font-size: 1.1rem;
+        margin-bottom: 15px;
+    }
+
+    .choice-row label {
+        font-size: 1rem;
+        margin-top: 14px;
+    }
+
+    /* True / False */
+    #tf-section {
+        margin-top: 25px;
+        padding: 5px 0;
+    }
+
+    #tf-section label {
+        font-size: 1.05rem;
+    }
+
+    #tf-section input[type="radio"] {
+        width: 20px;
+        height: 20px;
+        margin-right: 12px;
+    }
+
+    /* Horizontal Line */
+    hr {
+        margin: 30px 0;
+    }
+
+    /* Submit Button */
+    button {
+        max-width: 500px;
+        display: block;
+        margin: 35px auto 5px;
+        padding: 16px 30px;
+        font-size: 1.05rem;
+        border-radius: 100px;
+    }
+}
+
+
+/* =========================================
+   LARGE DESKTOP
+   1366px and above
+   ========================================= */
+
+@media (min-width: 1366px) {
+
+    body {
+        padding: 60px 50px;
+    }
+
+    .container {
+        max-width: 1000px;
+        padding: 45px 60px;
+    }
+
+    .container h1 {
+        font-size: 2.8rem;
+    }
+
+    .session-name {
+        font-size: 1.2rem;
+        margin-bottom: 40px;
+    }
+
+    .label {
+        font-size: 1.1rem;
+    }
+
+    input,
+    textarea,
+    select {
+        padding: 15px 18px;
+        font-size: 1.05rem;
+    }
+
+    textarea {
+        min-height: 170px;
+    }
+
+    .choice-row {
+        padding: 24px;
+    }
+
+    .choice-row h4 {
+        font-size: 1.15rem;
+    }
+
+    button {
+        max-width: 550px;
+        padding: 17px 35px;
+        font-size: 1.1rem;
+    }
+}
+
+
+/* =========================================
+   EXTRA LARGE DESKTOP
+   1600px and above
+   ========================================= */
+
+@media (min-width: 1600px) {
+
+    .container {
+        max-width: 1050px;
+    }
+
+    .container h1 {
+        font-size: 3rem;
+    }
+
+    input,
+    textarea,
+    select {
+        font-size: 1.1rem;
+    }
+}

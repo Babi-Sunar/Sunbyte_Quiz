@@ -192,3 +192,68 @@ select:focus {
 
     transform: scale(1.05) rotate(-1deg);
 }
+
+
+/* ============================= */
+/* LAPTOP SCREEN */
+/* ============================= */
+
+@media (min-width: 1024px) and (max-width: 1439px) {
+
+    body {
+        padding: 30px 40px;
+    }
+
+    #formContainer {
+        max-width: 700px;
+        padding: 35px 45px;
+        margin: 20px auto;
+    }
+
+    #formContainer h1 {
+        font-size: 2rem;
+    }
+
+    #formContainer p {
+        font-size: 15px;
+        margin-bottom: 25px;
+    }
+
+    label {
+        font-size: 16px;
+        margin-top: 16px;
+        margin-bottom: 8px;
+    }
+
+    input,
+    select {
+        padding: 12px 14px;
+        font-size: 16px;
+    }
+
+    #create_btn,
+    #create-btn {
+        margin-top: 28px;
+        padding: 13px 24px;
+        font-size: 17px;
+    }
+}
+
+
+@media (min-width: 1024px) {
+
+    #formContainer {
+        max-width: 700px;
+        padding: 35px 45px;
+    }
+
+    #formContainer h1 {
+        font-size: 2rem;
+    }
+
+    input,
+    select {
+        font-size: 16px;
+        padding: 12px 14px;
+    }
+}

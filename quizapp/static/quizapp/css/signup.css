@@ -124,3 +124,168 @@ h2 {
     top: 35px;
     text-align: center;
 }
+
+
+/* =========================================================
+   LARGE LAPTOP / DESKTOP
+   ========================================================= */
+
+@media screen and (min-width: 1024px) {
+
+    body {
+        min-height: 100vh;
+        padding: 40px 20px;
+
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
+
+    /* Signup title */
+    h2 {
+        font-size: 2.8rem;
+        margin-bottom: 30px;
+    }
+
+    /* Signup form */
+    #signupForm {
+        width: 100%;
+        max-width: 500px;
+        height: auto;
+
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
+
+    /* Signup input container */
+    #input-section {
+        width: 100%;
+        max-width: 500px;
+
+        height: auto;
+        min-height: 450px;
+
+        padding: 35px 40px;
+
+        display: flex;
+        flex-direction: column;
+
+        border-radius: 25px;
+    }
+
+    /* Input labels */
+    .input-label {
+        font-size: 1.3rem;
+        margin-bottom: 8px;
+    }
+
+    /* Input fields */
+    .input-field {
+        width: 100%;
+        height: 48px;
+
+        padding: 12px 15px;
+
+        font-size: 1.05rem;
+
+        margin-bottom: 20px;
+    }
+
+    /* Remember checkbox */
+    #remember-label {
+        font-size: 1rem;
+        margin-bottom: 20px;
+    }
+
+    /* Signup button container */
+    #signup-btn-container {
+        width: 100%;
+
+        display: flex;
+        justify-content: center;
+
+        position: relative;
+        top: 5px;
+
+        margin-top: 10px;
+    }
+
+    /* Signup button */
+    #signup-btn {
+        width: 180px;
+        min-height: 48px;
+
+        padding: 10px 25px;
+
+        font-size: 17px;
+    }
+
+    /* Signup options */
+    #signup-options {
+        position: relative;
+        top: 0;
+
+        margin-top: 25px;
+
+        text-align: center;
+        font-size: 1rem;
+    }
+}
+
+
+/* =========================================================
+   EXTRA LARGE LAPTOP / DESKTOP
+   ========================================================= */
+
+@media screen and (min-width: 1366px) {
+
+    body {
+        padding-top: 50px;
+    }
+
+    /* Signup title */
+    h2 {
+        font-size: 3rem;
+        margin-bottom: 35px;
+    }
+
+    #signupForm {
+        max-width: 550px;
+    }
+
+    #input-section {
+        max-width: 550px;
+
+        min-height: 480px;
+
+        padding: 40px 50px;
+    }
+
+    /* Larger labels */
+    .input-label {
+        font-size: 1.4rem;
+    }
+
+    /* Larger inputs */
+    .input-field {
+        height: 52px;
+
+        font-size: 1.1rem;
+
+        padding: 12px 15px;
+    }
+
+    /* Signup button */
+    #signup-btn {
+        width: 190px;
+        height: 52px;
+
+        font-size: 18px;
+    }
+
+    /* Signup options */
+    #signup-options {
+        font-size: 1.05rem;
+    }
+}

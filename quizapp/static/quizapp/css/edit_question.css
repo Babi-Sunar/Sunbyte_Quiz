@@ -790,3 +790,79 @@ button{
     font-family:"Poppins",sans-serif;
 
 }
+
+/*==================================
+LAPTOP SCREEN
+==================================*/
+
+@media (min-width: 1000px) and (max-width: 1440px) {
+
+    body {
+        padding: 30px 40px;
+    }
+
+    .editor-card {
+        max-width: 1200px;
+    }
+
+    .page-header {
+        padding: 28px 35px;
+    }
+
+    .page-header h1 {
+        font-size: 2.2rem;
+    }
+
+    .page-header p {
+        font-size: 1rem;
+    }
+
+    .card {
+        margin: 22px;
+        padding: 28px;
+    }
+
+    .card h2 {
+        font-size: 1.5rem;
+    }
+
+    .settings-grid {
+        grid-template-columns: 1fr 1fr;
+        gap: 25px;
+    }
+
+    .option-card {
+        padding: 25px;
+    }
+
+    .option-header h3 {
+        font-size: 1.3rem;
+    }
+
+    input[type=text],
+    input[type=number],
+    input[type=url],
+    textarea,
+    select {
+        font-size: 1rem;
+        padding: 13px;
+    }
+
+    textarea {
+        min-height: 150px;
+    }
+
+    .preview-image {
+        max-height: 300px;
+    }
+
+    .choice-preview {
+        max-height: 200px;
+    }
+
+    .bottom-actions {
+        margin: 30px;
+    }
+
+}
+

@@ -129,3 +129,52 @@ form #join-btn:hover {
         rgba(255, 214, 10, 0.30) 0 16px 32px;
     transform: scale(1.05) rotate(-1deg);
 }
+
+
+/* ==========================
+   LAPTOP / DESKTOP
+========================== */
+
+@media (min-width: 768px) {
+
+    body {
+        padding: 40px 5vw;
+    }
+
+    .container {
+        width: 100%;
+        max-width: 500px;
+        margin: 60px auto;
+    }
+
+    #formContainer {
+        max-width: 500px;
+        height: auto;
+        min-height: 420px;
+        padding: 35px;
+    }
+
+    #formContainer h1 {
+        font-size: 2rem;
+        margin-bottom: 15px;
+    }
+
+    #formContainer p {
+        font-size: 1rem;
+        line-height: 1.6;
+    }
+
+    #formContainer a {
+        font-size: 1rem;
+    }
+
+    input {
+        padding: 13px;
+        font-size: 1rem;
+    }
+
+    form #join-btn {
+        padding: 12px 30px;
+        font-size: 17px;
+    }
+}

@@ -476,3 +476,314 @@ footer #lower-footer {
         background-position: 100% 50%;
     }
 }
+
+
+/* =========================================================
+   LARGE LAPTOP / DESKTOP
+   ========================================================= */
+
+@media screen and (min-width: 1024px) {
+
+    body {
+        min-height: 100vh;
+        background-size: cover;
+    }
+
+    /* =========================
+       HEADER
+       ========================= */
+
+    header {
+        height: 80px;
+        padding: 15px 50px;
+    }
+
+    #logo a {
+        width: auto;
+        height: auto;
+        font-size: 28px;
+    }
+
+    .settings-btn {
+        height: 50px;
+        width: auto;
+        left: 0;
+        gap: 10px;
+        padding: 5px 10px;
+    }
+
+    .settings-btn img {
+        width: 36px;
+        height: 36px;
+    }
+
+    .settings-btn span {
+        font-size: 1rem;
+    }
+
+    /* =========================
+       MENU BUTTON
+       ========================= */
+
+    .menu-btn {
+        left: 0;
+        gap: 6px;
+    }
+
+    .menu-btn span {
+        width: 32px;
+        height: 4px;
+    }
+
+    /* =========================
+       NAVIGATION
+       ========================= */
+
+    nav {
+        top: 75px;
+        right: 40px;
+        min-width: 200px;
+        padding: 20px;
+        border-radius: 12px;
+    }
+
+    nav a {
+        padding: 8px 12px;
+        font-size: 1rem;
+    }
+
+    #settings-nav {
+        top: 75px;
+        right: 40px;
+        min-width: 200px;
+    }
+
+    /* =========================
+       HERO SECTION
+       ========================= */
+
+    #hero {
+        height: 500px;
+        padding: 100px 40px 70px;
+
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+    }
+
+    #hero h2 {
+        font-size: 1.6rem;
+        margin-bottom: 10px;
+    }
+
+    #hero h1 {
+        font-size: 4.5rem;
+        margin-bottom: 15px;
+    }
+
+    #hero #text {
+        max-width: 800px;
+        font-size: 1.25rem;
+        line-height: 1.7;
+    }
+
+    /* =========================
+       FIRST SECTION
+       ========================= */
+
+    #first-section {
+        width: 600px;
+        height: 320px;
+
+        padding: 50px;
+
+        gap: 20px;
+
+        border-radius: 20px;
+    }
+
+    #join-session button,
+    #create-session button {
+        width: 350px;
+        padding: 14px 25px;
+        font-size: 1.05rem;
+        border-radius: 12px;
+    }
+
+    #join-session button:hover,
+    #create-session button:hover {
+        transform: translateY(-3px);
+    }
+
+    /* =========================
+       CONTACT SECTION
+       ========================= */
+
+    #contact-section {
+        height: 450px;
+        padding: 70px 30px;
+        margin-top: 30px;
+    }
+
+    #contact-section h2 {
+        font-size: 2rem;
+        margin-bottom: 25px;
+    }
+
+    #mail-phone {
+        top: -10px;
+        font-size: 1rem;
+        gap: 8px;
+    }
+
+    #social-media {
+        gap: 25px;
+        margin-top: 15px;
+    }
+
+    #social-media .contact-img {
+        width: 60px;
+        height: 60px;
+        padding: 12px;
+    }
+
+    /* =========================
+       CONNECT SECTION
+       ========================= */
+
+    #connect-section {
+        height: 650px;
+        padding: 60px 30px;
+    }
+
+    #connect-section h2 {
+        font-size: 2rem;
+        margin-bottom: 30px;
+    }
+
+    #connect-form {
+        width: 600px;
+        height: 500px;
+
+        padding: 35px 45px;
+
+        gap: 18px;
+
+        border-radius: 20px;
+    }
+
+    #connect-form input {
+        height: 48px;
+        padding: 12px 15px;
+        font-size: 1rem;
+    }
+
+    #connect-form textarea {
+        height: 180px;
+        padding: 12px 15px;
+        font-size: 1rem;
+    }
+
+    #connect-form button {
+        padding: 12px 28px;
+        font-size: 1rem;
+    }
+
+    #connect-text {
+        font-size: 1rem;
+    }
+
+    /* =========================
+       FOOTER
+       ========================= */
+
+    footer #upper-footer,
+    footer #lower-footer {
+        padding: 25px;
+        font-size: 1rem;
+    }
+
+    #footer-logo a {
+        width: auto;
+        height: auto;
+        font-size: 28px;
+    }
+
+    #footer-nav a {
+        font-size: 1rem;
+        margin: 0 15px;
+    }
+
+    #horizontal-line {
+        height: 3px;
+    }
+}
+
+
+/* =========================================================
+   EXTRA LARGE DESKTOP
+   ========================================================= */
+
+@media screen and (min-width: 1366px) {
+
+    header {
+        height: 90px;
+        padding: 15px 80px;
+    }
+
+    #logo a {
+        font-size: 32px;
+    }
+
+    #hero {
+        height: 600px;
+    }
+
+    #hero h1 {
+        font-size: 5rem;
+    }
+
+    #hero h2 {
+        font-size: 1.8rem;
+    }
+
+    #hero #text {
+        max-width: 900px;
+        font-size: 1.3rem;
+    }
+
+    #first-section {
+        width: 650px;
+        height: 350px;
+    }
+
+    #join-session button,
+    #create-session button {
+        width: 380px;
+        padding: 15px 30px;
+        font-size: 1.1rem;
+    }
+
+    #contact-section {
+        height: 500px;
+    }
+
+    #connect-section {
+        height: 700px;
+    }
+
+    #connect-form {
+        width: 650px;
+        height: 530px;
+    }
+
+    #connect-form textarea {
+        height: 190px;
+    }
+
+    footer #upper-footer,
+    footer #lower-footer {
+        font-size: 1.05rem;
+    }
+}

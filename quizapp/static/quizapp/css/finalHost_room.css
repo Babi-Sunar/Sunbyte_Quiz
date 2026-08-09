@@ -305,10 +305,8 @@ h1 {
     justify-content: center;
     align-items: center;
 
-    background: conic-gradient(
-        #FFC300 100%,
-        #ddd 0%
-    );
+    background: conic-gradient(#FFC300 100%,
+            #ddd 0%);
 
     position: sticky;
     top: 20px;
@@ -332,13 +330,15 @@ h1 {
     justify-content: center;
     align-items: center;
 
-    color: black;          /* important */
-    font-size: 1.8rem;     /* make number visible */
+    color: black;
+    /* important */
+    font-size: 1.8rem;
+    /* make number visible */
     font-weight: bold;
 
 }
 
-#question-timer{
+#question-timer {
     font-size: large;
 }
 
@@ -359,133 +359,314 @@ h1 {
    Host Question Options
 ==============================*/
 
-.host-options{
+.host-options {
 
-    margin-top:25px;
+    margin-top: 25px;
 
-    display:flex;
+    display: flex;
 
-    flex-direction:column;
+    flex-direction: column;
 
-    gap:15px;
-
-}
-
-.option-card{
-
-    display:flex;
-
-    align-items:flex-start;
-
-    gap:16px;
-
-    padding:15px;
-
-    border-radius:14px;
-
-    background:#f8f9fa;
-
-    border:2px solid #e5e5e5;
+    gap: 15px;
 
 }
 
-.option-number{
+.option-card {
 
-    min-width:35px;
+    display: flex;
 
-    font-size:1.2rem;
+    align-items: flex-start;
 
-    font-weight:700;
+    gap: 16px;
 
-    color:#117373;
+    padding: 15px;
 
-}
+    border-radius: 14px;
 
-.option-content{
+    background: #f8f9fa;
 
-    flex:1;
-
-}
-.option-image{
-
-    width:80px !important;
-
-    height:80px !important;
-
-    max-width:80px !important;
-
-    min-width:80px !important;
-
-    object-fit:cover;
-
-    border-radius:8px;
-
-    border:2px solid #ddd;
-
-    background:#fff;
-
-    display:block;
-
-    margin:8px 0;
+    border: 2px solid #e5e5e5;
 
 }
 
-.option-text{
+.option-number {
 
-    font-size:1rem;
+    min-width: 35px;
 
-    font-weight:600;
+    font-size: 1.2rem;
 
-    color:#333;
+    font-weight: 700;
 
-    word-break:break-word;
+    color: #117373;
 
 }
 
-.correct-answer-badge{
+.option-content {
 
-    display:inline-block;
+    flex: 1;
 
-    margin-top:10px;
+}
 
-    padding:5px 12px;
+.option-image {
 
-    background:#117373;
+    width: 80px !important;
 
-    color:#FFC300;
+    height: 80px !important;
 
-    border-radius:20px;
+    max-width: 80px !important;
 
-    font-size:.8rem;
+    min-width: 80px !important;
 
-    font-weight:700;
+    object-fit: cover;
+
+    border-radius: 8px;
+
+    border: 2px solid #ddd;
+
+    background: #fff;
+
+    display: block;
+
+    margin: 8px 0;
+
+}
+
+.option-text {
+
+    font-size: 1rem;
+
+    font-weight: 600;
+
+    color: #333;
+
+    word-break: break-word;
+
+}
+
+.correct-answer-badge {
+
+    display: inline-block;
+
+    margin-top: 10px;
+
+    padding: 5px 12px;
+
+    background: #117373;
+
+    color: #FFC300;
+
+    border-radius: 20px;
+
+    font-size: .8rem;
+
+    font-weight: 700;
 
 }
 
 /* Mobile */
 
-@media(max-width:768px){
+@media(max-width:768px) {
 
-    .option-card{
+    .option-card {
 
-        flex-direction:column;
-
-    }
-
-    .option-number{
-
-        margin-bottom:8px;
+        flex-direction: column;
 
     }
 
-    .option-image{
+    .option-number {
 
-        width:100%;
+        margin-bottom: 8px;
 
-        max-width:220px;
+    }
 
-        height:150px;
+    .option-image {
 
+        width: 100%;
+
+        max-width: 220px;
+
+        height: 150px;
+
+    }
+
+}
+
+/* ==================================
+   LAPTOP SCREEN
+   1000px - 1440px
+================================== */
+
+@media (min-width: 1000px) and (max-width: 1440px) {
+
+    body {
+        padding: 20px 35px;
+    }
+
+    .container {
+        max-width: 1150px;
+    }
+
+    /* Heading */
+
+    h1 {
+        font-size: 2.1rem;
+        margin-bottom: 20px;
+    }
+
+
+    /* Question Card */
+
+    .session-card {
+        padding: 25px;
+        margin-bottom: 22px;
+        border-radius: 20px;
+    }
+
+    .session-left h2 {
+        font-size: 1.7rem;
+        margin-bottom: 15px;
+    }
+
+    .session-left p {
+        font-size: 1.15rem;
+        line-height: 1.6;
+    }
+
+    .session-left img {
+        max-height: 350px;
+        object-fit: contain;
+    }
+
+
+    /* Statistics */
+
+    .stats {
+        grid-template-columns: repeat(4, 1fr);
+        gap: 15px;
+        margin-bottom: 22px;
+    }
+
+    .stat-box {
+        padding: 18px;
+        border-radius: 16px;
+    }
+
+    .stat-box h3 {
+        font-size: 1rem;
+        margin-bottom: 7px;
+    }
+
+    .stat-box p {
+        font-size: 1.7rem;
+    }
+
+
+    /* Progress */
+
+    .progress-section {
+        padding: 20px;
+        margin-bottom: 22px;
+    }
+
+    .progress-section h2 {
+        font-size: 1.3rem;
+        margin-bottom: 12px;
+    }
+
+    .progress-bar {
+        height: 15px;
+    }
+
+
+    /* Timer */
+
+    .timer-circle {
+        width: 65px;
+        height: 65px;
+        top: 15px;
+    }
+
+    .timer-circle span {
+        width: 55px;
+        height: 55px;
+        font-size: 1.5rem;
+    }
+
+
+    /* Controls */
+
+    .controls {
+        gap: 12px;
+        margin-bottom: 22px;
+    }
+
+    .btn {
+        padding: 14px;
+        font-size: 1.05rem;
+        border-radius: 12px;
+    }
+
+
+    /* Activity */
+
+    .activity {
+        padding: 20px;
+    }
+
+    .activity h2 {
+        font-size: 1.3rem;
+        margin-bottom: 12px;
+    }
+
+    .activity-box {
+        max-height: 220px;
+        padding: 15px;
+    }
+
+    .activity-box p {
+        font-size: .95rem;
+    }
+
+
+    /* Host Options */
+
+    .host-options {
+        margin-top: 20px;
+        gap: 12px;
+    }
+
+    .option-card {
+        padding: 13px;
+        gap: 14px;
+    }
+
+    .option-number {
+        min-width: 30px;
+        font-size: 1.05rem;
+    }
+
+    .option-text {
+        font-size: .95rem;
+    }
+
+    .option-image {
+        width: 70px !important;
+        height: 70px !important;
+        max-width: 70px !important;
+        min-width: 70px !important;
+    }
+
+    .correct-answer-badge {
+        font-size: .75rem;
+        padding: 4px 10px;
+    }
+
+    /* Question Media */
+
+    .question-media {
+        max-width: 650px;
+        max-height: 350px;
+        object-fit: contain;
     }
 
 }

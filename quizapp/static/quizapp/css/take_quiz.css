@@ -329,3 +329,214 @@ body {
 
     display: block;
 }
+
+
+/* =========================================================
+   LARGE LAPTOP / DESKTOP
+   ========================================================= */
+
+@media screen and (min-width: 1024px) {
+
+    body {
+        padding: 35px 50px;
+    }
+
+    /* Main container */
+    .container {
+        width: 100%;
+        max-width: 1000px;
+        margin: 0 auto;
+    }
+
+    /* Quiz header */
+    .quiz-header {
+        margin-bottom: 25px;
+    }
+
+    .quiz-header h1 {
+        font-size: 2.8rem;
+        margin-bottom: 8px;
+    }
+
+    .quiz-header p {
+        font-size: 1.1rem;
+    }
+
+    /* Timer */
+    .timer-section {
+        margin-bottom: 25px;
+        top: 20px;
+    }
+
+    .timer-circle {
+        width: 90px;
+        height: 90px;
+    }
+
+    .timer-circle span {
+        width: 76px;
+        height: 76px;
+    }
+
+    #question-timer {
+        font-size: 1.7rem;
+    }
+
+    /* Question card */
+    .question-card {
+        padding: 35px 40px;
+        border-radius: 24px;
+        margin-bottom: 25px;
+    }
+
+    .question-card h2 {
+        font-size: 1.8rem;
+        line-height: 1.6;
+        margin-bottom: 22px;
+    }
+
+    /* Question media */
+    .question-image,
+    .question-video,
+    .question-media {
+        max-width: 800px;
+        max-height: 450px;
+        object-fit: contain;
+        margin: 20px auto;
+        border-radius: 16px;
+    }
+
+    /* Video link */
+    .video-link {
+        margin-bottom: 22px;
+    }
+
+    .video-link a {
+        padding: 12px 24px;
+        font-size: 1rem;
+    }
+
+    /* Choices */
+    .choices {
+        gap: 16px;
+    }
+
+    .choice-content {
+        padding: 18px 20px;
+        border-radius: 16px;
+        gap: 18px;
+    }
+
+    .choice-content:hover {
+        background: rgba(255, 255, 255, 0.18);
+        transform: translateY(-2px);
+    }
+
+    .choice-image {
+        width: 110px;
+        height: 110px;
+        min-width: 110px;
+        border-radius: 12px;
+    }
+
+    .choice-text {
+        font-size: 1.2rem;
+        line-height: 1.5;
+    }
+
+    /* Submit button */
+    .submit-section {
+        bottom: 20px;
+        margin-top: 20px;
+    }
+
+    .submit-btn {
+        max-width: 500px;
+        padding: 17px 30px;
+        font-size: 1.15rem;
+        border-radius: 100px;
+    }
+
+    .submit-btn:hover {
+        background: #00b873;
+        transform: translateY(-2px);
+    }
+
+    /* Footer */
+    .footer {
+        font-size: 1rem;
+        padding: 15px 0 25px;
+    }
+}
+
+
+/* =========================================================
+   EXTRA LARGE DESKTOP
+   ========================================================= */
+
+@media screen and (min-width: 1366px) {
+
+    body {
+        padding: 45px 60px;
+    }
+
+    .container {
+        max-width: 1100px;
+    }
+
+    /* Header */
+    .quiz-header h1 {
+        font-size: 3.2rem;
+    }
+
+    .quiz-header p {
+        font-size: 1.15rem;
+    }
+
+    /* Timer */
+    .timer-circle {
+        width: 100px;
+        height: 100px;
+    }
+
+    .timer-circle span {
+        width: 84px;
+        height: 84px;
+    }
+
+    #question-timer {
+        font-size: 1.9rem;
+    }
+
+    /* Question card */
+    .question-card {
+        padding: 45px 55px;
+    }
+
+    .question-card h2 {
+        font-size: 2rem;
+    }
+
+    /* Choices */
+    .choice-content {
+        padding: 20px 24px;
+    }
+
+    .choice-image {
+        width: 120px;
+        height: 120px;
+        min-width: 120px;
+    }
+
+    .choice-text {
+        font-size: 1.3rem;
+    }
+
+    /* Submit */
+    .submit-btn {
+        max-width: 550px;
+        font-size: 1.2rem;
+        padding: 18px 35px;
+    }
+}
+
