@@ -53,44 +53,36 @@
 
             {% if question.image %}
 
-        <div style="
-                margin-top: 8px;
-                margin-bottom: 10px;
-            ">
+        <div id="current-question-image">
 
             <p style="
-                    font-size: 13px;
-                    margin-bottom: 6px;
-                ">
+		font-size: 13px;
+		margin-bottom: 6px;
+	">
                 Current Question Image:
             </p>
 
-
             <img src="{{ question.image.url }}" alt="Question Image" style="
-                        display: block;
-                        width: 100%;
-                        max-width: 450px;
-                        max-height: 250px;
-                        object-fit: contain;
-                        border-radius: 10px;
-                        margin-bottom: 8px;
-                    ">
-
-
-            <input type="hidden" name="remove_question_image" id="remove_question_image" value="0">
-
+			display: block;
+			width: 100%;
+			max-width: 450px;
+			max-height: 250px;
+			object-fit: contain;
+			border-radius: 10px;
+			margin-bottom: 8px;
+		">
 
             <button type="button" id="removeQuestionImageBtn" style="
-                        padding: 7px 12px;
-                        background: #ff4d4d;
-                        color: white;
-                        border: none;
-                        border-radius: 7px;
-                        font-size: 12px;
-                        font-weight: 600;
-                        cursor: pointer;
-                    ">
-                ✕ Remove Current Image
+			padding: 7px 12px;
+			background: #ff4d4d;
+			color: white;
+			border: none;
+			border-radius: 7px;
+			font-size: 12px;
+			font-weight: 600;
+			cursor: pointer;
+		">
+                ✕ Remove Image
             </button>
 
         </div>
@@ -100,19 +92,18 @@
 
         {{ form.image }}
 
-
         <button type="button" id="clearImageBtn" style="
-                display: none;
-                margin-top: 8px;
-                padding: 7px 12px;
-                background: #ff4d4d;
-                color: white;
-                border: none;
-                border-radius: 7px;
-                font-size: 12px;
-                font-weight: 600;
-                cursor: pointer;
-            ">
+		display: none;
+		margin-top: 8px;
+		padding: 7px 12px;
+		background: #ff4d4d;
+		color: white;
+		border: none;
+		border-radius: 7px;
+		font-size: 12px;
+		font-weight: 600;
+		cursor: pointer;
+	">
             ✕ Remove Selected Image
         </button>
 
@@ -164,7 +155,7 @@
 
         <div id="choice-section">
 
-            ```
+
             {{ formset.management_form }}
 
             {% for choice_form in formset %}
@@ -297,7 +288,7 @@
             {% endif %}
 
             {% endfor %}
-            ```
+
 
         </div>
 
@@ -525,8 +516,8 @@
     /* =========================================================
        REMOVE EXISTING QUESTION IMAGE
     ========================================================= */
-
     document.addEventListener("DOMContentLoaded", function () {
+
 
         const button =
             document.getElementById(
@@ -536,6 +527,11 @@
         const flag =
             document.getElementById(
                 "remove_question_image"
+            );
+
+        const imageContainer =
+            document.getElementById(
+                "current-question-image"
             );
 
 
@@ -548,34 +544,25 @@
             "click",
             function () {
 
-                if (flag.value === "0") {
+                // Tell Django to remove the existing image
+                flag.value = "1";
 
-                    flag.value = "1";
 
-                    button.textContent =
-                        "↩ Keep Current Image";
-
-                    button.style.background =
-                        "#117373";
-
+                // Hide the existing image and button
+                if (imageContainer) {
+                    imageContainer.style.display = "none";
                 }
 
                 else {
-
-                    flag.value = "0";
-
-                    button.textContent =
-                        "✕ Remove Current Image";
-
-                    button.style.background =
-                        "#ff4d4d";
-
+                    button.style.display = "none";
                 }
 
             }
         );
 
+
     });
+
 
 
     /* =========================================================
@@ -694,62 +681,74 @@
 
     document.addEventListener("DOMContentLoaded", function () {
 
-        const buttons =
-            document.querySelectorAll(
-                ".remove-existing-choice-image"
+        const button =
+            document.getElementById(
+                "removeQuestionImageBtn"
+            );
+
+        const imageContainer =
+            document.getElementById(
+                "current-question-image"
+            );
+
+        const imageInput =
+            document.getElementById(
+                "id_image"
+            );
+
+        const clearButton =
+            document.getElementById(
+                "clearImageBtn"
             );
 
 
-        buttons.forEach(function (button) {
+        if (!button || !imageContainer) {
+            return;
+        }
 
-            button.addEventListener(
-                "click",
+
+        button.addEventListener(
+            "click",
+            function () {
+
+                // Hide current image
+                imageContainer.style.display = "none";
+
+                // Hide remove button
+                button.style.display = "none";
+
+                // Keep file input available
+                if (imageInput) {
+                    imageInput.style.display = "block";
+                }
+
+            }
+        );
+
+
+        // Show the normal clear button
+        // when a new image is selected
+
+        if (imageInput && clearButton) {
+
+            imageInput.addEventListener(
+                "change",
                 function () {
 
-                    const choiceId =
-                        this.dataset.choiceId;
+                    if (
+                        this.files &&
+                        this.files.length > 0
+                    ) {
 
-
-                    const flag =
-                        document.getElementById(
-                            "remove_choice_image_" +
-                            choiceId
-                        );
-
-
-                    if (!flag) {
-                        return;
-                    }
-
-
-                    if (flag.value === "0") {
-
-                        flag.value = "1";
-
-                        this.textContent =
-                            "↩ Keep Current Image";
-
-                        this.style.background =
-                            "#117373";
-
-                    }
-
-                    else {
-
-                        flag.value = "0";
-
-                        this.textContent =
-                            "✕ Remove Current Image";
-
-                        this.style.background =
-                            "#ff4d4d";
+                        clearButton.style.display =
+                            "inline-block";
 
                     }
 
                 }
             );
 
-        });
+        }
 
     });
 
