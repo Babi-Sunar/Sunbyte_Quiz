@@ -18,7 +18,8 @@ from .forms import (
 )
 from .models import Choice, Participant, Question, QuizSession, Response, Category
 
-
+import cloudinary.uploader
+from io import BytesIO
 # =======================================================================
 # Auth & landing
 # =======================================================================
@@ -211,6 +212,7 @@ def manage_session(request, code):
 
     buffer = io.BytesIO()
     qr.save(buffer, format="PNG")
+    buffer.seek(0)
 
     qr_image = base64.b64encode(
         buffer.getvalue()
@@ -751,6 +753,7 @@ def host_room(request, code):
 
     buffer = io.BytesIO()
     qr.save(buffer, format="PNG")
+    buffer.seek(0)
 
     qr_image = base64.b64encode(
         buffer.getvalue()
@@ -766,9 +769,6 @@ def host_room(request, code):
         "quizapp/hostSession_room.html",
         context,
     )
-    
-# live count
-from django.http import JsonResponse, request
 
 @login_required
 def participant_count(request, code):
