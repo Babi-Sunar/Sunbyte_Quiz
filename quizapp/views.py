@@ -536,6 +536,10 @@ def edit_question(request, code, question_id):
         session=session,
     )
 
+    # =====================================================
+    # POST
+    # =====================================================
+
     if request.method == "POST":
 
         form = QuestionForm(
@@ -544,7 +548,10 @@ def edit_question(request, code, question_id):
             instance=question,
         )
 
-        # Validate question form first
+        # =================================================
+        # QUESTION FORM INVALID
+        # =================================================
+
         if not form.is_valid():
 
             formset = ChoiceFormSet(
@@ -567,7 +574,10 @@ def edit_question(request, code, question_id):
                 },
             )
 
-        # Get the NEW question type selected by the user
+        # =================================================
+        # NEW QUESTION TYPE
+        # =================================================
+
         new_question_type = form.cleaned_data["question_type"]
 
         # =====================================================
@@ -580,49 +590,60 @@ def edit_question(request, code, question_id):
 
             if tf_form.is_valid():
 
-                form.save()
+                # Save question first
+                question = form.save()
 
-                correct = tf_form.cleaned_data["correct_answer"]
+                correct = tf_form.cleaned_data[
+                    "correct_answer"
+                ]
 
+                # Get existing choices
                 choices = list(
                     question.choices.order_by("order")
                 )
 
-                # If existing choices are already present,
-                # use them for True/False answers.
+                # ---------------------------------------------
+                # EXISTING CHOICES AVAILABLE
+                # ---------------------------------------------
+
                 if len(choices) >= 2:
 
-                    choices[0].text = "True"
-                    choices[0].is_correct = (
+                    true_choice = choices[0]
+                    false_choice = choices[1]
+
+                    true_choice.text = "True"
+                    true_choice.order = 1
+                    true_choice.is_correct = (
                         correct == "true"
                     )
-                    choices[0].order = 1
-                    choices[0].save()
+                    true_choice.save()
 
-                    choices[1].text = "False"
-                    choices[1].is_correct = (
+                    false_choice.text = "False"
+                    false_choice.order = 2
+                    false_choice.is_correct = (
                         correct == "false"
                     )
-                    choices[1].order = 2
-                    choices[1].save()
+                    false_choice.save()
 
-                    # Remove any extra choices
+                    # Remove extra choices
                     if len(choices) > 2:
 
                         Choice.objects.filter(
                             question=question
                         ).exclude(
                             id__in=[
-                                choices[0].id,
-                                choices[1].id,
+                                true_choice.id,
+                                false_choice.id,
                             ]
                         ).delete()
 
+                # ---------------------------------------------
+                # NO EXISTING CHOICES
+                # ---------------------------------------------
+
                 else:
 
-                    # No existing choices:
-                    # create True and False choices.
-
+                    # Remove anything that may exist
                     Choice.objects.filter(
                         question=question
                     ).delete()
@@ -631,14 +652,18 @@ def edit_question(request, code, question_id):
                         question=question,
                         text="True",
                         order=1,
-                        is_correct=(correct == "true"),
+                        is_correct=(
+                            correct == "true"
+                        ),
                     )
 
                     Choice.objects.create(
                         question=question,
                         text="False",
                         order=2,
-                        is_correct=(correct == "false"),
+                        is_correct=(
+                            correct == "false"
+                        ),
                     )
 
                 messages.success(
@@ -651,7 +676,10 @@ def edit_question(request, code, question_id):
                     code=session.code,
                 )
 
-            # T/F form invalid
+            # ---------------------------------------------
+            # TRUE/FALSE FORM INVALID
+            # ---------------------------------------------
+
             formset = ChoiceFormSet(
                 instance=question
             )
@@ -682,29 +710,94 @@ def edit_question(request, code, question_id):
 
             tf_form = TrueFalseAnswerForm()
 
+            # ---------------------------------------------
+            # FORMSET VALIDATION
+            # ---------------------------------------------
+
             if formset.is_valid():
 
-                form.save()
+                # Check that there is exactly one correct answer
+                correct_count = sum(
+                    1
+                    for choice in formset
+                    if choice.cleaned_data
+                    and choice.cleaned_data.get(
+                        "is_correct"
+                    )
+                )
+
+                if correct_count == 0:
+
+                    messages.error(
+                        request,
+                        "Please select one correct answer."
+                    )
+
+                    return render(
+                        request,
+                        "quizapp/edit_question.html",
+                        {
+                            "session": session,
+                            "question": question,
+                            "form": form,
+                            "formset": formset,
+                            "tf_form": tf_form,
+                        },
+                    )
+
+                if correct_count > 1:
+
+                    messages.error(
+                        request,
+                        "Please select only one correct answer."
+                    )
+
+                    return render(
+                        request,
+                        "quizapp/edit_question.html",
+                        {
+                            "session": session,
+                            "question": question,
+                            "form": form,
+                            "formset": formset,
+                            "tf_form": tf_form,
+                        },
+                    )
+
+                # -----------------------------------------
+                # SAVE QUESTION
+                # -----------------------------------------
+
+                question = form.save()
+
+                # -----------------------------------------
+                # SAVE FORMSET
+                # -----------------------------------------
 
                 choices = formset.save(
                     commit=False
                 )
 
-                # IDs of choices that are still present
-                existing_choice_ids = [
+                # IDs of submitted existing choices
+                submitted_choice_ids = [
                     choice.id
                     for choice in choices
                     if choice.id
                 ]
 
-                # Delete choices removed from the formset
+                # -----------------------------------------
+                # DELETE REMOVED CHOICES
+                # -----------------------------------------
+
                 Choice.objects.filter(
                     question=question
                 ).exclude(
-                    id__in=existing_choice_ids
+                    id__in=submitted_choice_ids
                 ).delete()
 
-                has_correct = False
+                # -----------------------------------------
+                # SAVE EACH CHOICE
+                # -----------------------------------------
 
                 for index, choice in enumerate(
                     choices,
@@ -715,34 +808,70 @@ def edit_question(request, code, question_id):
 
                     choice.order = index
 
-                    if choice.is_correct:
-
-                        has_correct = True
-
                     choice.save()
 
-                if not has_correct:
+                # -----------------------------------------
+                # PROCESS CHOICE IMAGE REMOVAL
+                # -----------------------------------------
 
-                    messages.error(
-                        request,
-                        "Please select one correct answer."
+                for choice in choices:
+
+                    if not choice.id:
+                        continue
+
+                    remove_flag = request.POST.get(
+                        f"remove_choice_image_{choice.id}"
                     )
 
-                else:
+                    if remove_flag == "1":
 
-                    messages.success(
-                        request,
-                        "Question updated successfully."
+                        if choice.image:
+
+                            choice.image.delete(
+                                save=False
+                            )
+
+                        choice.image = None
+
+                        choice.save(
+                            update_fields=["image"]
+                        )
+
+                # -----------------------------------------
+                # PROCESS QUESTION IMAGE REMOVAL
+                # -----------------------------------------
+
+                remove_question_image = request.POST.get(
+                    "remove_question_image"
+                )
+
+                if remove_question_image == "1":
+
+                    if question.image:
+
+                        question.image.delete(
+                            save=False
+                        )
+
+                    question.image = None
+
+                    question.save(
+                        update_fields=["image"]
                     )
 
-                    return redirect(
-                        "quizapp:manage_session",
-                        code=session.code,
-                    )
+                messages.success(
+                    request,
+                    "Question updated successfully."
+                )
 
-    # =========================================================
+                return redirect(
+                    "quizapp:manage_session",
+                    code=session.code,
+                )
+
+    # =====================================================
     # GET
-    # =========================================================
+    # =====================================================
 
     else:
 
@@ -750,15 +879,20 @@ def edit_question(request, code, question_id):
             instance=question
         )
 
-        # IMPORTANT:
-        # Always provide the MCQ formset.
-        # This allows T/F -> MCQ switching.
+        # Always provide MCQ formset.
+        # This allows:
+        #
+        # T/F -> MCQ
+        #
+        # switching.
 
         formset = ChoiceFormSet(
             instance=question
         )
 
-        # True/False form
+        # ---------------------------------------------
+        # TRUE / FALSE
+        # ---------------------------------------------
 
         if question.question_type == "true_false":
 
@@ -768,12 +902,13 @@ def edit_question(request, code, question_id):
 
                 if choice.is_correct:
 
-                    if choice.text.lower() == "false":
-
+                    if (
+                        choice.text.lower()
+                        == "false"
+                    ):
                         correct = "false"
 
                     else:
-
                         correct = "true"
 
             tf_form = TrueFalseAnswerForm(
@@ -782,13 +917,17 @@ def edit_question(request, code, question_id):
                 }
             )
 
+        # ---------------------------------------------
+        # MCQ
+        # ---------------------------------------------
+
         else:
 
             tf_form = TrueFalseAnswerForm()
 
-    # =========================================================
+    # =====================================================
     # RENDER
-    # =========================================================
+    # =====================================================
 
     return render(
         request,
@@ -801,6 +940,8 @@ def edit_question(request, code, question_id):
             "tf_form": tf_form,
         },
     )
+
+
 @never_cache
 @login_required
 def publish_session(request, code):

@@ -1,80 +1,65 @@
+css
 /* =========================================================
-   SUNBYTE QUIZ - QUESTION / EDIT QUESTION FORM
-   Mobile First
-   Larger Touch-Friendly UI
-========================================================= */
-
-/* =========================================================
-   RESET
+   SUNBYTE QUIZ — EDIT QUESTION
+   Mobile + Laptop Responsive Design
 ========================================================= */
 
 * {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
+    font-family: "Poppins", sans-serif;
 }
 
-
-/* =========================================================
-   BODY
-========================================================= */
+html {
+    scroll-behavior: smooth;
+}
 
 body {
     min-height: 100vh;
 
-    background: linear-gradient(135deg,
-            #117373 0%,
-            #0d5f5f 45%,
-            #083f3f 100%);
+    background:
+        radial-gradient(circle at top left,
+            rgba(255, 195, 0, 0.18),
+            transparent 35%),
+        radial-gradient(circle at bottom right,
+            rgba(17, 115, 115, 0.20),
+            transparent 40%),
+        #f4f8f8;
 
-    font-family: "Poppins", sans-serif;
-    color: #ffffff;
+    color: #117373;
 
-    padding: 24px 14px 50px;
+    padding: 20px 14px 50px;
 
     overflow-x: hidden;
 }
 
 
 /* =========================================================
-   MAIN CONTAINER
+   MAIN PAGE CONTAINER
 ========================================================= */
 
-.container {
-    width: 100%;
-    max-width: 680px;
-
-    margin: 0 auto;
-
-    background: rgba(255, 255, 255, 0.98);
-
-    border-radius: 20px;
-
-    padding: 30px 18px 38px;
-
-    box-shadow:
-        0 18px 40px rgba(0, 0, 0, 0.27),
-        0 6px 18px rgba(0, 0, 0, 0.16);
+body>* {
+    max-width: 100%;
 }
 
+h1 {
+    width: 100%;
+    max-width: 900px;
 
-/* =========================================================
-   HEADING
-========================================================= */
-
-.container h1 {
-    text-align: center;
-
-    font-size: 31px;
-    line-height: 1.25;
-
-    font-weight: 800;
+    margin: 10px auto 8px;
 
     color: #117373;
 
-    margin-bottom: 10px;
+    font-size: 30px;
+    font-weight: 900;
 
-    letter-spacing: 0.3px;
+    text-align: center;
+
+    letter-spacing: -0.5px;
+
+    text-shadow:
+        rgba(0, 0, 0, 0.12) 0 3px 5px;
 }
 
 
@@ -83,105 +68,116 @@ body {
 ========================================================= */
 
 .session-name {
-    text-align: center;
+    width: 100%;
+    max-width: 900px;
 
-    color: #555555;
+    margin: 0 auto 25px;
+
+    padding: 12px 15px;
+
+    background: rgba(255, 255, 255, 0.88);
+
+    border-left: 5px solid #ffc300;
+
+    border-radius: 10px;
+
+    color: #117373;
 
     font-size: 16px;
-    line-height: 1.5;
+    font-weight: 800;
 
-    font-weight: 600;
+    text-align: center;
 
-    margin-bottom: 30px;
-
-    word-break: break-word;
+    box-shadow:
+        0 5px 18px rgba(0, 0, 0, 0.08);
 }
 
 
 /* =========================================================
-   FORM
+   FORM CARD
 ========================================================= */
 
-form {
+#editQuestionForm {
     width: 100%;
+    max-width: 900px;
+
+    margin: 0 auto;
+
+    padding: 22px 17px 30px;
+
+    background: rgba(255, 255, 255, 0.96);
+
+    border: 1px solid rgba(17, 115, 115, 0.12);
+
+    border-radius: 18px;
+
+    box-shadow:
+        0 12px 35px rgba(17, 115, 115, 0.13);
+
+    backdrop-filter: blur(5px);
 }
 
 
 /* =========================================================
-   LABEL / FIELD GROUP
+   LABELS
 ========================================================= */
 
 .label {
     display: block;
 
-    margin-bottom: 23px;
+    margin: 0 0 22px;
 
     color: #117373;
 
-    font-size: 16px;
-    line-height: 1.65;
+    font-size: 15px;
+    font-weight: 800;
 
-    font-weight: 700;
+    line-height: 1.7;
 }
 
 
 /* =========================================================
-   INPUTS
+   FORM INPUTS
 ========================================================= */
 
-.label input,
-.label textarea,
-.label select,
-.form-input,
-select,
-input[type="text"],
-input[type="number"],
-input[type="file"],
-textarea {
+#editQuestionForm input[type="text"],
+#editQuestionForm input[type="number"],
+#editQuestionForm input[type="file"],
+#editQuestionForm select,
+#editQuestionForm textarea {
+    display: block;
+
     width: 100%;
 
-    margin-top: 9px;
+    margin-top: 8px;
 
-    padding: 15px 15px;
+    padding: 13px 14px;
 
-    border: 2px solid #d5dddd;
+    border: 2px solid #d9e7e7;
 
-    border-radius: 11px;
+    border-radius: 10px;
 
     background: #ffffff;
 
-    color: #333333;
+    color: #117373;
 
     font-family: "Poppins", sans-serif;
 
-    font-size: 16px;
-    line-height: 1.45;
+    font-size: 15px;
 
     outline: none;
 
     transition:
         border-color 0.2s ease,
         box-shadow 0.2s ease,
-        transform 0.15s ease;
+        background 0.2s ease;
 }
 
 
-/* =========================================================
-   TEXT INPUT
-========================================================= */
+/* Textarea */
 
-input[type="text"],
-input[type="number"] {
-    min-height: 52px;
-}
-
-
-/* =========================================================
-   TEXTAREA
-========================================================= */
-
-textarea {
-    min-height: 145px;
+#editQuestionForm textarea {
+    min-height: 130px;
 
     resize: vertical;
 
@@ -189,35 +185,19 @@ textarea {
 }
 
 
-/* =========================================================
-   SELECT
-========================================================= */
+/* Focus */
 
-select {
-    min-height: 52px;
-
-    cursor: pointer;
-
-    appearance: auto;
-}
-
-
-/* =========================================================
-   FOCUS
-========================================================= */
-
-.label input:focus,
-.label textarea:focus,
-.label select:focus,
-.form-input:focus,
-select:focus,
-input[type="text"]:focus,
-input[type="number"]:focus,
-textarea:focus {
+#editQuestionForm input[type="text"]:focus,
+#editQuestionForm input[type="number"]:focus,
+#editQuestionForm input[type="file"]:focus,
+#editQuestionForm select:focus,
+#editQuestionForm textarea:focus {
     border-color: #117373;
 
+    background: #fbffff;
+
     box-shadow:
-        0 0 0 4px rgba(17, 115, 115, 0.13);
+        0 0 0 4px rgba(255, 195, 0, 0.20);
 }
 
 
@@ -225,186 +205,58 @@ textarea:focus {
    FILE INPUT
 ========================================================= */
 
-input[type="file"] {
-    min-height: 56px;
+#editQuestionForm input[type="file"] {
+    padding: 10px;
 
-    padding: 9px;
-
-    background: #f7fafa;
+    background: #f8fbfb;
 
     cursor: pointer;
-
-    font-size: 15px;
 }
 
+#editQuestionForm input[type="file"]::file-selector-button {
+    margin-right: 10px;
 
-/* =========================================================
-   FILE SELECT BUTTON
-========================================================= */
+    padding: 9px 12px;
 
-input[type="file"]::file-selector-button {
     border: none;
+
+    border-radius: 7px;
 
     background: #117373;
 
-    color: #ffffff;
-
-    padding: 11px 14px;
-
-    border-radius: 8px;
-
-    margin-right: 10px;
+    color: white;
 
     font-family: "Poppins", sans-serif;
-
-    font-size: 14px;
 
     font-weight: 700;
 
     cursor: pointer;
-
-    transition:
-        background 0.2s ease,
-        transform 0.15s ease;
-}
-
-input[type="file"]::file-selector-button:hover {
-    background: #0d5f5f;
-}
-
-input[type="file"]::file-selector-button:active {
-    transform: scale(0.97);
 }
 
 
 /* =========================================================
-   CURRENT QUESTION IMAGE
+   SECTION HEADINGS
 ========================================================= */
 
-#current-question-image {
-    width: 100%;
+#choice-section h2,
+#tf-section h2 {
+    margin-top: 28px;
+    margin-bottom: 18px;
 
-    margin-top: 12px;
+    padding: 11px 13px;
 
-    padding: 14px;
+    border-left: 5px solid #ffc300;
 
-    background: #f7fafa;
+    border-radius: 7px;
 
-    border: 2px solid #e0e7e7;
+    background: #f3f9f9;
 
-    border-radius: 13px;
-}
+    color: #117373 !important;
 
+    font-size: 21px !important;
+    font-weight: 900;
 
-/* =========================================================
-   CURRENT IMAGES
-========================================================= */
-
-#current-question-image img,
-.current-choice-image,
-.new-choice-preview,
-#questionNewPreview {
-    display: block;
-
-    width: 100%;
-
-    max-width: 450px;
-
-    max-height: 280px;
-
-    object-fit: contain;
-
-    margin: 10px auto;
-
-    border-radius: 12px;
-
-    background: #f5f7f7;
-
-    border: 1px solid #dfe5e5;
-}
-
-
-/* =========================================================
-   EXISTING OPTION IMAGE CONTAINER
-========================================================= */
-
-.existing-choice-image-container {
-    width: 100%;
-
-    margin-top: 10px;
-
-    padding: 12px;
-
-    background: #ffffff;
-
-    border: 2px solid #e0e7e7;
-
-    border-radius: 12px;
-}
-
-
-/* =========================================================
-   IMAGE REMOVE BUTTONS
-========================================================= */
-
-#removeQuestionImageBtn,
-.remove-existing-choice-image,
-#clearImageBtn,
-.clear-choice-image-btn {
-    display: inline-block;
-
-    margin-top: 10px;
-
-    padding: 10px 14px !important;
-
-    border: none !important;
-
-    border-radius: 9px !important;
-
-    font-family: "Poppins", sans-serif;
-
-    font-size: 14px !important;
-
-    font-weight: 700 !important;
-
-    line-height: 1.3;
-
-    cursor: pointer;
-
-    transition:
-        transform 0.15s ease,
-        opacity 0.15s ease,
-        box-shadow 0.15s ease;
-}
-
-#removeQuestionImageBtn:hover,
-.remove-existing-choice-image:hover,
-#clearImageBtn:hover,
-.clear-choice-image-btn:hover {
-    opacity: 0.92;
-
-    transform: translateY(-1px);
-
-    box-shadow:
-        0 4px 10px rgba(0, 0, 0, 0.12);
-}
-
-#removeQuestionImageBtn:active,
-.remove-existing-choice-image:active,
-#clearImageBtn:active,
-.clear-choice-image-btn:active {
-    transform: translateY(1px);
-}
-
-
-/* =========================================================
-   CHOICE SECTION
-========================================================= */
-
-#choice-section {
-    width: 100%;
-
-    margin-top: 12px;
+    line-height: 1.4;
 }
 
 
@@ -413,67 +265,47 @@ input[type="file"]::file-selector-button:active {
 ========================================================= */
 
 .choice-row {
-    width: 100%;
+    margin: 0 0 20px;
 
-    padding: 22px 15px;
+    padding: 18px 14px;
 
-    margin-bottom: 18px;
+    background:
+        linear-gradient(145deg,
+            #ffffff,
+            #f7fbfb);
 
-    background: #f7fafa;
+    border: 1px solid #dceaea;
 
-    border: 2px solid #dfe7e7;
-
-    border-radius: 16px;
-
-    transition:
-        border-color 0.2s ease,
-        box-shadow 0.2s ease;
-}
-
-.choice-row:focus-within {
-    border-color: #117373;
+    border-radius: 14px;
 
     box-shadow:
-        0 7px 18px rgba(17, 115, 115, 0.10);
+        0 5px 16px rgba(17, 115, 115, 0.07);
 }
 
 
-/* =========================================================
-   OPTION HEADING
-========================================================= */
+/* Option title */
 
 .choice-row h3 {
-    font-size: 21px;
+    display: flex;
+    align-items: center;
 
-    line-height: 1.3;
+    min-height: 42px;
 
+    margin-bottom: 14px;
+
+    padding: 9px 12px;
+
+    border-radius: 8px;
+
+    background: #117373;
+
+    color: #ffffff;
+
+    font-size: 17px;
     font-weight: 800;
 
-    color: #117373;
-
-    margin-bottom: 15px;
-}
-
-
-/* =========================================================
-   CHOICE LABEL
-========================================================= */
-
-.choice-row .label {
-    margin-bottom: 17px;
-
-    font-size: 16px;
-}
-
-
-/* =========================================================
-   NEW IMAGE PREVIEW
-========================================================= */
-
-.new-choice-preview {
-    margin-top: 14px !important;
-
-    max-height: 280px;
+    box-shadow:
+        0 4px 10px rgba(17, 115, 115, 0.18);
 }
 
 
@@ -483,44 +315,30 @@ input[type="file"]::file-selector-button:active {
 
 .correct-label {
     display: flex;
-
     align-items: center;
+    gap: 10px;
 
-    gap: 11px;
+    width: fit-content;
 
-    margin-top: 16px;
+    margin-top: 14px;
+    padding: 10px 13px;
 
-    padding: 13px 14px;
+    border-radius: 9px;
 
-    min-height: 50px;
-
-    border-radius: 10px;
-
-    background: rgba(255, 195, 0, 0.15);
+    background: rgba(255, 195, 0, 0.16);
 
     color: #117373;
 
-    font-size: 15px;
-
-    font-weight: 700;
+    font-size: 14px;
+    font-weight: 800;
 
     cursor: pointer;
 }
 
-
-/* =========================================================
-   CORRECT ANSWER CHECKBOX / RADIO
-========================================================= */
-
 .correct-label input[type="checkbox"],
 .correct-label input[type="radio"] {
-    width: 21px;
-
-    height: 21px;
-
-    margin: 0;
-
-    flex-shrink: 0;
+    width: 20px;
+    height: 20px;
 
     accent-color: #117373;
 
@@ -529,17 +347,136 @@ input[type="file"]::file-selector-button:active {
 
 
 /* =========================================================
-   DIVIDER
+   DIVIDERS
 ========================================================= */
 
-.choice-row+hr {
-    border: none;
-
+#choice-section hr {
     height: 1px;
 
-    background: #dfe6e6;
+    margin: 22px 5px;
 
-    margin: 10px 0 22px;
+    border: none;
+
+    background:
+        linear-gradient(to right,
+            transparent,
+            #cbdede,
+            transparent);
+}
+
+
+/* =========================================================
+   CURRENT IMAGE
+========================================================= */
+
+#current-question-image,
+.existing-choice-image-container {
+    margin-top: 12px;
+    margin-bottom: 14px;
+
+    padding: 12px;
+
+    border-radius: 12px;
+
+    background: #f3f8f8;
+
+    border: 1px solid #d9e8e8;
+}
+
+
+/* Image */
+
+#current-question-image-preview,
+.current-choice-image {
+    width: 100% !important;
+
+    max-width: 100% !important;
+
+    height: auto;
+
+    max-height: 280px !important;
+
+    object-fit: contain;
+
+    background: white;
+
+    border: 1px solid #dce8e8;
+
+    padding: 5px;
+}
+
+
+/* =========================================================
+   IMAGE PREVIEWS
+========================================================= */
+
+#questionNewPreview,
+.new-choice-preview {
+    width: 100% !important;
+
+    max-width: 100% !important;
+
+    height: auto;
+
+    max-height: 280px !important;
+
+    padding: 5px;
+
+    object-fit: contain;
+
+    background: #ffffff;
+
+    border: 1px solid #dce8e8;
+
+    border-radius: 10px;
+}
+
+
+/* =========================================================
+   REMOVE IMAGE BUTTONS
+========================================================= */
+
+#removeQuestionImageBtn,
+#clearImageBtn,
+.remove-existing-choice-image,
+.clear-choice-image-btn {
+    border: none !important;
+
+    background: #ff4d4d !important;
+
+    color: #ffffff !important;
+
+    padding: 9px 13px !important;
+
+    border-radius: 8px !important;
+
+    font-family: "Poppins", sans-serif;
+
+    font-size: 13px !important;
+
+    font-weight: 800 !important;
+
+    cursor: pointer;
+
+    transition:
+        transform 0.15s ease,
+        background 0.15s ease;
+}
+
+#removeQuestionImageBtn:hover,
+#clearImageBtn:hover,
+.remove-existing-choice-image:hover,
+.clear-choice-image-btn:hover {
+    background: #e63b3b !important;
+
+    transform: translateY(-1px);
+}
+
+#removeQuestionImageBtn:active,
+#clearImageBtn:active,
+.remove-existing-choice-image:active,
+.clear-choice-image-btn:active {
+    transform: scale(0.97);
 }
 
 
@@ -548,42 +485,15 @@ input[type="file"]::file-selector-button:active {
 ========================================================= */
 
 #tf-section {
-    margin-top: 14px;
+    margin-top: 25px;
 
-    padding: 20px 16px;
+    padding: 16px 14px;
 
-    background: #f7fafa;
+    background: #f8fbfb;
 
-    border: 2px solid #dfe7e7;
+    border: 1px solid #dceaea;
 
-    border-radius: 16px;
-}
-
-
-/* =========================================================
-   TRUE / FALSE LABEL
-========================================================= */
-
-#tf-section label {
-    color: #117373;
-
-    font-size: 16px;
-
-    font-weight: 700;
-}
-
-
-/* =========================================================
-   TRUE / FALSE INPUTS
-========================================================= */
-
-#tf-section input,
-#tf-section select {
-    margin-top: 9px;
-
-    min-height: 50px;
-
-    font-size: 16px;
+    border-radius: 14px;
 }
 
 
@@ -591,93 +501,161 @@ input[type="file"]::file-selector-button:active {
    SAVE BUTTON
 ========================================================= */
 
-button[type="submit"] {
+#editQuestionForm button[type="submit"] {
     display: block;
 
     width: 100%;
 
-    margin-top: 30px;
+    min-height: 55px;
 
-    padding: 17px 20px;
+    margin-top: 30px !important;
 
-    border: none;
+    padding: 14px 18px !important;
 
-    border-radius: 12px;
+    border: none !important;
 
-    background: #ffc300;
+    border-radius: 11px !important;
 
-    color: #117373;
+    background:
+        linear-gradient(135deg,
+            #ffc300,
+            #ffd633) !important;
 
-    font-family: "Poppins", sans-serif;
+    color: #117373 !important;
 
-    font-size: 18px;
+    font-family: "Poppins", sans-serif !important;
 
-    font-weight: 800;
+    font-size: 17px !important;
 
-    line-height: 1.3;
+    font-weight: 900 !important;
+
+    letter-spacing: 0.2px;
 
     cursor: pointer;
 
     box-shadow:
-        0 6px 14px rgba(0, 0, 0, 0.16);
+        0 6px 15px rgba(255, 195, 0, 0.30);
 
     transition:
-        transform 0.15s ease,
-        box-shadow 0.15s ease,
-        background 0.15s ease;
+        transform 0.18s ease,
+        box-shadow 0.18s ease,
+        background 0.18s ease;
 }
 
-button[type="submit"]:hover {
-    background: #ffd333;
+#editQuestionForm button[type="submit"]:hover {
+    transform: translateY(-2px);
 
-    transform: translateY(-1px);
+    background:
+        linear-gradient(135deg,
+            #ffd633,
+            #ffc300) !important;
 
     box-shadow:
-        0 8px 18px rgba(0, 0, 0, 0.19);
+        0 9px 20px rgba(255, 195, 0, 0.38);
 }
 
-button[type="submit"]:active {
-    transform: translateY(1px);
+#editQuestionForm button[type="submit"]:active {
+    transform: scale(0.98);
 }
 
 
 /* =========================================================
-   ERROR MESSAGES
+   DJANGO FORM ERRORS
 ========================================================= */
 
 .errorlist {
+    margin: 6px 0 10px;
+    padding: 0;
+
     list-style: none;
 
-    margin-top: 7px;
+    color: #d93030;
 
-    color: #d93025;
-
-    font-size: 14px;
-
-    font-weight: 600;
-
-    line-height: 1.5;
+    font-size: 13px;
+    font-weight: 700;
 }
 
 .errorlist li {
-    margin-bottom: 4px;
+    padding: 7px 10px;
+
+    border-radius: 7px;
+
+    background: #fff0f0;
+
+    border-left: 4px solid #ff4d4d;
 }
 
 
 /* =========================================================
-   HELP TEXT
+   MOBILE
 ========================================================= */
 
-.helptext {
-    display: block;
+@media (max-width: 600px) {
 
-    margin-top: 7px;
+    body {
+        padding: 14px 10px 40px;
+    }
 
-    color: #777777;
+    h1 {
+        margin-top: 5px;
 
-    font-size: 13px;
+        font-size: 27px;
+    }
 
-    line-height: 1.6;
+    .session-name {
+        margin-bottom: 18px;
+
+        font-size: 14px;
+
+        padding: 10px 12px;
+    }
+
+    #editQuestionForm {
+        padding: 18px 13px 25px;
+
+        border-radius: 15px;
+    }
+
+    .label {
+        margin-bottom: 19px;
+
+        font-size: 14px;
+    }
+
+    #editQuestionForm input[type="text"],
+    #editQuestionForm input[type="number"],
+    #editQuestionForm input[type="file"],
+    #editQuestionForm select,
+    #editQuestionForm textarea {
+        font-size: 14px;
+
+        padding: 12px;
+    }
+
+    #choice-section h2,
+    #tf-section h2 {
+        font-size: 19px !important;
+
+        padding: 10px 11px;
+    }
+
+    .choice-row {
+        padding: 15px 11px;
+    }
+
+    .choice-row h3 {
+        font-size: 16px;
+    }
+
+    .correct-label {
+        font-size: 13px;
+    }
+
+    #editQuestionForm button[type="submit"] {
+        min-height: 52px;
+
+        font-size: 16px !important;
+    }
 }
 
 
@@ -688,133 +666,97 @@ button[type="submit"]:active {
 @media (min-width: 768px) {
 
     body {
-        padding: 50px 30px 70px;
+        padding: 45px 25px 70px;
     }
 
-    .container {
-        max-width: 850px;
+    h1 {
+        max-width: 1000px;
 
-        padding: 42px 45px 50px;
+        margin-bottom: 12px;
 
-        border-radius: 22px;
-    }
-
-    .container h1 {
-        font-size: 36px;
-
-        margin-bottom: 10px;
+        font-size: 38px;
     }
 
     .session-name {
-        font-size: 17px;
+        max-width: 1000px;
 
-        margin-bottom: 34px;
-    }
+        margin-bottom: 30px;
 
-    .label {
-        font-size: 17px;
-
-        margin-bottom: 25px;
-    }
-
-    .label input,
-    .label textarea,
-    .label select,
-    .form-input,
-    select,
-    input[type="text"],
-    input[type="number"],
-    input[type="file"],
-    textarea {
-        font-size: 17px;
-
-        padding: 16px 17px;
-
-        border-radius: 12px;
-    }
-
-    input[type="text"],
-    input[type="number"],
-    select {
-        min-height: 56px;
-    }
-
-    textarea {
-        min-height: 165px;
-    }
-
-    input[type="file"] {
-        min-height: 60px;
-
-        padding: 10px;
-    }
-
-    input[type="file"]::file-selector-button {
-        font-size: 15px;
-
-        padding: 12px 16px;
-    }
-
-    .choice-row {
-        padding: 26px 23px;
-
-        border-radius: 17px;
-
-        margin-bottom: 21px;
-    }
-
-    .choice-row h3 {
-        font-size: 23px;
-
-        margin-bottom: 17px;
-    }
-
-    .choice-row .label {
-        font-size: 17px;
-    }
-
-    .correct-label {
-        font-size: 16px;
-
-        padding: 14px 16px;
-
-        min-height: 54px;
-    }
-
-    .correct-label input[type="checkbox"],
-    .correct-label input[type="radio"] {
-        width: 23px;
-
-        height: 23px;
-    }
-
-    #tf-section {
-        padding: 24px 22px;
-    }
-
-    #tf-section label {
-        font-size: 17px;
-    }
-
-    button[type="submit"] {
-        width: 260px;
-
-        margin-left: auto;
-
-        margin-right: auto;
-
-        padding: 17px 24px;
+        padding: 15px 20px;
 
         font-size: 18px;
     }
 
-    #removeQuestionImageBtn,
-    .remove-existing-choice-image,
-    #clearImageBtn,
-    .clear-choice-image-btn {
-        font-size: 14px !important;
+    #editQuestionForm {
+        max-width: 1000px;
 
-        padding: 11px 16px !important;
+        padding: 38px 42px 45px;
+
+        border-radius: 20px;
+    }
+
+    .label {
+        margin-bottom: 27px;
+
+        font-size: 16px;
+    }
+
+    #editQuestionForm input[type="text"],
+    #editQuestionForm input[type="number"],
+    #editQuestionForm input[type="file"],
+    #editQuestionForm select,
+    #editQuestionForm textarea {
+        margin-top: 10px;
+
+        padding: 15px 16px;
+
+        font-size: 16px;
+
+        border-radius: 11px;
+    }
+
+    #editQuestionForm textarea {
+        min-height: 160px;
+    }
+
+    #choice-section h2,
+    #tf-section h2 {
+        margin-top: 35px;
+
+        padding: 13px 16px;
+
+        font-size: 23px !important;
+    }
+
+    .choice-row {
+        padding: 22px 20px;
+
+        border-radius: 16px;
+    }
+
+    .choice-row h3 {
+        min-height: 48px;
+
+        padding: 11px 15px;
+
+        font-size: 18px;
+    }
+
+    #current-question-image-preview,
+    .current-choice-image,
+    #questionNewPreview,
+    .new-choice-preview {
+        max-height: 350px !important;
+    }
+
+    #editQuestionForm button[type="submit"] {
+        min-height: 62px;
+
+        margin-top: 38px !important;
+
+        font-size: 19px !important;
+
+        border-radius: 12px !important;
     }
 }
 
@@ -823,77 +765,57 @@ button[type="submit"]:active {
    LARGE LAPTOP / DESKTOP
 ========================================================= */
 
-@media (min-width: 1100px) {
+@media (min-width: 1200px) {
 
     body {
-        padding-top: 60px;
-
-        padding-bottom: 80px;
+        padding-top: 55px;
     }
 
-    .container {
-        max-width: 920px;
-
-        padding: 48px 55px 58px;
-    }
-
-    .container h1 {
-        font-size: 40px;
+    h1 {
+        font-size: 42px;
     }
 
     .session-name {
-        font-size: 18px;
+        font-size: 19px;
+    }
 
-        margin-bottom: 38px;
+    #editQuestionForm {
+        max-width: 1050px;
+
+        padding: 45px 50px 50px;
     }
 
     .label {
-        font-size: 18px;
-
-        margin-bottom: 28px;
+        font-size: 17px;
     }
 
-    .label input,
-    .label textarea,
-    .label select,
-    .form-input,
-    select,
-    input[type="text"],
-    input[type="number"],
-    input[type="file"],
-    textarea {
-        font-size: 18px;
-
-        padding: 17px 18px;
-    }
-
-    textarea {
-        min-height: 180px;
-    }
-
-    .choice-row {
-        padding: 30px 27px;
-    }
-
-    .choice-row h3 {
-        font-size: 25px;
-    }
-
-    .choice-row .label {
-        font-size: 18px;
-    }
-
-    .correct-label {
+    #editQuestionForm input[type="text"],
+    #editQuestionForm input[type="number"],
+    #editQuestionForm input[type="file"],
+    #editQuestionForm select,
+    #editQuestionForm textarea {
         font-size: 17px;
 
-        padding: 15px 17px;
+        padding: 16px 17px;
     }
 
-    #tf-section {
-        padding: 27px 25px;
+    #editQuestionForm textarea {
+        min-height: 180px;
     }
+}
 
-    #tf-section label {
-        font-size: 18px;
+
+/* =========================================================
+   REDUCED MOTION
+========================================================= */
+
+@media (prefers-reduced-motion: reduce) {
+
+    *,
+    *::before,
+    *::after {
+        scroll-behavior: auto !important;
+
+        transition: none !important;
     }
 }

@@ -1,24 +1,25 @@
 {% load static %}
-
-<link rel="stylesheet" href="{% static 'quizapp/css/question_form.css' %}">
-
+<link rel="stylesheet" href="{% static 'quizapp/css/edit_question.css' %}">
 <div class="container">
+
 
     <h1>Edit Question</h1>
 
-    <p class="session-name" style="text-shadow: rgba(0,0,0,.16) 0 3px 6px,rgba(0,0,0,.23) 0 3px 6px;">
+    <p class="session-name" style="
+    text-shadow:
+        rgba(0,0,0,.16) 0 3px 6px,
+        rgba(0,0,0,.23) 0 3px 6px;
+">
         Session: {{ session.title }}
     </p>
-
 
     <form method="POST" enctype="multipart/form-data" id="editQuestionForm">
 
         {% csrf_token %}
 
-
-        <!-- ================================= -->
-        <!-- QUESTION TYPE -->
-        <!-- ================================= -->
+        <!-- =====================================================
+         QUESTION TYPE
+    ====================================================== -->
 
         <p class="label">
 
@@ -29,9 +30,9 @@
         </p>
 
 
-        <!-- ================================= -->
-        <!-- QUESTION -->
-        <!-- ================================= -->
+        <!-- =====================================================
+         QUESTION TEXT
+    ====================================================== -->
 
         <p class="label">
 
@@ -42,47 +43,52 @@
         </p>
 
 
-        <!-- ================================= -->
-        <!-- QUESTION IMAGE -->
-        <!-- ================================= -->
+        <!-- =====================================================
+         QUESTION IMAGE
+    ====================================================== -->
 
         <p class="label">
 
             {{ form.image.label }} (optional)<br>
 
 
+            <!-- Existing question image -->
+
             {% if question.image %}
 
         <div id="current-question-image">
 
             <p style="
-		font-size: 13px;
-		margin-bottom: 6px;
-	">
-                Current Question Image:
+                font-size: 14px;
+                margin: 8px 0;
+                color: #117373;
+                font-weight: 700;
+            ">
+                Current Question Image
             </p>
 
-            <img src="{{ question.image.url }}" alt="Question Image" style="
-			display: block;
-			width: 100%;
-			max-width: 450px;
-			max-height: 250px;
-			object-fit: contain;
-			border-radius: 10px;
-			margin-bottom: 8px;
-		">
+            <img src="{{ question.image.url }}" alt="Current Question Image" id="current-question-image-preview" style="
+                    display: block;
+                    width: 100%;
+                    max-width: 450px;
+                    max-height: 250px;
+                    object-fit: contain;
+                    margin: 8px 0;
+                    border-radius: 10px;
+                ">
 
             <button type="button" id="removeQuestionImageBtn" style="
-			padding: 7px 12px;
-			background: #ff4d4d;
-			color: white;
-			border: none;
-			border-radius: 7px;
-			font-size: 12px;
-			font-weight: 600;
-			cursor: pointer;
-		">
-                ✕ Remove Image
+                    margin-top: 8px;
+                    padding: 8px 13px;
+                    background: #ff4d4d;
+                    color: white;
+                    border: none;
+                    border-radius: 7px;
+                    font-size: 13px;
+                    font-weight: 700;
+                    cursor: pointer;
+                ">
+                ✕ Remove Current Image
             </button>
 
         </div>
@@ -90,23 +96,35 @@
         {% endif %}
 
 
+        <!-- Hidden flag -->
+
+        <input type="hidden" name="remove_question_image" id="remove_question_image" value="0">
+
+
+        <!-- New question image -->
+
         {{ form.image }}
 
+
+        <!-- Remove newly selected question image -->
+
         <button type="button" id="clearImageBtn" style="
-		display: none;
-		margin-top: 8px;
-		padding: 7px 12px;
-		background: #ff4d4d;
-		color: white;
-		border: none;
-		border-radius: 7px;
-		font-size: 12px;
-		font-weight: 600;
-		cursor: pointer;
-	">
+                display: none;
+                margin-top: 8px;
+                padding: 8px 13px;
+                background: #ff4d4d;
+                color: white;
+                border: none;
+                border-radius: 7px;
+                font-size: 13px;
+                font-weight: 700;
+                cursor: pointer;
+            ">
             ✕ Remove Selected Image
         </button>
 
+
+        <!-- New image preview -->
 
         <img id="questionNewPreview" src="" alt="New Question Image" style="
                 display: none;
@@ -121,9 +139,9 @@
         </p>
 
 
-        <!-- ================================= -->
-        <!-- MARKS -->
-        <!-- ================================= -->
+        <!-- =====================================================
+         MARKS
+    ====================================================== -->
 
         <p class="label">
 
@@ -134,9 +152,9 @@
         </p>
 
 
-        <!-- ================================= -->
-        <!-- TIME -->
-        <!-- ================================= -->
+        <!-- =====================================================
+         TIME
+    ====================================================== -->
 
         <p class="label">
 
@@ -147,22 +165,37 @@
         </p>
 
 
-        <!-- ================================= -->
-
-        <!-- Multiple Choice (4 Options) -->
-
-        <!-- ================================= -->
+        <!-- =====================================================
+         MULTIPLE CHOICE SECTION
+    ====================================================== -->
 
         <div id="choice-section">
 
+            <h2 style="
+            color: #117373;
+            font-size: 21px;
+            margin-bottom: 15px;
+        ">
+                Multiple Choice Options
+            </h2>
+
 
             {{ formset.management_form }}
+
 
             {% for choice_form in formset %}
 
             <div class="choice-row">
 
+                <!-- Choice ID -->
+
+                {{ choice_form.id }}
+
+
+                <!-- Option heading -->
+
                 <h3>
+
                     {% if forloop.counter == 1 %}
                     Option A
                     {% elif forloop.counter == 2 %}
@@ -172,14 +205,11 @@
                     {% elif forloop.counter == 4 %}
                     Option D
                     {% endif %}
+
                 </h3>
 
 
-                <!-- Hidden ID for existing choice -->
-                {{ choice_form.id }}
-
-
-                <!-- Option Text -->
+                <!-- Option text -->
 
                 <p class="label">
 
@@ -188,43 +218,55 @@
                 </p>
 
 
-                <!-- ================================= -->
-
-                <!-- OPTION IMAGE -->
-
-                <!-- ================================= -->
+                <!-- =================================================
+                 OPTION IMAGE
+            ================================================== -->
 
                 <p class="label">
+
                     {{ choice_form.image }}
+
+
+                    <!-- Existing option image -->
 
                     {% if choice_form.instance.image %}
 
-                    <!-- Existing image -->
+                <div class="existing-choice-image-container" id="existing-choice-image-{{ choice_form.instance.id }}">
 
-                <div class="existing-choice-image-container">
+                    <p style="
+                        font-size: 13px;
+                        margin: 8px 0;
+                        color: #117373;
+                        font-weight: 700;
+                    ">
+                        Current Option Image
+                    </p>
 
-                    <img src="{{ choice_form.instance.image.url }}" alt="Option Image" class="current-choice-image"
-                        style="
-				display: block;
-				width: 100%;
-				max-width: 400px;
-				max-height: 220px;
-				object-fit: contain;
-				margin-top: 8px;
-				border-radius: 10px;
-			">
 
-                    <button type="button" class="remove-existing-choice-image" style="
-				margin-top: 8px;
-				padding: 7px 12px;
-				background: #ff4d4d;
-				color: white;
-				border: none;
-				border-radius: 7px;
-				font-size: 12px;
-				font-weight: 600;
-				cursor: pointer;
-			">
+                    <img src="{{ choice_form.instance.image.url }}" alt="Current Option Image"
+                        class="current-choice-image" style="
+                            display: block;
+                            width: 100%;
+                            max-width: 400px;
+                            max-height: 220px;
+                            object-fit: contain;
+                            margin-top: 8px;
+                            border-radius: 10px;
+                        ">
+
+
+                    <button type="button" class="remove-existing-choice-image"
+                        data-choice-id="{{ choice_form.instance.id }}" style="
+                            margin-top: 8px;
+                            padding: 8px 13px;
+                            background: #ff4d4d;
+                            color: white;
+                            border: none;
+                            border-radius: 7px;
+                            font-size: 13px;
+                            font-weight: 700;
+                            cursor: pointer;
+                        ">
                         ✕ Remove Current Image
                     </button>
 
@@ -233,42 +275,48 @@
                 {% endif %}
 
 
+                <!-- Hidden remove flag -->
+
+                <input type="hidden" name="remove_choice_image_{{ choice_form.instance.id }}"
+                    id="remove_choice_image_{{ choice_form.instance.id }}" value="0">
+
+
                 <!-- Remove newly selected image -->
 
                 <button type="button" class="clear-choice-image-btn" style="
-		display: none;
-		margin-top: 8px;
-		padding: 7px 12px;
-		background: #ff4d4d;
-		color: white;
-		border: none;
-		border-radius: 7px;
-		font-size: 12px;
-		font-weight: 600;
-		cursor: pointer;
-	">
+                        display: none;
+                        margin-top: 8px;
+                        padding: 8px 13px;
+                        background: #ff4d4d;
+                        color: white;
+                        border: none;
+                        border-radius: 7px;
+                        font-size: 13px;
+                        font-weight: 700;
+                        cursor: pointer;
+                    ">
                     ✕ Remove Selected Image
                 </button>
 
 
-                <!-- New image preview -->
+                <!-- New option image preview -->
 
                 <img class="new-choice-preview" src="" alt="New Option Image" style="
-		display: none;
-		width: 100%;
-		max-width: 400px;
-		max-height: 220px;
-		object-fit: contain;
-		margin-top: 10px;
-		border-radius: 10px;
-	">
-                
+                        display: none;
+                        width: 100%;
+                        max-width: 400px;
+                        max-height: 220px;
+                        object-fit: contain;
+                        margin-top: 10px;
+                        border-radius: 10px;
+                    ">
 
                 </p>
 
 
-
-                <!-- Correct Answer -->
+                <!-- =================================================
+                 CORRECT ANSWER
+            ================================================== -->
 
                 <label class="correct-label">
 
@@ -277,7 +325,6 @@
                     Correct Answer
 
                 </label>
-
 
             </div>
 
@@ -290,32 +337,48 @@
 
             {% endfor %}
 
-
         </div>
 
 
-
-        <!-- ================================= -->
-        <!-- TRUE / FALSE -->
-        <!-- ================================= -->
+        <!-- =====================================================
+         TRUE / FALSE SECTION
+    ====================================================== -->
 
         <div id="tf-section">
+
+            <h2 style="
+            color: #117373;
+            font-size: 21px;
+            margin-bottom: 15px;
+        ">
+                True / False Answer
+            </h2>
 
             {{ tf_form.as_p }}
 
         </div>
 
 
-        <!-- ================================= -->
-        <!-- SAVE BUTTON -->
-        <!-- ================================= -->
+        <!-- =====================================================
+         SAVE
+    ====================================================== -->
 
-        <button type="submit">
-
+        <button type="submit" style="
+            display: block;
+            width: 100%;
+            margin-top: 25px;
+            padding: 14px 18px;
+            border: none;
+            border-radius: 10px;
+            background: #ffc300;
+            color: #117373;
+            font-family: Poppins, sans-serif;
+            font-size: 16px;
+            font-weight: 800;
+            cursor: pointer;
+        ">
             Save Changes
-
         </button>
-
 
     </form>
 
@@ -323,7 +386,6 @@
 </div>
 
 <script>
-
 
     /* =========================================================
        QUESTION TYPE SWITCH
@@ -341,15 +403,9 @@
             document.getElementById("tf-section");
 
 
-        if (!type) {
+        if (!type || !choiceSection || !tfSection) {
             return;
         }
-
-
-        const tfInputs =
-            tfSection.querySelectorAll(
-                "input, textarea, select"
-            );
 
 
         const choiceInputs =
@@ -358,27 +414,31 @@
             );
 
 
+        const tfInputs =
+            tfSection.querySelectorAll(
+                "input, textarea, select"
+            );
+
+
         function updateQuestionType() {
 
             if (type.value === "true_false") {
 
-                choiceSection.style.display =
-                    "none";
+                choiceSection.style.display = "none";
 
-                tfSection.style.display =
-                    "block";
-
-
-                tfInputs.forEach(function (input) {
-
-                    input.disabled = false;
-
-                });
+                tfSection.style.display = "block";
 
 
                 choiceInputs.forEach(function (input) {
 
                     input.disabled = true;
+
+                });
+
+
+                tfInputs.forEach(function (input) {
+
+                    input.disabled = false;
 
                 });
 
@@ -386,23 +446,21 @@
 
             else {
 
-                choiceSection.style.display =
-                    "block";
+                choiceSection.style.display = "block";
 
-                tfSection.style.display =
-                    "none";
-
-
-                tfInputs.forEach(function (input) {
-
-                    input.disabled = true;
-
-                });
+                tfSection.style.display = "none";
 
 
                 choiceInputs.forEach(function (input) {
 
                     input.disabled = false;
+
+                });
+
+
+                tfInputs.forEach(function (input) {
+
+                    input.disabled = true;
 
                 });
 
@@ -482,11 +540,16 @@
 
                 else {
 
-                    clearButton.style.display =
-                        "none";
+                    if (clearButton) {
+                        clearButton.style.display =
+                            "none";
+                    }
 
-                    preview.style.display =
-                        "none";
+                    if (preview) {
+                        preview.src = "";
+                        preview.style.display =
+                            "none";
+                    }
 
                 }
 
@@ -494,22 +557,30 @@
         );
 
 
-        clearButton.addEventListener(
-            "click",
-            function () {
+        if (clearButton) {
 
-                imageInput.value = "";
+            clearButton.addEventListener(
+                "click",
+                function () {
 
-                clearButton.style.display =
-                    "none";
+                    imageInput.value = "";
 
-                preview.src = "";
+                    clearButton.style.display =
+                        "none";
 
-                preview.style.display =
-                    "none";
+                    if (preview) {
 
-            }
-        );
+                        preview.src = "";
+
+                        preview.style.display =
+                            "none";
+
+                    }
+
+                }
+            );
+
+        }
 
     });
 
@@ -517,8 +588,8 @@
     /* =========================================================
        REMOVE EXISTING QUESTION IMAGE
     ========================================================= */
-    document.addEventListener("DOMContentLoaded", function () {
 
+    document.addEventListener("DOMContentLoaded", function () {
 
         const button =
             document.getElementById(
@@ -545,29 +616,33 @@
             "click",
             function () {
 
-                // Tell Django to remove the existing image
+                /*
+                 * Tell Django that the existing
+                 * question image should be removed.
+                 */
+
                 flag.value = "1";
 
 
-                // Hide the existing image and button
-                if (imageContainer) {
-                    imageContainer.style.display = "none";
-                }
+                /*
+                 * Hide the current image immediately.
+                 */
 
-                else {
-                    button.style.display = "none";
+                if (imageContainer) {
+
+                    imageContainer.style.display =
+                        "none";
+
                 }
 
             }
         );
 
-
     });
 
 
-
     /* =========================================================
-       OPTION IMAGE PREVIEW
+       OPTION IMAGE PREVIEW + CLEAR NEW IMAGE
     ========================================================= */
 
     document.addEventListener("DOMContentLoaded", function () {
@@ -612,8 +687,12 @@
                         this.files.length > 0
                     ) {
 
-                        clearButton.style.display =
-                            "inline-block";
+                        if (clearButton) {
+
+                            clearButton.style.display =
+                                "inline-block";
+
+                        }
 
 
                         const file =
@@ -627,11 +706,15 @@
                         reader.onload =
                             function (event) {
 
-                                preview.src =
-                                    event.target.result;
+                                if (preview) {
 
-                                preview.style.display =
-                                    "block";
+                                    preview.src =
+                                        event.target.result;
+
+                                    preview.style.display =
+                                        "block";
+
+                                }
 
                             };
 
@@ -642,11 +725,22 @@
 
                     else {
 
-                        clearButton.style.display =
-                            "none";
+                        if (clearButton) {
 
-                        preview.style.display =
-                            "none";
+                            clearButton.style.display =
+                                "none";
+
+                        }
+
+
+                        if (preview) {
+
+                            preview.src = "";
+
+                            preview.style.display =
+                                "none";
+
+                        }
 
                     }
 
@@ -654,22 +748,31 @@
             );
 
 
-            clearButton.addEventListener(
-                "click",
-                function () {
+            if (clearButton) {
 
-                    imageInput.value = "";
+                clearButton.addEventListener(
+                    "click",
+                    function () {
 
-                    clearButton.style.display =
-                        "none";
+                        imageInput.value = "";
 
-                    preview.src = "";
+                        clearButton.style.display =
+                            "none";
 
-                    preview.style.display =
-                        "none";
 
-                }
-            );
+                        if (preview) {
+
+                            preview.src = "";
+
+                            preview.style.display =
+                                "none";
+
+                        }
+
+                    }
+                );
+
+            }
 
         });
 
@@ -677,8 +780,8 @@
 
 
     /* =========================================================
-    REMOVE EXISTING OPTION IMAGE
- ========================================================= */
+       REMOVE EXISTING OPTION IMAGE
+    ========================================================= */
 
     document.addEventListener("DOMContentLoaded", function () {
 
@@ -694,52 +797,52 @@
                 "click",
                 function () {
 
-                    const container =
-                        this.closest(
-                            ".existing-choice-image-container"
+                    const choiceId =
+                        this.dataset.choiceId;
+
+
+                    const flag =
+                        document.getElementById(
+                            "remove_choice_image_" +
+                            choiceId
                         );
 
 
-                    if (!container) {
+                    const container =
+                        document.getElementById(
+                            "existing-choice-image-" +
+                            choiceId
+                        );
+
+
+                    if (!flag) {
                         return;
                     }
 
 
-                    // Hide existing option image
-                    // and its remove button
-                    container.style.display = "none";
+                    /*
+                     * Mark existing image for removal.
+                     */
+
+                    flag.value = "1";
+
+
+                    /*
+                     * Hide existing image and
+                     * remove button immediately.
+                     */
+
+                    if (container) {
+
+                        container.style.display =
+                            "none";
+
+                    }
 
                 }
             );
 
         });
-
-    });
-
-
-    // Show the normal clear button
-    // when a new image is selected
-
-    if (imageInput && clearButton) {
-
-        imageInput.addEventListener(
-            "change",
-            function () {
-
-                if (
-                    this.files &&
-                    this.files.length > 0
-                ) {
-
-                    clearButton.style.display =
-                        "inline-block";
-
-                }
-
-            }
-        );
-
-    }
 
     });
 
@@ -786,6 +889,5 @@
         });
 
     });
-
 
 </script>
