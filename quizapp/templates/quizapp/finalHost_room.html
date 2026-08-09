@@ -51,12 +51,10 @@
 
 
                 {% if current_question.video_file %}
-
                 <video class="question-media" controls>
-                    <source src="{{ current_question.video_file.url }}">
+                    <source src="{{ current_question.video_file }}" type="video/mp4">
                     Your browser does not support video.
                 </video>
-
                 {% endif %}
 
 

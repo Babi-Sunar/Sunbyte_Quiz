@@ -72,15 +72,11 @@
 
 
             <!-- Uploaded Video -->
-
             {% if current_question.video_file %}
-
             <video controls class="question-video">
-
-                <source src="{{ current_question.video_file.url }}">
-
+                <source src="{{ current_question.video_file }}" type="video/mp4">
+                Your browser does not support video.
             </video>
-
             {% endif %}
 
 
@@ -236,7 +232,7 @@
         let currentQuestion = {{ session.current_question }};
 
         // Timer state
-        let remainingSeconds = {{ remaining_time|default:0 }};
+        let remainingSeconds = {{ remaining_time|default: 0 }};
         const timerEl = document.getElementById("question-timer");
 
         function renderTimer() {
