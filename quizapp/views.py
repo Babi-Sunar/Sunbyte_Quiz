@@ -252,10 +252,24 @@ def add_question(request, code):
 
             with transaction.atomic():
 
+                # question = form.save(commit=False)
+                # question.session = session
+                # question.order = next_order
+                # question.save()
+                
+                # temp
                 question = form.save(commit=False)
-                question.session = session
                 question.order = next_order
+                question.session = session
+                
+                print("VIDEO FILE:", question.video_file)
+                print("VIDEO NAME:", question.video_file.name if question.video_file else "NONE")
+                
+                print("=== SAVING QUESTION ===")
+                
                 question.save()
+                
+                print("=== QUESTION SAVED ===")
 
                 # ==================================
                 # TRUE / FALSE
