@@ -115,7 +115,7 @@
 
         function checkQuizStatus() {
 
-            fetch(`/session/${sessionCode}/status/`)
+            fetch(`/session/${sessionCode}/status/`, { cache: "no-store" })
 
                 .then(response => response.json())
 
@@ -150,7 +150,7 @@
 
         setInterval(checkQuizStatus, 500);
 
-        
+
 
 
     </script>

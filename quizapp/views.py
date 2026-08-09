@@ -7,6 +7,7 @@ from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from django.db import transaction
+from django.http import JsonResponse
 from django.shortcuts import get_object_or_404, redirect, render
 from django.utils import timezone
 from django.views.decorators.cache import never_cache
@@ -1465,18 +1466,13 @@ def quiz_status(request, code):
     }
 
     return JsonResponse(data)
+
+from django.views.decorators.cache import never_cache
+
+@never_cache
 def session_status(request, code):
-
-    session = get_object_or_404(
-        QuizSession,
-        code=code
-    )
-
-    return JsonResponse({
-
-        "state": session.quiz_state
-
-    })
+    session = get_object_or_404(QuizSession, code=code)
+    return JsonResponse({"state": session.quiz_state})
     
 def result_detail(request, code):
     session = get_object_or_404(QuizSession, code=code)

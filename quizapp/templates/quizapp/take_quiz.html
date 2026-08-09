@@ -233,7 +233,9 @@
 
         function syncQuiz() {
 
-            fetch(`/session/${sessionCode}/quiz-status/`)
+            fetch(`/session/${sessionCode}/quiz-status/`, {
+                cache: "no-store"
+            })
                 .then(response => response.json())
                 .then(data => {
 
