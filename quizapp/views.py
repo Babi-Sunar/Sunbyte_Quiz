@@ -229,6 +229,7 @@ def manage_session(request, code):
         },
     )
 
+import cloudinary.uploader
 @never_cache
 @login_required
 def add_question(request, code):
@@ -252,33 +253,87 @@ def add_question(request, code):
 
             with transaction.atomic():
 
-                # question = form.save(commit=False)
-                # question.session = session
-                # question.order = next_order
-                # question.save()
-                
-                # temp
+                # ----------------------------------
+                # Create question object
+                # ----------------------------------
+
                 question = form.save(commit=False)
-                question.order = next_order
                 question.session = session
+                question.order = next_order
 
-                print("VIDEO FILE:", question.video_file)
-                print("VIDEO NAME:", question.video_file.name if question.video_file else "NONE")
+                # ----------------------------------
+                # Handle video upload separately
+                # ----------------------------------
 
-                print("=== SAVING QUESTION ===")
+                video = request.FILES.get("video_file")
+
+                if video:
+                    print("VIDEO FILE:", video.name)
+                    print("VIDEO SIZE:", video.size)
+
+                    try:
+                        print("=== UPLOADING VIDEO TO CLOUDINARY ===")
+
+                        result = cloudinary.uploader.upload(
+                            video,
+                            resource_type="video",
+                            folder="sunbyte_quiz/question_videos",
+                        )
+
+                        video_url = result.get("secure_url")
+
+                        print("CLOUDINARY VIDEO URL:", video_url)
+
+                        question.video_file = video_url
+
+                        print("=== VIDEO UPLOAD SUCCESSFUL ===")
+
+                    except Exception as e:
+
+                        print("=== VIDEO UPLOAD ERROR ===")
+                        print(type(e).__name__)
+                        print(str(e))
+
+                        messages.error(
+                            request,
+                            "There was a problem uploading the video."
+                        )
+
+                        return render(
+                            request,
+                            "quizapp/question_form.html",
+                            {
+                                "session": session,
+                                "form": form,
+                                "formset": ChoiceFormSet(),
+                                "tf_form": TrueFalseAnswerForm(),
+                            },
+                        )
+
+                # ----------------------------------
+                # Save question
+                # ----------------------------------
 
                 try:
+
+                    print("=== SAVING QUESTION ===")
+
                     question.save()
+
                     print("=== QUESTION SAVED ===")
+
                 except Exception as e:
-                    print("=== VIDEO UPLOAD ERROR ===")
+
+                    print("=== QUESTION SAVE ERROR ===")
                     print(type(e).__name__)
                     print(str(e))
+
                     raise
 
                 # ==================================
                 # TRUE / FALSE
                 # ==================================
+
                 if question.question_type == "true_false":
 
                     tf_form = TrueFalseAnswerForm(request.POST)
@@ -303,7 +358,10 @@ def add_question(request, code):
                             order=2,
                         )
 
-                        messages.success(request, "Question added successfully.")
+                        messages.success(
+                            request,
+                            "Question added successfully."
+                        )
 
                         return redirect(
                             "quizapp:manage_session",
@@ -320,6 +378,7 @@ def add_question(request, code):
                 # ==================================
                 # MCQ
                 # ==================================
+
                 else:
 
                     formset = ChoiceFormSet(
@@ -336,14 +395,25 @@ def add_question(request, code):
 
                         valid_choices = [
                             c for c in choices
-                            if (c.text and c.text.strip()) or c.image
+                            if (
+                                (c.text and c.text.strip())
+                                or c.image
+                            )
                         ]
 
-                        print(f"Choices received: {len(valid_choices)}")
+                        print(
+                            f"Choices received: {len(valid_choices)}"
+                        )
+
+                        # ----------------------------------
+                        # At least two choices
+                        # ----------------------------------
 
                         if len(valid_choices) < 2:
 
-                            print("ERROR: Less than two choices.")
+                            print(
+                                "ERROR: Less than two choices."
+                            )
 
                             messages.error(
                                 request,
@@ -352,9 +422,18 @@ def add_question(request, code):
 
                             question.delete()
 
-                        elif not any(c.is_correct for c in valid_choices):
+                        # ----------------------------------
+                        # Correct answer required
+                        # ----------------------------------
 
-                            print("ERROR: No correct answer selected.")
+                        elif not any(
+                            c.is_correct
+                            for c in valid_choices
+                        ):
+
+                            print(
+                                "ERROR: No correct answer selected."
+                            )
 
                             messages.error(
                                 request,
@@ -363,14 +442,24 @@ def add_question(request, code):
 
                             question.delete()
 
+                        # ----------------------------------
+                        # Save choices
+                        # ----------------------------------
+
                         else:
 
-                            for i, choice in enumerate(valid_choices, start=1):
+                            for i, choice in enumerate(
+                                valid_choices,
+                                start=1
+                            ):
+
                                 choice.question = question
                                 choice.order = i
                                 choice.save()
 
-                            print("✓ Question saved successfully")
+                            print(
+                                "✓ Question saved successfully"
+                            )
 
                             messages.success(
                                 request,
@@ -384,22 +473,38 @@ def add_question(request, code):
 
                     else:
 
-                        print("\n========== FORMSET ERRORS ==========")
+                        print(
+                            "\n========== FORMSET ERRORS =========="
+                        )
+
                         print(formset.errors)
                         print(formset.non_form_errors())
-                        print("====================================\n")
+
+                        print(
+                            "====================================\n"
+                        )
 
                         question.delete()
 
         else:
 
-            print("\n========== QUESTION FORM ERRORS ==========")
+            print(
+                "\n========== QUESTION FORM ERRORS =========="
+            )
+
             print(form.errors)
-            print("==========================================\n")
+
+            print(
+                "==========================================\n"
+            )
 
     else:
 
         form = QuestionForm()
+
+    # ----------------------------------
+    # Prepare empty forms for GET/render
+    # ----------------------------------
 
     if formset is None:
         formset = ChoiceFormSet()
