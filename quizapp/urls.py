@@ -1,5 +1,4 @@
 from django.urls import path
-
 from . import views
 
 app_name = 'quizapp'
@@ -102,6 +101,11 @@ urlpatterns = [
     "delete-account/",
     views.delete_account,
     name="delete_account"
+    ),
+    path(
+    "add-category/",
+    views.add_category,
+    name="add_category"
     ),
     # Joining — no account required
     path('session/join/', views.join_session, name='join_session'),

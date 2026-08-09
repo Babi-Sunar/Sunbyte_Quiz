@@ -527,6 +527,7 @@ def delete_question(request, code, question_id):
 @never_cache
 @login_required
 def edit_question(request, code, question_id):
+
     session = _get_hosted_session_or_404(request, code)
 
     question = get_object_or_404(
@@ -543,26 +544,102 @@ def edit_question(request, code, question_id):
             instance=question,
         )
 
-        if question.question_type == "true_false":
+        # Validate question form first
+        if not form.is_valid():
+
+            formset = ChoiceFormSet(
+                request.POST,
+                request.FILES,
+                instance=question,
+            )
 
             tf_form = TrueFalseAnswerForm(request.POST)
-            formset = None
 
-            if form.is_valid() and tf_form.is_valid():
+            return render(
+                request,
+                "quizapp/edit_question.html",
+                {
+                    "session": session,
+                    "question": question,
+                    "form": form,
+                    "formset": formset,
+                    "tf_form": tf_form,
+                },
+            )
+
+        # Get the NEW question type selected by the user
+        new_question_type = form.cleaned_data["question_type"]
+
+        # =====================================================
+        # TRUE / FALSE
+        # =====================================================
+
+        if new_question_type == "true_false":
+
+            tf_form = TrueFalseAnswerForm(request.POST)
+
+            if tf_form.is_valid():
 
                 form.save()
 
                 correct = tf_form.cleaned_data["correct_answer"]
 
-                choices = list(question.choices.order_by("order"))
+                choices = list(
+                    question.choices.order_by("order")
+                )
 
-                if len(choices) == 2:
+                # If existing choices are already present,
+                # use them for True/False answers.
+                if len(choices) >= 2:
 
-                    choices[0].is_correct = (correct == "true")
-                    choices[1].is_correct = (correct == "false")
-
+                    choices[0].text = "True"
+                    choices[0].is_correct = (
+                        correct == "true"
+                    )
+                    choices[0].order = 1
                     choices[0].save()
+
+                    choices[1].text = "False"
+                    choices[1].is_correct = (
+                        correct == "false"
+                    )
+                    choices[1].order = 2
                     choices[1].save()
+
+                    # Remove any extra choices
+                    if len(choices) > 2:
+
+                        Choice.objects.filter(
+                            question=question
+                        ).exclude(
+                            id__in=[
+                                choices[0].id,
+                                choices[1].id,
+                            ]
+                        ).delete()
+
+                else:
+
+                    # No existing choices:
+                    # create True and False choices.
+
+                    Choice.objects.filter(
+                        question=question
+                    ).delete()
+
+                    Choice.objects.create(
+                        question=question,
+                        text="True",
+                        order=1,
+                        is_correct=(correct == "true"),
+                    )
+
+                    Choice.objects.create(
+                        question=question,
+                        text="False",
+                        order=2,
+                        is_correct=(correct == "false"),
+                    )
 
                 messages.success(
                     request,
@@ -574,6 +651,27 @@ def edit_question(request, code, question_id):
                     code=session.code,
                 )
 
+            # T/F form invalid
+            formset = ChoiceFormSet(
+                instance=question
+            )
+
+            return render(
+                request,
+                "quizapp/edit_question.html",
+                {
+                    "session": session,
+                    "question": question,
+                    "form": form,
+                    "formset": formset,
+                    "tf_form": tf_form,
+                },
+            )
+
+        # =====================================================
+        # MULTIPLE CHOICE
+        # =====================================================
+
         else:
 
             formset = ChoiceFormSet(
@@ -584,26 +682,41 @@ def edit_question(request, code, question_id):
 
             tf_form = TrueFalseAnswerForm()
 
-            if form.is_valid() and formset.is_valid():
+            if formset.is_valid():
 
                 form.save()
 
-                choices = formset.save(commit=False)
+                choices = formset.save(
+                    commit=False
+                )
 
+                # IDs of choices that are still present
+                existing_choice_ids = [
+                    choice.id
+                    for choice in choices
+                    if choice.id
+                ]
+
+                # Delete choices removed from the formset
                 Choice.objects.filter(
                     question=question
                 ).exclude(
-                    id__in=[c.id for c in choices if c.id]
+                    id__in=existing_choice_ids
                 ).delete()
 
                 has_correct = False
 
-                for index, choice in enumerate(choices, start=1):
+                for index, choice in enumerate(
+                    choices,
+                    start=1
+                ):
 
                     choice.question = question
+
                     choice.order = index
 
                     if choice.is_correct:
+
                         has_correct = True
 
                     choice.save()
@@ -627,13 +740,27 @@ def edit_question(request, code, question_id):
                         code=session.code,
                     )
 
+    # =========================================================
+    # GET
+    # =========================================================
+
     else:
 
-        form = QuestionForm(instance=question)
+        form = QuestionForm(
+            instance=question
+        )
+
+        # IMPORTANT:
+        # Always provide the MCQ formset.
+        # This allows T/F -> MCQ switching.
+
+        formset = ChoiceFormSet(
+            instance=question
+        )
+
+        # True/False form
 
         if question.question_type == "true_false":
-
-            formset = None
 
             correct = "true"
 
@@ -641,7 +768,13 @@ def edit_question(request, code, question_id):
 
                 if choice.is_correct:
 
-                    correct = choice.text.lower()
+                    if choice.text.lower() == "false":
+
+                        correct = "false"
+
+                    else:
+
+                        correct = "true"
 
             tf_form = TrueFalseAnswerForm(
                 initial={
@@ -651,9 +784,11 @@ def edit_question(request, code, question_id):
 
         else:
 
-            formset = ChoiceFormSet(instance=question)
-
             tf_form = TrueFalseAnswerForm()
+
+    # =========================================================
+    # RENDER
+    # =========================================================
 
     return render(
         request,
@@ -1828,3 +1963,52 @@ def delete_account(request):
 
     return render(request, "quizapp/delete_account.html")
 
+
+# category management
+from django.contrib.auth.decorators import login_required
+from django.http import JsonResponse
+from django.views.decorators.http import require_POST
+from .models import Category
+@login_required
+@require_POST
+def add_category(request):
+    name = request.POST.get("name", "").strip()
+
+    # Validate empty category
+    if not name:
+        return JsonResponse({
+            "success": False,
+            "error": "Category name is required."
+        }, status=400)
+
+    # Validate length
+    if len(name) > 100:
+        return JsonResponse({
+            "success": False,
+            "error": "Category name must be 100 characters or less."
+        }, status=400)
+
+    # Prevent duplicate categories ignoring letter case
+    existing_category = Category.objects.filter(
+        name__iexact=name
+    ).first()
+
+    if existing_category:
+        return JsonResponse({
+            "success": True,
+            "id": existing_category.id,
+            "name": existing_category.name,
+            "existing": True
+        })
+
+    # Create new category
+    category = Category.objects.create(
+        name=name
+    )
+
+    return JsonResponse({
+        "success": True,
+        "id": category.id,
+        "name": category.name,
+        "existing": False
+    })

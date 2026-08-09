@@ -40,6 +40,21 @@
             <p class="label">
                 {{ form.image.label }} (optional)<br>
                 {{ form.image }}
+
+                <button type="button" id="clearImageBtn" onclick="clearFileInput('id_image', 'clearImageBtn')" style="
+            display: none;
+            margin-top: 8px;
+            padding: 7px 12px;
+            background: #ff4d4d;
+            color: white;
+            border: none;
+            border-radius: 7px;
+            font-size: 12px;
+            font-weight: 600;
+            cursor: pointer;
+        ">
+                    ✕ Remove Image
+                </button>
             </p>
 
             <!-- Marks -->
@@ -84,6 +99,21 @@
 
                     <p class="label">
                         {{ choice_form.image }}
+
+                        <button type="button" class="clear-choice-image-btn" style="
+            display: none;
+            margin-top: 8px;
+            padding: 7px 12px;
+            background: #ff4d4d;
+            color: white;
+            border: none;
+            border-radius: 7px;
+            font-size: 12px;
+            font-weight: 600;
+            cursor: pointer;
+        ">
+                            ✕ Remove Image
+                        </button>
                     </p>
 
                     <label class="correct-label">
@@ -157,6 +187,84 @@
             type.addEventListener("change", updateQuestionType);
 
         });
+
+        // unselect image 
+
+
+        document.addEventListener("DOMContentLoaded", function () {
+
+            const imageInput = document.getElementById("id_image");
+            const clearButton = document.getElementById("clearImageBtn");
+
+            imageInput.addEventListener("change", function () {
+
+                if (this.files && this.files.length > 0) {
+                    clearButton.style.display = "inline-block";
+                } else {
+                    clearButton.style.display = "none";
+                }
+
+            });
+
+        });
+
+
+        document.addEventListener("DOMContentLoaded", function () {
+
+            document.querySelectorAll(
+                'input[type="file"]'
+            ).forEach(function (input) {
+
+                // Only handle answer image inputs
+                if (!input.name.includes("image")) {
+                    return;
+                }
+
+                const button = input
+                    .parentElement
+                    .querySelector(".clear-choice-image-btn");
+
+                if (!button) {
+                    return;
+                }
+
+                // Show button when image is selected
+                input.addEventListener("change", function () {
+
+                    if (this.files && this.files.length > 0) {
+                        button.style.display = "inline-block";
+                    } else {
+                        button.style.display = "none";
+                    }
+
+                });
+
+
+                // Clear selected image
+                button.addEventListener("click", function () {
+
+                    input.value = "";
+
+                    button.style.display = "none";
+
+                });
+
+            });
+
+        });
+
+
+
+        function clearFileInput(inputId, buttonId) {
+
+            const input = document.getElementById(inputId);
+            const button = document.getElementById(buttonId);
+
+            input.value = "";
+            button.style.display = "none";
+        }
+
+
     </script>
 
 </body>

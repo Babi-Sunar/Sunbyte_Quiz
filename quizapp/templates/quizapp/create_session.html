@@ -36,7 +36,7 @@
             <!-- Category -->
             <label>Category</label>
 
-            <select name="category" class="form-input">
+            <select name="category" id="categorySelect" class="form-input">
 
                 <option value="">Select Category</option>
 
@@ -46,7 +46,52 @@
                 </option>
                 {% endfor %}
 
+                <option value="__add_category__">
+                    ➕ Add New Category
+                </option>
+
             </select>
+
+            <div id="newCategoryBox" style="display: none; margin-top: 10px;">
+
+                <input type="text" id="newCategoryName" class="form-input" placeholder="Enter new category name"
+                    maxlength="100">
+                <br><br>
+                <button type="button" id="addCategoryBtn" class="btn" style="
+        background: #FFC300;
+        color: #111;
+        border: none;
+        border-radius: 9px;
+        padding: 11px 18px;
+        font-size: 14px;
+        font-weight: 600;
+        font-family: inherit;
+        cursor: pointer;
+        transition: 0.2s ease;
+        margin-right: 5px;
+    ">
+                    Add Category
+                </button>
+
+                <button type="button" id="cancelCategoryBtn" class="btn" style="
+        background: transparent;
+        color: #ffffff;
+        border: 1px solid rgba(255, 255, 255, 0.45);
+        border-radius: 9px;
+        padding: 11px 18px;
+        font-size: 14px;
+        font-weight: 600;
+        font-family: inherit;
+        cursor: pointer;
+        transition: 0.2s ease;
+        margin-left: 5px;
+    ">
+                    Cancel
+                </button>
+
+                <p id="categoryMessage" style="color:red;"></p>
+
+            </div>
             <!-- Timer Mode -->
             <label>Timer Mode</label>
 
@@ -139,6 +184,161 @@
         </form>
 
     </div>
+
+    <!-- script -->
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+
+            const categorySelect = document.getElementById("categorySelect");
+            const newCategoryBox = document.getElementById("newCategoryBox");
+            const newCategoryName = document.getElementById("newCategoryName");
+            const addCategoryBtn = document.getElementById("addCategoryBtn");
+            const cancelCategoryBtn = document.getElementById("cancelCategoryBtn");
+            const categoryMessage = document.getElementById("categoryMessage");
+
+            // Show add-category box
+            categorySelect.addEventListener("change", function () {
+
+                if (this.value === "__add_category__") {
+
+                    newCategoryBox.style.display = "block";
+                    newCategoryName.focus();
+
+                } else {
+
+                    newCategoryBox.style.display = "none";
+                    categoryMessage.textContent = "";
+                }
+            });
+
+
+            // Cancel adding category
+            cancelCategoryBtn.addEventListener("click", function () {
+
+                newCategoryBox.style.display = "none";
+                newCategoryName.value = "";
+                categoryMessage.textContent = "";
+
+                categorySelect.value = "";
+            });
+
+
+            // Add category
+            addCategoryBtn.addEventListener("click", function () {
+
+                const name = newCategoryName.value.trim();
+
+                if (!name) {
+
+                    categoryMessage.textContent =
+                        "Please enter a category name.";
+
+                    return;
+                }
+
+
+                addCategoryBtn.disabled = true;
+                addCategoryBtn.textContent = "Adding...";
+
+
+                // Get CSRF token
+                const csrfToken = document.querySelector(
+                    "[name=csrfmiddlewaretoken]"
+                ).value;
+
+
+                const formData = new FormData();
+
+                formData.append("name", name);
+
+
+                fetch("{% url 'quizapp:add_category' %}", {
+
+                    method: "POST",
+
+                    headers: {
+                        "X-CSRFToken": csrfToken
+                    },
+
+                    body: formData
+
+                })
+
+                    .then(response => response.json())
+
+                    .then(data => {
+
+                        if (data.success) {
+
+                            /*
+                             * Remove the temporary Add New Category option
+                             * before adding the new category.
+                             */
+                            const addOption =
+                                categorySelect.querySelector(
+                                    'option[value="__add_category__"]'
+                                );
+
+
+                            const newOption =
+                                document.createElement("option");
+
+                            newOption.value = data.id;
+                            newOption.textContent = data.name;
+
+
+                            categorySelect.insertBefore(
+                                newOption,
+                                addOption
+                            );
+
+
+                            // Select newly created category
+                            categorySelect.value = data.id;
+
+
+                            // Reset UI
+                            newCategoryName.value = "";
+                            newCategoryBox.style.display = "none";
+                            categoryMessage.textContent = "";
+
+
+                            if (data.existing) {
+
+                                console.log(
+                                    "Category already existed. Selected existing category."
+                                );
+
+                            }
+
+                        } else {
+
+                            categoryMessage.textContent =
+                                data.error || "Unable to add category.";
+                        }
+
+                    })
+
+                    .catch(error => {
+
+                        console.error(error);
+
+                        categoryMessage.textContent =
+                            "Something went wrong. Please try again.";
+
+                    })
+
+                    .finally(() => {
+
+                        addCategoryBtn.disabled = false;
+                        addCategoryBtn.textContent = "Add Category";
+
+                    });
+
+            });
+
+        });
+    </script>
 
 </body>
 

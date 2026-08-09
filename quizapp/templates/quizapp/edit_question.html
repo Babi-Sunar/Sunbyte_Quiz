@@ -1,632 +1,801 @@
 {% load static %}
-<!DOCTYPE html>
-<html lang="en">
 
-<head>
+<link rel="stylesheet" href="{% static 'quizapp/css/question_form.css' %}">
 
-    <meta charset="UTF-8">
+<div class="container">
 
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <h1>Edit Question</h1>
 
-    <title>
+    <p class="session-name" style="text-shadow: rgba(0,0,0,.16) 0 3px 6px,rgba(0,0,0,.23) 0 3px 6px;">
+        Session: {{ session.title }}
+    </p>
 
-        Edit Question | SunByte Quiz
 
-    </title>
+    <form method="POST" enctype="multipart/form-data" id="editQuestionForm">
 
-    <link rel="stylesheet" href="{% static 'quizapp/css/edit_question.css' %}">
+        {% csrf_token %}
 
-</head>
 
-<body>
+        <!-- ================================= -->
+        <!-- QUESTION TYPE -->
+        <!-- ================================= -->
 
-    <div class="page">
+        <p class="label">
 
-        <form method="POST" enctype="multipart/form-data" class="editor-card">
+            {{ form.question_type.label }}<br>
 
-            {% csrf_token %}
+            {{ form.question_type }}
 
-            <!-- ========================= -->
-            <!-- Header -->
-            <!-- ========================= -->
+        </p>
 
-            <div class="page-header">
 
-                <div>
+        <!-- ================================= -->
+        <!-- QUESTION -->
+        <!-- ================================= -->
 
-                    <h1>
+        <p class="label">
 
-                        ✏️ Edit Question
+            {{ form.text.label }} (required)<br>
 
-                    </h1>
+            {{ form.text }}
 
-                    <p>
+        </p>
 
-                        {{ session.title }}
 
-                    </p>
+        <!-- ================================= -->
+        <!-- QUESTION IMAGE -->
+        <!-- ================================= -->
 
-                </div>
+        <p class="label">
 
-            </div>
+            {{ form.image.label }} (optional)<br>
 
 
-            <!-- ========================= -->
-            <!-- Question -->
-            <!-- ========================= -->
+            {% if question.image %}
 
-            <section class="card">
+        <div style="
+                margin-top: 8px;
+                margin-bottom: 10px;
+            ">
 
-                <h2>
+            <p style="
+                    font-size: 13px;
+                    margin-bottom: 6px;
+                ">
+                Current Question Image:
+            </p>
 
-                    Question Details
 
-                </h2>
+            <img src="{{ question.image.url }}" alt="Question Image" style="
+                        display: block;
+                        width: 100%;
+                        max-width: 450px;
+                        max-height: 250px;
+                        object-fit: contain;
+                        border-radius: 10px;
+                        margin-bottom: 8px;
+                    ">
 
-                <div class="field">
 
-                    <label>
+            <input type="hidden" name="remove_question_image" id="remove_question_image" value="0">
 
-                        Question Type
 
-                    </label>
+            <button type="button" id="removeQuestionImageBtn" style="
+                        padding: 7px 12px;
+                        background: #ff4d4d;
+                        color: white;
+                        border: none;
+                        border-radius: 7px;
+                        font-size: 12px;
+                        font-weight: 600;
+                        cursor: pointer;
+                    ">
+                ✕ Remove Current Image
+            </button>
 
-                    {{ form.question_type }}
+        </div>
 
-                </div>
+        {% endif %}
 
-                <div class="field">
 
-                    <label>
+        {{ form.image }}
 
-                        Question
 
-                    </label>
+        <button type="button" id="clearImageBtn" style="
+                display: none;
+                margin-top: 8px;
+                padding: 7px 12px;
+                background: #ff4d4d;
+                color: white;
+                border: none;
+                border-radius: 7px;
+                font-size: 12px;
+                font-weight: 600;
+                cursor: pointer;
+            ">
+            ✕ Remove Selected Image
+        </button>
 
-                    {{ form.text }}
 
-                </div>
+        <img id="questionNewPreview" src="" alt="New Question Image" style="
+                display: none;
+                width: 100%;
+                max-width: 450px;
+                max-height: 250px;
+                object-fit: contain;
+                margin-top: 10px;
+                border-radius: 10px;
+            ">
 
-            </section>
+        </p>
 
 
+        <!-- ================================= -->
+        <!-- MARKS -->
+        <!-- ================================= -->
 
-            <!-- ========================= -->
-            <!-- Media -->
-            <!-- ========================= -->
+        <p class="label">
 
-            <section class="card">
+            {{ form.marks.label }} (optional)<br>
 
-                <h2>
+            {{ form.marks }}
 
-                    Media
+        </p>
 
-                </h2>
 
+        <!-- ================================= -->
+        <!-- TIME -->
+        <!-- ================================= -->
 
-                <!-- Current Image -->
+        <p class="label">
 
-                {% if question.image %}
+            {{ form.time_limit_seconds.label }} (optional)<br>
 
-                <div class="preview-box">
+            {{ form.time_limit_seconds }}
 
-                    <p>
+        </p>
 
-                        Current Image
 
-                    </p>
+        <!-- ================================= -->
 
-                    <img src="{{ question.image.url }}" id="image-preview" class="preview-image">
+        <!-- Multiple Choice (4 Options) -->
 
-                </div>
+        <!-- ================================= -->
 
-                {% else %}
+        <div id="choice-section">
 
-                <div class="preview-box">
+            ```
+            {{ formset.management_form }}
 
-                    <img id="image-preview" class="preview-image hidden">
+            {% for choice_form in formset %}
 
-                </div>
+            <div class="choice-row">
 
-                {% endif %}
+                <h3>
+                    {% if forloop.counter == 1 %}
+                    Option A
+                    {% elif forloop.counter == 2 %}
+                    Option B
+                    {% elif forloop.counter == 3 %}
+                    Option C
+                    {% elif forloop.counter == 4 %}
+                    Option D
+                    {% endif %}
+                </h3>
 
 
-                <div class="field">
+                <!-- Hidden ID for existing choice -->
+                {{ choice_form.id }}
 
-                    <label>
 
-                        Replace Image
+                <!-- Option Text -->
 
-                    </label>
+                <p class="label">
 
-                    {{ form.image }}
+                    {{ choice_form.text }}
 
-                </div>
+                </p>
 
 
+                <!-- Option Image -->
 
+                <p class="label">
 
-            <!-- ========================= -->
-            <!-- Question Settings -->
-            <!-- ========================= -->
-
-            <section class="card">
-
-                <h2>
-
-                    Settings
-
-                </h2>
-
-                <div class="settings-grid">
-
-                    <div class="field">
-
-                        <label>
-
-                            Marks
-
-                        </label>
-
-                        {{ form.marks }}
-
-                    </div>
-
-                    <div class="field">
-
-                        <label>
-
-                            Time (seconds)
-
-                        </label>
-
-                        {{ form.time_limit_seconds }}
-
-                    </div>
-
-                </div>
-
-            </section>
-
-            <!-- ========================= -->
-            <!-- Multiple Choice -->
-            <!-- ========================= -->
-
-            <section class="card" id="choice-section">
-
-                <div class="section-title">
-
-                    <h2>
-
-                        Multiple Choice Options
-
-                    </h2>
-
-                    <p>
-
-                        Select exactly one correct answer.
-
-                    </p>
-
-                </div>
-
-                {% if formset %}
-
-                {{ formset.management_form }}
-
-                {% for choice_form in formset %}
-
-                <div class="option-card">
-
-                    {{ choice_form.id }}
-
-                    <div class="option-header">
-
-                        <div class="option-badge">
-
-                            {% if forloop.counter == 1 %}
-                            A
-                            {% elif forloop.counter == 2 %}
-                            B
-                            {% elif forloop.counter == 3 %}
-                            C
-                            {% else %}
-                            D
-                            {% endif %}
-
-                        </div>
-
-                        <h3>
-
-                            Option
-
-                            {% if forloop.counter == 1 %}
-                            A
-                            {% elif forloop.counter == 2 %}
-                            B
-                            {% elif forloop.counter == 3 %}
-                            C
-                            {% else %}
-                            D
-                            {% endif %}
-
-                        </h3>
-
-                    </div>
-
-
-                    <div class="field">
-
-                        <label>
-
-                            Option Text
-
-                        </label>
-
-                        {{ choice_form.text }}
-
-                    </div>
+                    {{ choice_form.image }}
 
 
                     {% if choice_form.instance.image %}
 
-                    <div class="preview-box">
+                    <!-- Existing image -->
 
-                        <p>
+                    <img src="{{ choice_form.instance.image.url }}" alt="Option Image" style="
+                    display: block;
+                    width: 100%;
+                    max-width: 400px;
+                    max-height: 220px;
+                    object-fit: contain;
+                    margin-top: 8px;
+                    border-radius: 10px;
+                ">
 
-                            Current Image
 
-                        </p>
+                    <!-- Flag for removing existing image -->
 
-                        <img src="{{ choice_form.instance.image.url }}" class="choice-preview">
+                    <input type="hidden" name="remove_choice_image_{{ choice_form.instance.id }}"
+                        id="remove_choice_image_{{ choice_form.instance.id }}" value="0">
 
-                    </div>
+
+                    <button type="button" class="remove-existing-choice-image"
+                        data-choice-id="{{ choice_form.instance.id }}" style="
+                    margin-top: 8px;
+                    padding: 7px 12px;
+                    background: #ff4d4d;
+                    color: white;
+                    border: none;
+                    border-radius: 7px;
+                    font-size: 12px;
+                    font-weight: 600;
+                    cursor: pointer;
+                ">
+                        ✕ Remove Current Image
+                    </button>
 
                     {% endif %}
 
 
-                    <div class="field">
+                    <!-- Remove newly selected image -->
 
-                        <label>
-
-                            Option Image
-
-                        </label>
-
-                        {{ choice_form.image }}
-
-                    </div>
-
-
-                    <label class="correct-answer">
-
-                        {{ choice_form.is_correct }}
-
-                        <span>
-
-                            Correct Answer
-
-                        </span>
-
-                    </label>
-
-                </div>
-
-                {% endfor %}
-
-                {% endif %}
-
-            </section>
+                    <button type="button" class="clear-choice-image-btn" style="
+                display: none;
+                margin-top: 8px;
+                padding: 7px 12px;
+                background: #ff4d4d;
+                color: white;
+                border: none;
+                border-radius: 7px;
+                font-size: 12px;
+                font-weight: 600;
+                cursor: pointer;
+            ">
+                        ✕ Remove Selected Image
+                    </button>
 
 
+                    <!-- New image preview -->
 
-            <!-- ========================= -->
-            <!-- True False -->
-            <!-- ========================= -->
+                    <img class="new-choice-preview" src="" alt="New Option Image" style="
+                display: none;
+                width: 100%;
+                max-width: 400px;
+                max-height: 220px;
+                object-fit: contain;
+                margin-top: 10px;
+                border-radius: 10px;
+            ">
 
-            <section class="card" id="tf-section">
-
-                <div class="section-title">
-
-                    <h2>
-
-                        True / False
-
-                    </h2>
-
-                    <p>
-
-                        Select the correct answer.
-
-                    </p>
-
-                </div>
-
-                <div class="tf-container">
-
-                    {{ tf_form.as_p }}
-
-                </div>
-
-            </section>
+                </p>
 
 
+                <!-- Correct Answer -->
 
-            <!-- ========================= -->
-            <!-- Footer Buttons -->
-            <!-- ========================= -->
+                <label class="correct-label">
 
-            <div class="bottom-actions">
+                    {{ choice_form.is_correct }}
 
-                <button type="submit" class="save-btn large">
+                    Correct Answer
 
-                    💾 Save Changes
+                </label>
 
-                </button>
-
-                <a href="{% url 'quizapp:manage_session' session.code %}" class="cancel-btn">
-
-                    Cancel
-
-                </a>
 
             </div>
 
-        </form>
 
-    </div>
+            {% if not forloop.last %}
 
-    <script>
+            <hr>
 
-        document.addEventListener("DOMContentLoaded", function () {
+            {% endif %}
 
-            /* ===========================
-               Question Type Switch
-            ============================ */
+            {% endfor %}
+            ```
 
-            const questionType =
-                document.getElementById("id_question_type");
+        </div>
 
-            const choiceSection =
-                document.getElementById("choice-section");
 
-            const tfSection =
-                document.getElementById("tf-section");
 
-            const choiceInputs =
-                choiceSection.querySelectorAll(
-                    "input, textarea, select"
-                );
+        <!-- ================================= -->
+        <!-- TRUE / FALSE -->
+        <!-- ================================= -->
 
-            const tfInputs =
-                tfSection.querySelectorAll(
-                    "input, textarea, select"
-                );
+        <div id="tf-section">
 
-            function updateQuestionType() {
+            {{ tf_form.as_p }}
 
-                if (questionType.value === "true_false") {
+        </div>
 
-                    choiceSection.style.display = "none";
-                    tfSection.style.display = "block";
 
-                    choiceInputs.forEach(input => {
+        <!-- ================================= -->
+        <!-- SAVE BUTTON -->
+        <!-- ================================= -->
 
-                        input.disabled = true;
+        <button type="submit">
 
-                    });
+            Save Changes
 
-                    tfInputs.forEach(input => {
+        </button>
 
-                        input.disabled = false;
 
-                    });
+    </form>
+
+
+</div>
+
+<script>
+
+
+    /* =========================================================
+       QUESTION TYPE SWITCH
+    ========================================================= */
+
+    document.addEventListener("DOMContentLoaded", function () {
+
+        const type =
+            document.getElementById("id_question_type");
+
+        const choiceSection =
+            document.getElementById("choice-section");
+
+        const tfSection =
+            document.getElementById("tf-section");
+
+
+        if (!type) {
+            return;
+        }
+
+
+        const tfInputs =
+            tfSection.querySelectorAll(
+                "input, textarea, select"
+            );
+
+
+        const choiceInputs =
+            choiceSection.querySelectorAll(
+                "input, textarea, select"
+            );
+
+
+        function updateQuestionType() {
+
+            if (type.value === "true_false") {
+
+                choiceSection.style.display =
+                    "none";
+
+                tfSection.style.display =
+                    "block";
+
+
+                tfInputs.forEach(function (input) {
+
+                    input.disabled = false;
+
+                });
+
+
+                choiceInputs.forEach(function (input) {
+
+                    input.disabled = true;
+
+                });
+
+            }
+
+            else {
+
+                choiceSection.style.display =
+                    "block";
+
+                tfSection.style.display =
+                    "none";
+
+
+                tfInputs.forEach(function (input) {
+
+                    input.disabled = true;
+
+                });
+
+
+                choiceInputs.forEach(function (input) {
+
+                    input.disabled = false;
+
+                });
+
+            }
+
+        }
+
+
+        updateQuestionType();
+
+
+        type.addEventListener(
+            "change",
+            updateQuestionType
+        );
+
+    });
+
+
+    /* =========================================================
+       QUESTION IMAGE
+    ========================================================= */
+
+    document.addEventListener("DOMContentLoaded", function () {
+
+        const imageInput =
+            document.getElementById("id_image");
+
+        const clearButton =
+            document.getElementById("clearImageBtn");
+
+        const preview =
+            document.getElementById("questionNewPreview");
+
+
+        if (!imageInput) {
+            return;
+        }
+
+
+        imageInput.addEventListener(
+            "change",
+            function () {
+
+                if (
+                    this.files &&
+                    this.files.length > 0
+                ) {
+
+                    clearButton.style.display =
+                        "inline-block";
+
+
+                    const file =
+                        this.files[0];
+
+
+                    const reader =
+                        new FileReader();
+
+
+                    reader.onload =
+                        function (event) {
+
+                            preview.src =
+                                event.target.result;
+
+                            preview.style.display =
+                                "block";
+
+                        };
+
+
+                    reader.readAsDataURL(file);
 
                 }
 
                 else {
 
-                    tfSection.style.display = "none";
-                    choiceSection.style.display = "block";
+                    clearButton.style.display =
+                        "none";
 
-                    tfInputs.forEach(input => {
-
-                        input.disabled = true;
-
-                    });
-
-                    choiceInputs.forEach(input => {
-
-                        input.disabled = false;
-
-                    });
+                    preview.style.display =
+                        "none";
 
                 }
 
             }
+        );
 
-            updateQuestionType();
 
-            questionType.addEventListener(
-                "change",
-                updateQuestionType
+        clearButton.addEventListener(
+            "click",
+            function () {
+
+                imageInput.value = "";
+
+                clearButton.style.display =
+                    "none";
+
+                preview.src = "";
+
+                preview.style.display =
+                    "none";
+
+            }
+        );
+
+    });
+
+
+    /* =========================================================
+       REMOVE EXISTING QUESTION IMAGE
+    ========================================================= */
+
+    document.addEventListener("DOMContentLoaded", function () {
+
+        const button =
+            document.getElementById(
+                "removeQuestionImageBtn"
+            );
+
+        const flag =
+            document.getElementById(
+                "remove_question_image"
             );
 
 
-            /* ===========================
-            Question Image Preview
-            ============================ */
+        if (!button || !flag) {
+            return;
+        }
 
-            const questionImageInput =
-                document.getElementById("id_image");
 
-            const imagePreview =
-                document.getElementById("image-preview");
+        button.addEventListener(
+            "click",
+            function () {
 
-            if (questionImageInput) {
+                if (flag.value === "0") {
 
-                questionImageInput.addEventListener(
-                    "change",
-                    function () {
+                    flag.value = "1";
+
+                    button.textContent =
+                        "↩ Keep Current Image";
+
+                    button.style.background =
+                        "#117373";
+
+                }
+
+                else {
+
+                    flag.value = "0";
+
+                    button.textContent =
+                        "✕ Remove Current Image";
+
+                    button.style.background =
+                        "#ff4d4d";
+
+                }
+
+            }
+        );
+
+    });
+
+
+    /* =========================================================
+       OPTION IMAGE PREVIEW
+    ========================================================= */
+
+    document.addEventListener("DOMContentLoaded", function () {
+
+        const rows =
+            document.querySelectorAll(
+                ".choice-row"
+            );
+
+
+        rows.forEach(function (row) {
+
+            const imageInput =
+                row.querySelector(
+                    'input[type="file"]'
+                );
+
+
+            const clearButton =
+                row.querySelector(
+                    ".clear-choice-image-btn"
+                );
+
+
+            const preview =
+                row.querySelector(
+                    ".new-choice-preview"
+                );
+
+
+            if (!imageInput) {
+                return;
+            }
+
+
+            imageInput.addEventListener(
+                "change",
+                function () {
+
+                    if (
+                        this.files &&
+                        this.files.length > 0
+                    ) {
+
+                        clearButton.style.display =
+                            "inline-block";
+
 
                         const file =
                             this.files[0];
 
-                        if (!file) return;
 
                         const reader =
                             new FileReader();
 
-                        reader.onload = function (e) {
 
-                            imagePreview.src =
-                                e.target.result;
+                        reader.onload =
+                            function (event) {
 
-                            imagePreview.classList.remove(
-                                "hidden"
-                            );
+                                preview.src =
+                                    event.target.result;
 
-                        }
+                                preview.style.display =
+                                    "block";
+
+                            };
+
 
                         reader.readAsDataURL(file);
 
                     }
 
-                );
+                    else {
 
-            }
+                        clearButton.style.display =
+                            "none";
 
-
-            /* ===========================
-               Option Image Preview
-            ============================ */
-
-            document
-                .querySelectorAll(
-                    "input[type=file]"
-                )
-                .forEach(input => {
-
-                    if (
-                        input.id === "id_image"
-                    ) return;
-
-                    input.addEventListener(
-                        "change",
-                        function () {
-
-                            const file =
-                                this.files[0];
-
-                            if (!file) return;
-
-                            let preview =
-                                this.closest(".option-card")
-                                    .querySelector(".choice-preview");
-
-                            if (!preview) {
-
-                                preview =
-                                    document.createElement("img");
-
-                                preview.className =
-                                    "choice-preview";
-
-                                this.closest(".option-card")
-                                    .appendChild(preview);
-
-                            }
-
-                            const reader =
-                                new FileReader();
-
-                            reader.onload =
-                                function (e) {
-
-                                    preview.src =
-                                        e.target.result;
-
-                                }
-
-                            reader.readAsDataURL(file);
-
-                        }
-
-                    );
-
-                });
-
-
-            /* ===========================
-               Only One Correct Answer
-            ============================ */
-
-            const correctBoxes =
-                document.querySelectorAll(
-                    ".correct-answer input[type=checkbox]"
-                );
-
-            correctBoxes.forEach(box => {
-
-                box.addEventListener(
-                    "change",
-                    function () {
-
-                        if (!this.checked)
-                            return;
-
-                        correctBoxes.forEach(other => {
-
-                            if (other !== this) {
-
-                                other.checked = false;
-
-                            }
-
-                        });
+                        preview.style.display =
+                            "none";
 
                     }
 
-                );
+                }
+            );
 
-            });
 
+            clearButton.addEventListener(
+                "click",
+                function () {
 
-            /* ===========================
-               Smooth Card Hover
-            ============================ */
+                    imageInput.value = "";
 
-            document
-                .querySelectorAll(".card")
-                .forEach(card => {
+                    clearButton.style.display =
+                        "none";
 
-                    card.addEventListener(
-                        "mouseenter",
-                        () => {
+                    preview.src = "";
 
-                            card.style.transform =
-                                "translateY(-3px)";
+                    preview.style.display =
+                        "none";
 
-                        }
-                    );
-
-                    card.addEventListener(
-                        "mouseleave",
-                        () => {
-
-                            card.style.transform =
-                                "translateY(0px)";
-
-                        }
-                    );
-
-                });
-
+                }
+            );
 
         });
 
-    </script>
+    });
 
-</body>
 
-</html>
+    /* =========================================================
+       REMOVE EXISTING OPTION IMAGE
+    ========================================================= */
+
+    document.addEventListener("DOMContentLoaded", function () {
+
+        const buttons =
+            document.querySelectorAll(
+                ".remove-existing-choice-image"
+            );
+
+
+        buttons.forEach(function (button) {
+
+            button.addEventListener(
+                "click",
+                function () {
+
+                    const choiceId =
+                        this.dataset.choiceId;
+
+
+                    const flag =
+                        document.getElementById(
+                            "remove_choice_image_" +
+                            choiceId
+                        );
+
+
+                    if (!flag) {
+                        return;
+                    }
+
+
+                    if (flag.value === "0") {
+
+                        flag.value = "1";
+
+                        this.textContent =
+                            "↩ Keep Current Image";
+
+                        this.style.background =
+                            "#117373";
+
+                    }
+
+                    else {
+
+                        flag.value = "0";
+
+                        this.textContent =
+                            "✕ Remove Current Image";
+
+                        this.style.background =
+                            "#ff4d4d";
+
+                    }
+
+                }
+            );
+
+        });
+
+    });
+
+
+    /* =========================================================
+       ONLY ONE CORRECT ANSWER
+    ========================================================= */
+
+    document.addEventListener("DOMContentLoaded", function () {
+
+        const correctInputs =
+            document.querySelectorAll(
+                ".correct-label input"
+            );
+
+
+        correctInputs.forEach(function (input) {
+
+            input.addEventListener(
+                "change",
+                function () {
+
+                    if (!this.checked) {
+                        return;
+                    }
+
+
+                    correctInputs.forEach(
+                        function (other) {
+
+                            if (other !== input) {
+
+                                other.checked =
+                                    false;
+
+                            }
+
+                        }
+                    );
+
+                }
+            );
+
+        });
+
+    });
+
+
+</script>
