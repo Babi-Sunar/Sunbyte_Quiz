@@ -56,6 +56,10 @@
                 ➕ Add Question
             </a>
 
+            <a href="{% url 'generate_questions_from_pdf' session.code %}" class="pdf-question-btn">
+                📄 Generate Questions from PDF
+            </a>
+
             {% if session.status == 'draft' %}
 
             <a href="{% url 'quizapp:publish_session' session.code %}" class="btn">

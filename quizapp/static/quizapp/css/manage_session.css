@@ -97,17 +97,49 @@ h1 {
 }
 
 /* qr code */
-.qr-box{
+.qr-box {
 
-    margin-top:10px;
-    text-align:center;
+    margin-top: 10px;
+    text-align: center;
 
 }
 
-.qr-box img{
-    width:200px;
-    background:white;
-    padding:10px;
-    border-radius:12px;
+.qr-box img {
+    width: 200px;
+    background: white;
+    padding: 10px;
+    border-radius: 12px;
 
+}
+
+.pdf-question-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+
+    width: 100%;
+    padding: 14px 20px;
+
+    background: #ffc300;
+    color: #111;
+
+    border: none;
+    border-radius: 12px;
+
+    font-size: 16px;
+    font-weight: 700;
+    text-decoration: none;
+
+    cursor: pointer;
+    transition: 0.2s ease;
+}
+
+.pdf-question-btn:hover {
+    background: #e6ad00;
+    transform: translateY(-2px);
+}
+
+.pdf-question-btn:active {
+    transform: translateY(0);
 }
