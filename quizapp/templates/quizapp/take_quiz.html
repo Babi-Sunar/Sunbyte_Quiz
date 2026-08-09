@@ -206,7 +206,7 @@
         let currentQuestion = {{ session.current_question }};
 
         // Timer state
-        let remainingSeconds = {{ remaining_time|default: 0 }};
+        let remainingSeconds = {{ remaining_time|default:"0" }};
         const timerEl = document.getElementById("question-timer");
 
         function renderTimer() {
