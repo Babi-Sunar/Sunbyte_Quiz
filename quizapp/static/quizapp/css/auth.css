@@ -1,0 +1,387 @@
+/* =========================================================
+   SUNBYTE AUTHENTICATION
+   Login • Signup • Forgot Password • Reset Password
+   ========================================================= */
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: "Poppins", sans-serif;
+}
+
+body {
+    min-height: 100vh;
+    background:
+        radial-gradient(circle at top left, rgba(255, 195, 0, 0.18), transparent 35%),
+        radial-gradient(circle at bottom right, rgba(0, 52, 103, 0.22), transparent 35%),
+        linear-gradient(135deg, #117373, #003467);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 25px 15px;
+}
+
+/* =========================================================
+   MAIN AUTH CONTAINER
+   ========================================================= */
+
+.auth-container {
+    width: 100%;
+    max-width: 430px;
+    background: rgba(255, 255, 255, 0.96);
+    border-radius: 22px;
+    padding: 35px 28px;
+    box-shadow:
+        0 20px 50px rgba(0, 0, 0, 0.25),
+        0 8px 20px rgba(0, 0, 0, 0.15);
+    animation: authAppear 0.45s ease;
+}
+
+@keyframes authAppear {
+    from {
+        opacity: 0;
+        transform: translateY(15px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* =========================================================
+   LOGO / TITLE
+   ========================================================= */
+
+.auth-logo {
+    text-align: center;
+    margin-bottom: 10px;
+}
+
+.auth-logo h1 {
+    font-size: 2rem;
+    font-weight: 800;
+    color: #003467;
+    letter-spacing: 0.5px;
+    text-shadow:
+        rgba(0, 0, 0, 0.16) 0 3px 6px,
+        rgba(0, 0, 0, 0.10) 0 2px 3px;
+}
+
+.auth-logo span {
+    color: #ffc300;
+}
+
+.auth-title {
+    text-align: center;
+    color: #003467;
+    font-size: 1.55rem;
+    font-weight: 700;
+    margin-bottom: 7px;
+}
+
+.auth-subtitle {
+    text-align: center;
+    color: #666;
+    font-size: 0.9rem;
+    margin-bottom: 25px;
+}
+
+/* =========================================================
+   FORM
+   ========================================================= */
+
+.auth-form {
+    width: 100%;
+}
+
+.form-group {
+    margin-bottom: 18px;
+}
+
+.form-group label,
+.auth-form label {
+    display: block;
+    color: #003467;
+    font-size: 0.92rem;
+    font-weight: 600;
+    margin-bottom: 7px;
+}
+
+/* Django generated fields */
+
+.form-input,
+.auth-form input[type="text"],
+.auth-form input[type="email"],
+.auth-form input[type="password"] {
+    width: 100%;
+    height: 48px;
+    padding: 0 14px;
+    border: 2px solid #d9e0e7;
+    border-radius: 11px;
+    outline: none;
+    background: #fff;
+    color: #222;
+    font-size: 0.95rem;
+    transition: all 0.2s ease;
+}
+
+.form-input:focus,
+.auth-form input:focus {
+    border-color: #ffc300;
+    box-shadow: 0 0 0 3px rgba(255, 195, 0, 0.18);
+}
+
+.form-input::placeholder,
+.auth-form input::placeholder {
+    color: #999;
+}
+
+/* =========================================================
+   PASSWORD / REMEMBER ME
+   ========================================================= */
+
+.remember-forgot {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 10px;
+    margin: 5px 0 20px;
+}
+
+.remember-me {
+    display: flex !important;
+    align-items: center;
+    gap: 7px;
+    color: #555 !important;
+    font-size: 0.82rem !important;
+    margin: 0 !important;
+}
+
+.remember-me input {
+    width: 16px;
+    height: 16px;
+    accent-color: #ffc300;
+    cursor: pointer;
+}
+
+.forgot-password {
+    color: #003467;
+    font-size: 0.84rem;
+    font-weight: 600;
+    text-decoration: none;
+    transition: 0.2s ease;
+}
+
+.forgot-password:hover {
+    color: #117373;
+    text-decoration: underline;
+}
+
+/* =========================================================
+   BUTTON
+   ========================================================= */
+
+.auth-button {
+    width: 100%;
+    height: 50px;
+    border: none;
+    border-radius: 12px;
+    background: #ffc300;
+    color: #003467;
+    font-size: 1rem;
+    font-weight: 800;
+    cursor: pointer;
+    box-shadow:
+        0 5px 12px rgba(0, 0, 0, 0.18);
+    transition: all 0.2s ease;
+}
+
+.auth-button:hover {
+    background: #ffcf2f;
+    transform: translateY(-1px);
+    box-shadow:
+        0 7px 16px rgba(0, 0, 0, 0.22);
+}
+
+.auth-button:active {
+    transform: translateY(1px);
+}
+
+/* =========================================================
+   LINKS
+   ========================================================= */
+
+.auth-link {
+    text-align: center;
+    margin-top: 20px;
+    color: #666;
+    font-size: 0.88rem;
+}
+
+.auth-link a {
+    color: #003467;
+    font-weight: 700;
+    text-decoration: none;
+}
+
+.auth-link a:hover {
+    color: #117373;
+    text-decoration: underline;
+}
+
+/* =========================================================
+   ERROR / SUCCESS MESSAGES
+   ========================================================= */
+
+.auth-message {
+    padding: 11px 13px;
+    border-radius: 10px;
+    margin-bottom: 18px;
+    font-size: 0.85rem;
+    line-height: 1.4;
+}
+
+.auth-message.error {
+    background: #fff0f0;
+    border: 1px solid #ffbaba;
+    color: #b42318;
+}
+
+.auth-message.success {
+    background: #effcf4;
+    border: 1px solid #a7e3bd;
+    color: #16794c;
+}
+
+/* Django field errors */
+
+.field-error {
+    color: #c62828;
+    font-size: 0.78rem;
+    margin-top: 5px;
+}
+
+.errorlist {
+    list-style: none;
+    padding: 0;
+    margin: 5px 0 0;
+    color: #c62828;
+    font-size: 0.78rem;
+}
+
+/* =========================================================
+   FORGOT PASSWORD PAGE
+   ========================================================= */
+
+.forgot-icon {
+    width: 68px;
+    height: 68px;
+    margin: 0 auto 15px;
+    border-radius: 50%;
+    background: #fff4c7;
+    color: #003467;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.8rem;
+    font-weight: 800;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.12);
+}
+
+.forgot-text {
+    text-align: center;
+    color: #666;
+    font-size: 0.88rem;
+    line-height: 1.5;
+    margin-bottom: 22px;
+}
+
+/* =========================================================
+   PASSWORD RESET SUCCESS
+   ========================================================= */
+
+.success-icon {
+    width: 68px;
+    height: 68px;
+    margin: 0 auto 15px;
+    border-radius: 50%;
+    background: #e7f8ef;
+    color: #16804f;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.8rem;
+    font-weight: 800;
+}
+
+/* =========================================================
+   DIVIDER
+   ========================================================= */
+
+.auth-divider {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin: 22px 0;
+    color: #999;
+    font-size: 0.78rem;
+}
+
+.auth-divider::before,
+.auth-divider::after {
+    content: "";
+    flex: 1;
+    height: 1px;
+    background: #ddd;
+}
+
+/* =========================================================
+   MOBILE
+   ========================================================= */
+
+@media (max-width: 480px) {
+
+    body {
+        padding: 18px 12px;
+    }
+
+    .auth-container {
+        padding: 30px 20px;
+        border-radius: 19px;
+    }
+
+    .auth-logo h1 {
+        font-size: 1.8rem;
+    }
+
+    .auth-title {
+        font-size: 1.4rem;
+    }
+
+    .auth-subtitle {
+        font-size: 0.84rem;
+    }
+
+    .form-input,
+    .auth-form input[type="text"],
+    .auth-form input[type="email"],
+    .auth-form input[type="password"] {
+        height: 50px;
+        font-size: 0.95rem;
+    }
+
+    .auth-button {
+        height: 51px;
+        font-size: 1rem;
+    }
+
+    .remember-forgot {
+        align-items: flex-start;
+    }
+
+    .forgot-password {
+        font-size: 0.8rem;
+    }
+}
