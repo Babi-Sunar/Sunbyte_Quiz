@@ -112,6 +112,23 @@ urlpatterns = [
     views.verify_email_view,
     name='verify_email'
     ),
+    path(
+    'forgot-password/',
+    views.forgot_password_view,
+    name='forgot_password'
+    ),
+
+    path(
+    'reset-password/<uidb64>/<token>/',
+    views.reset_password_view,
+    name='reset_password'
+    ),
+
+    path(
+    'password-reset-invalid/',
+    views.password_reset_invalid,
+    name='password_reset_invalid'
+    ),
     # Joining — no account required
     path('session/join/', views.join_session, name='join_session'),
 

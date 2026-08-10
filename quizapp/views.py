@@ -12,6 +12,9 @@ from django.shortcuts import get_object_or_404, redirect, render
 from django.utils import timezone
 from django.views.decorators.cache import never_cache
 from requests import session
+from django.utils.encoding import force_str
+from django.utils.http import urlsafe_base64_decode
+from django.contrib.auth import update_session_auth_hash
 
 from .forms import (
     ChoiceFormSet, EmailLoginForm, JoinSessionForm, QuestionForm,
@@ -30,14 +33,13 @@ def home(request):
 import resend
 
 from django.conf import settings
-from django.contrib import messages
-from django.contrib.auth import authenticate, login
 from django.contrib.auth.models import User
 from django.contrib.auth.tokens import default_token_generator
-from django.shortcuts import redirect, render
 from django.urls import reverse
 from django.utils.encoding import force_bytes
 from django.utils.http import urlsafe_base64_encode
+from django.utils.encoding import force_str
+from django.utils.http import urlsafe_base64_decode
 
 def signup_view(request):
 
@@ -125,13 +127,16 @@ def signup_view(request):
 #     return render(request, "quizapp/signup.html")
 @never_cache
 def login_view(request):
+
     if request.user.is_authenticated:
         return redirect('quizapp:dashboard')
 
     if request.method == 'POST':
+
         form = EmailLoginForm(request.POST)
 
         if form.is_valid():
+        
             email = form.cleaned_data['email']
             password = form.cleaned_data['password']
 
@@ -139,20 +144,32 @@ def login_view(request):
                 email__iexact=email
             ).first()
 
-            if user_obj is not None and not user_obj.is_active:
+            # -------------------------------------------------
+            # User does not exist
+            # -------------------------------------------------
 
-                # Check email verification first
-                if not user_obj.is_active:
-                    messages.error(
-                        request,
-                        'Please verify your email address before logging in.'
-                    )
-                    return render(
-                        request,
-                        'quizapp/login.html',
-                        {'form': form}
-                    )
+            if user_obj is None:
+                messages.error(
+                    request,
+                    'Invalid email or password.'
+                )
 
+            # -------------------------------------------------
+            # User exists but email is not verified
+            # -------------------------------------------------
+
+            elif not user_obj.is_active:
+                messages.error(
+                    request,
+                    'Please verify your email address before logging in.'
+                )
+
+            # -------------------------------------------------
+            # User exists and email is verified
+            # -------------------------------------------------
+
+            else:
+            
                 user = authenticate(
                     request,
                     username=user_obj.username,
@@ -160,6 +177,7 @@ def login_view(request):
                 )
 
                 if user is not None:
+                
                     login(request, user)
 
                     if not form.cleaned_data.get('remember_me'):
@@ -167,10 +185,10 @@ def login_view(request):
 
                     return redirect('quizapp:dashboard')
 
-            messages.error(
-                request,
-                'Invalid email or password.'
-            )
+                messages.error(
+                    request,
+                    'Invalid email or password.'
+                )
 
     else:
         form = EmailLoginForm()
@@ -180,6 +198,7 @@ def login_view(request):
         'quizapp/login.html',
         {'form': form}
     )
+
 
 
 def logout_view(request):
@@ -2377,3 +2396,213 @@ def add_category(request):
         "name": category.name,
         "existing": False
     })
+    
+# forget password 
+def forgot_password_view(request):
+    if request.user.is_authenticated:
+        return redirect('quizapp:dashboard')
+
+    if request.method == 'POST':
+
+        email_address = request.POST.get('email', '').strip()
+
+        if email_address:
+
+            user = User.objects.filter(
+                email__iexact=email_address,
+                is_active=True
+            ).first()
+
+            # Always show the same response whether the email exists
+            # or not. This prevents email/account enumeration.
+            if user:
+
+                uid = urlsafe_base64_encode(
+                    force_bytes(user.pk)
+                )
+
+                token = default_token_generator.make_token(user)
+
+                reset_url = request.build_absolute_uri(
+                    reverse(
+                        'quizapp:reset_password',
+                        kwargs={
+                            'uidb64': uid,
+                            'token': token,
+                        }
+                    )
+                )
+
+                try:
+
+                    resend.Emails.send({
+                        "from": settings.DEFAULT_FROM_EMAIL,
+                        "to": [user.email],
+                        "subject": "Reset your SunByte Quiz password",
+                        "html": f"""
+                        <div style="
+                            font-family:Arial,sans-serif;
+                            max-width:600px;
+                            margin:auto;
+                            padding:30px;
+                            background:#f5f7f9;
+                        ">
+
+                            <div style="
+                                background:#ffffff;
+                                padding:35px;
+                                border-radius:16px;
+                                text-align:center;
+                                box-shadow:0 8px 30px rgba(0,0,0,.08);
+                            ">
+
+                                <h1 style="
+                                    color:#117373;
+                                    margin-bottom:10px;
+                                ">
+                                    SunByte Quiz
+                                </h1>
+
+                                <h2 style="
+                                    color:#222;
+                                    margin-bottom:15px;
+                                ">
+                                    Password Reset
+                                </h2>
+
+                                <p style="
+                                    color:#555;
+                                    line-height:1.6;
+                                ">
+                                    We received a request to reset your
+                                    SunByte Quiz password.
+                                </p>
+
+                                <p style="
+                                    color:#555;
+                                    line-height:1.6;
+                                ">
+                                    Click the button below to create
+                                    a new password.
+                                </p>
+
+                                <a href="{reset_url}"
+                                   style="
+                                   display:inline-block;
+                                   margin-top:20px;
+                                   padding:14px 28px;
+                                   background:#FFC300;
+                                   color:#111;
+                                   text-decoration:none;
+                                   font-weight:bold;
+                                   border-radius:8px;
+                                   ">
+                                    Reset Password
+                                </a>
+
+                                <p style="
+                                    margin-top:25px;
+                                    color:#888;
+                                    font-size:13px;
+                                    line-height:1.5;
+                                ">
+                                    This link is valid for a limited time.
+                                    If you did not request a password reset,
+                                    you can safely ignore this email.
+                                </p>
+
+                            </div>
+
+                        </div>
+                        """
+                    })
+
+                except Exception as e:
+                    print("Password reset email error:", e)
+
+        messages.success(
+            request,
+            "If an account exists with that email, "
+            "a password reset link has been sent."
+        )
+
+        return redirect('quizapp:forgot_password')
+
+    return render(
+        request,
+        'quizapp/forgot_password.html'
+    )
+
+
+def reset_password_view(request, uidb64, token):
+
+    try:
+
+        uid = force_str(
+            urlsafe_base64_decode(uidb64)
+        )
+
+        user = User.objects.get(pk=uid)
+
+    except (
+        TypeError,
+        ValueError,
+        OverflowError,
+        User.DoesNotExist
+    ):
+
+        user = None
+
+    if user is None or not default_token_generator.check_token(
+        user,
+        token
+    ):
+
+        return render(
+            request,
+            'quizapp/password_reset_invalid.html'
+        )
+
+    if request.method == 'POST':
+
+        password1 = request.POST.get('password1', '')
+        password2 = request.POST.get('password2', '')
+
+        if not password1 or not password2:
+
+            messages.error(
+                request,
+                'Please enter both password fields.'
+            )
+
+        elif password1 != password2:
+
+            messages.error(
+                request,
+                'Passwords do not match.'
+            )
+
+        elif len(password1) < 8:
+
+            messages.error(
+                request,
+                'Password must contain at least 8 characters.'
+            )
+
+        else:
+
+            user.set_password(password1)
+            user.save(update_fields=['password'])
+
+            messages.success(
+                request,
+                'Your password has been reset successfully. '
+                'You can now log in.'
+            )
+
+            return redirect('quizapp:login')
+
+    return render(
+        request,
+        'quizapp/reset_password.html'
+    )
