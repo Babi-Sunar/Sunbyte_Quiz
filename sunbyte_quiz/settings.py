@@ -320,3 +320,8 @@ CLOUDINARY_STORAGE = {
 #         "BACKEND": "django.contrib.staticfiles.storage.StaticFilesStorage",
 #     },
 # }
+
+
+RESEND_API_KEY = os.environ.get("RESEND_API_KEY")
+
+DEFAULT_FROM_EMAIL = "SunByte Quiz <onboarding@resend.dev>"

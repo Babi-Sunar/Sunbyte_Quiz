@@ -107,6 +107,11 @@ urlpatterns = [
     views.add_category,
     name="add_category"
     ),
+    path(
+    'verify-email/<uidb64>/<token>/',
+    views.verify_email_view,
+    name='verify_email'
+    ),
     # Joining — no account required
     path('session/join/', views.join_session, name='join_session'),
 

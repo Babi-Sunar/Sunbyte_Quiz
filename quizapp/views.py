@@ -24,25 +24,83 @@ from io import BytesIO
 # =======================================================================
 # Auth & landing
 # =======================================================================
-def home(request):
-    return render(request, 'quizapp/home.html')
+import resend
 
+from django.conf import settings
+from django.contrib import messages
+from django.contrib.auth import authenticate, login
+from django.contrib.auth.models import User
+from django.contrib.auth.tokens import default_token_generator
+from django.shortcuts import redirect, render
+from django.urls import reverse
+from django.utils.encoding import force_bytes
+from django.utils.http import urlsafe_base64_encode
 
 def signup_view(request):
+
     if request.user.is_authenticated:
         return redirect('quizapp:dashboard')
 
     if request.method == 'POST':
+
         form = SignUpForm(request.POST)
 
         if form.is_valid():
-            user = form.save()
-            # login(request, user)
+
+            user = form.save(commit=False)
+
+            # User cannot log in until email is verified
+            user.is_active = False
+            user.save()
+
+            # Generate verification token
+            uid = urlsafe_base64_encode(
+                force_bytes(user.pk)
+            )
+
+            token = default_token_generator.make_token(user)
+
+            verification_url = request.build_absolute_uri(
+                reverse(
+                    'quizapp:verify_email',
+                    kwargs={
+                        'uidb64': uid,
+                        'token': token,
+                    }
+                )
+            )
+
+            try:
+
+                send_verification_email(
+                    user,
+                    verification_url
+                )
+
+            except Exception as e:
+
+                # Remove account if email could not be sent
+                user.delete()
+
+                messages.error(
+                    request,
+                    'We could not send the verification email. Please try again.'
+                )
+
+                print("Resend error:", e)
+
+                return render(
+                    request,
+                    'quizapp/signup.html',
+                    {'form': form}
+                )
+
             messages.success(
                 request,
-                f'Welcome to SunByte Quiz, {user.username}!'
+                'Account created! Please check your email and verify your account before logging in.'
             )
-            return redirect('quizapp:dashboard')
+
+            return redirect('quizapp:login')
 
         else:
             print(form.errors)
@@ -50,7 +108,11 @@ def signup_view(request):
     else:
         form = SignUpForm()
 
-    return render(request, 'quizapp/signup.html', {'form': form})
+    return render(
+        request,
+        'quizapp/signup.html',
+        {'form': form}
+    )
 # from django.http import HttpResponse
 
 # def signup_view(request):
@@ -65,25 +127,56 @@ def login_view(request):
 
     if request.method == 'POST':
         form = EmailLoginForm(request.POST)
+
         if form.is_valid():
             email = form.cleaned_data['email']
             password = form.cleaned_data['password']
-            user_obj = User.objects.filter(email__iexact=email).first()
 
-            user = None
-            if user_obj is not None:
-                user = authenticate(request, username=user_obj.username, password=password)
+            user_obj = User.objects.filter(
+                email__iexact=email
+            ).first()
 
-            if user is not None:
-                login(request, user)
-                if not form.cleaned_data.get('remember_me'):
-                    request.session.set_expiry(0)
-                return redirect('quizapp:dashboard')
-            messages.error(request, 'Invalid email or password.')
+            if user_obj is not None and not user_obj.is_active:
+
+                # Check email verification first
+                if not user_obj.is_active:
+                    messages.error(
+                        request,
+                        'Please verify your email address before logging in.'
+                    )
+                    return render(
+                        request,
+                        'quizapp/login.html',
+                        {'form': form}
+                    )
+
+                user = authenticate(
+                    request,
+                    username=user_obj.username,
+                    password=password
+                )
+
+                if user is not None:
+                    login(request, user)
+
+                    if not form.cleaned_data.get('remember_me'):
+                        request.session.set_expiry(0)
+
+                    return redirect('quizapp:dashboard')
+
+            messages.error(
+                request,
+                'Invalid email or password.'
+            )
+
     else:
         form = EmailLoginForm()
 
-    return render(request, 'quizapp/login.html', {'form': form})
+    return render(
+        request,
+        'quizapp/login.html',
+        {'form': form}
+    )
 
 
 def logout_view(request):
@@ -102,6 +195,134 @@ def dashboard(request):
     })
 
 
+# email verification view
+from django.contrib.auth import get_user_model
+from django.utils.http import urlsafe_base64_decode
+
+User = get_user_model()
+
+
+def verify_email_view(request, uidb64, token):
+
+    try:
+
+        uid = urlsafe_base64_decode(uidb64).decode()
+
+        user = User.objects.get(pk=uid)
+
+    except (
+        TypeError,
+        ValueError,
+        OverflowError,
+        User.DoesNotExist
+    ):
+
+        user = None
+
+    if user is not None:
+
+        if default_token_generator.check_token(
+            user,
+            token
+        ):
+
+            user.is_active = True
+
+            user.save(
+                update_fields=['is_active']
+            )
+
+            messages.success(
+                request,
+                'Your email has been verified successfully. You can now log in.'
+            )
+
+            return redirect('quizapp:login')
+
+    return render(
+        request,
+        'quizapp/email_verification_invalid.html'
+    )
+    
+# helper fo verification email
+import resend
+
+from django.conf import settings
+def send_verification_email(user, verification_url):
+    resend.api_key = settings.RESEND_API_KEY
+
+    resend.Emails.send({
+        "from": settings.DEFAULT_FROM_EMAIL,
+        "to": [user.email],
+        "subject": "Verify your SunByte Quiz account",
+        "html": f"""
+            <div style="
+                font-family: Arial, sans-serif;
+                max-width: 600px;
+                margin: auto;
+                padding: 30px;
+                background: #f7f7f7;
+            ">
+
+                <div style="
+                    background: #FFC300;
+                    padding: 20px;
+                    text-align: center;
+                    border-radius: 12px 12px 0 0;
+                ">
+                    <h1 style="margin: 0; color: #111;">
+                        SunByte Quiz
+                    </h1>
+                </div>
+
+                <div style="
+                    background: white;
+                    padding: 30px;
+                    border-radius: 0 0 12px 12px;
+                ">
+
+                    <h2>Verify your email</h2>
+
+                    <p>
+                        Hello <strong>{user.username}</strong>,
+                    </p>
+
+                    <p>
+                        Thank you for creating your SunByte Quiz account.
+                        Please verify your email address to activate your account.
+                    </p>
+
+                    <div style="text-align: center; margin: 30px 0;">
+
+                        <a href="{verification_url}"
+                           style="
+                               display: inline-block;
+                               padding: 14px 25px;
+                               background: #FFC300;
+                               color: #111;
+                               text-decoration: none;
+                               font-weight: bold;
+                               border-radius: 8px;
+                           ">
+                            Verify My Email
+                        </a>
+
+                    </div>
+
+                    <p>
+                        If you did not create this account, you can safely
+                        ignore this email.
+                    </p>
+
+                    <p style="font-size: 13px; color: #777;">
+                        This is an automated email from SunByte Quiz.
+                    </p>
+
+                </div>
+
+            </div>
+        """
+    })
 # =======================================================================
 # Helpers
 # =======================================================================

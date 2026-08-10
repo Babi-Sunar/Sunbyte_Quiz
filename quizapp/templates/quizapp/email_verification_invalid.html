@@ -1,0 +1,92 @@
+{% load static %}
+
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+```
+<title>Email Verification | SunByte Quiz</title>
+
+<link rel="stylesheet" href="{% static 'quizapp/css/email_verification.css' %}">
+```
+
+</head>
+
+<body>
+
+```
+<main class="verification-page">
+
+    <section class="verification-card">
+
+        <!-- Logo / Brand -->
+        <div class="brand">
+            <div class="brand-icon">
+                ☀
+            </div>
+
+            <h1>SunByte <span>Quiz</span></h1>
+        </div>
+
+
+        <!-- Status Icon -->
+        <div class="status-icon">
+            !
+        </div>
+
+
+        <!-- Main Content -->
+        <div class="verification-content">
+
+            <h2>Verification Link Invalid</h2>
+
+            <p class="main-message">
+                Sorry, this email verification link is invalid or has expired.
+            </p>
+
+            <p class="secondary-message">
+                Please make sure you are using the latest verification
+                link sent to your email address.
+            </p>
+
+
+            <!-- Action -->
+            <a href="{% url 'quizapp:login' %}" class="primary-button">
+                Go to Login
+            </a>
+
+
+            <!-- Help -->
+            <p class="help-text">
+                Already verified your account?
+                <a href="{% url 'quizapp:login' %}">
+                    Log in here
+                </a>
+            </p>
+
+        </div>
+
+
+        <!-- Footer -->
+        <footer class="verification-footer">
+
+            <p>
+                © {% now "Y" %} SunByte Quiz
+            </p>
+
+            <span>
+                Learn • Challenge • Compete
+            </span>
+
+        </footer>
+
+    </section>
+
+</main>
+```
+
+</body>
+</html>
