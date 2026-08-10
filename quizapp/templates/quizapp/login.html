@@ -15,6 +15,7 @@
 <body>
 
     <h2>Login</h2>
+    <div id="loginAlert" class="login-alert"></div>
     <a href="{% url 'quizapp:home' %}" class="back-btn" style="color: #4a4638;position: relative ; left: 60vw;">
         ← Home
     </a>
@@ -71,7 +72,141 @@
 
     <!-- JavaScript -->
     <!-- <script src="{% static 'quizapp/js/login.js' %}"></script> -->
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
 
+            const form = document.querySelector("form");
+            const emailInput = document.querySelector('input[name="email"]');
+            const passwordInput = document.querySelector('input[name="password"]');
+            const alertBox = document.getElementById("loginAlert");
+
+            function showAlert(message, type = "error") {
+
+                if (!alertBox) return;
+
+                alertBox.textContent = message;
+
+                alertBox.className = "login-alert " + type;
+
+                alertBox.style.display = "block";
+
+                setTimeout(() => {
+                    alertBox.style.opacity = "0";
+
+                    setTimeout(() => {
+                        alertBox.style.display = "none";
+                        alertBox.style.opacity = "1";
+                    }, 300);
+
+                }, 4000);
+            }
+
+
+            if (form) {
+
+                form.addEventListener("submit", function (event) {
+
+                    const email = emailInput
+                        ? emailInput.value.trim()
+                        : "";
+
+                    const password = passwordInput
+                        ? passwordInput.value
+                        : "";
+
+
+                    /* -----------------------------
+                       Empty email
+                    ----------------------------- */
+
+                    if (!email) {
+
+                        event.preventDefault();
+
+                        showAlert(
+                            "Please enter your email address."
+                        );
+
+                        if (emailInput) {
+                            emailInput.focus();
+                        }
+
+                        return;
+                    }
+
+
+                    /* -----------------------------
+                       Email format
+                    ----------------------------- */
+
+                    const emailPattern =
+                        /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+                    if (!emailPattern.test(email)) {
+
+                        event.preventDefault();
+
+                        showAlert(
+                            "Please enter a valid email address."
+                        );
+
+                        if (emailInput) {
+                            emailInput.focus();
+                        }
+
+                        return;
+                    }
+
+
+                    /* -----------------------------
+                       Empty password
+                    ----------------------------- */
+
+                    if (!password) {
+
+                        event.preventDefault();
+
+                        showAlert(
+                            "Please enter your password."
+                        );
+
+                        if (passwordInput) {
+                            passwordInput.focus();
+                        }
+
+                        return;
+                    }
+
+                });
+            }
+
+
+            /* ------------------------------------
+               Django messages
+               ------------------------------------ */
+
+            const djangoMessages =
+                document.querySelectorAll(".messages li");
+
+            djangoMessages.forEach(function (message) {
+
+                const text = message.textContent.trim();
+
+                if (!text) return;
+
+                let type = "error";
+
+                if (
+                    text.toLowerCase().includes("success")
+                ) {
+                    type = "success";
+                }
+
+                showAlert(text, type);
+            });
+
+        });
+    </script>
 </body>
 
 </html>
