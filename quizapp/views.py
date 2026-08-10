@@ -1848,14 +1848,17 @@ def take_quiz(request, code):
         .order_by("order")
     )
 
-    current_question = None
-
-    if questions and 0 <= session.current_question < len(questions):
-        current_question = questions[session.current_question]
-    
     if session.shuffle_questions:
         rng = random.Random(participant.id)
         rng.shuffle(questions)
+
+    current_question = None
+
+    # Guard against session.current_question being None (e.g. quiz just
+    # started and the index hasn't been initialized yet).
+    current_index = session.current_question
+    if questions and current_index is not None and 0 <= current_index < len(questions):
+        current_question = questions[current_index]
 
     if request.method == 'POST':
         correct_count = 0
@@ -1939,7 +1942,6 @@ def take_quiz(request, code):
 
             remaining_time = total_seconds
 
-
     # ----------------------------------------------------------
     # Per-question timer
     # ----------------------------------------------------------
@@ -1947,14 +1949,16 @@ def take_quiz(request, code):
     elif session.timer_mode == 'per_question':
 
         if current_question:
-        
+
             question_time = (
                 current_question.time_limit_seconds
                 or session.default_time_per_question_seconds
             )
 
+            question_time = int(question_time)
+
             if session.question_started_at:
-            
+
                 elapsed = (
                     timezone.now()
                     - session.question_started_at
@@ -1966,16 +1970,17 @@ def take_quiz(request, code):
                 )
 
             else:
-            
-                remaining_time = int(question_time)
 
+                remaining_time = question_time
 
     # ----------------------------------------------------------
     # No timer
     # ----------------------------------------------------------
 
     else:
+
         remaining_time = 0
+
     return render(request, 'quizapp/take_quiz.html', {
         'session': session,
         'participant': participant,
