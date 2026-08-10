@@ -1987,22 +1987,23 @@ def take_quiz(request, code):
 
 
 # live update of participant name
+@never_cache
 def participant_list(request, code):
 
-    session = get_object_or_404(QuizSession, code=code)
-
-    participants = list(
-
-        session.participants.values(
-            "display_name"
-        )
-
+    session = get_object_or_404(
+        QuizSession,
+        code=code
     )
 
+    participants = [
+        {
+            "display_name": participant.display_name
+        }
+        for participant in session.participants.select_related("user")
+    ]
+
     return JsonResponse({
-
         "participants": participants
-
     })
 def quiz_status(request, code):
 
