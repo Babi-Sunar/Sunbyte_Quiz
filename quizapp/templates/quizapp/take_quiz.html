@@ -165,208 +165,359 @@
 
     <!-- synchronization -->
     <script>
-        // timer circle 
-        const timerCircle = document.querySelector(".timer-circle");
-        const timerText = document.getElementById("question-timer");
-
-        let totalTime = {{ remaining_time }};
-        let timeLeft = totalTime;
-
-        function updateTimer() {
-
-            timerText.textContent = timeLeft;
-
-            const progress = (timeLeft / totalTime) * 100;
-
-            timerCircle.style.background =
-                `conic-gradient(
-            #FFC300 ${progress}%,
-            #ddd ${progress}%
-        )`;
-
-        }
-
-        updateTimer();
-
-        setInterval(() => {
-
-            if (timeLeft > 0) {
-
-                timeLeft--;
-
-                updateTimer();
-
-            }
-
-        }, 1000);
 
         const sessionCode = "{{ session.code }}";
 
-        // Current question shown on this page
-        let currentQuestion = {{ session.current_question }};
+        const timerEl =
+            document.getElementById("question-timer");
 
-        // Timer state
-        let remainingSeconds = {{ remaining_time|default:"0" }};
-        const timerEl = document.getElementById("question-timer");
+        const timerCircle =
+            document.querySelector(".timer-circle");
+
+        let currentQuestion =
+            {{ session.current_question|default: "0" }};
+
+        let remainingSeconds =
+            {{ remaining_time|default: "0" }};
+
+        let questionTime =
+            {{ question_time|default: "0" }};
+
+        let timerMode =
+            "{{ session.timer_mode }}";
+
+
+        /* =====================================================
+           TIMER
+        ===================================================== */
 
         function renderTimer() {
 
-            if (timerEl) {
-                timerEl.textContent = remainingSeconds > 0 ? remainingSeconds : 0;
+            if (!timerEl) {
+                return;
             }
 
+            const seconds =
+                Math.max(0, Math.floor(remainingSeconds));
+
+            timerEl.textContent = seconds;
+
+            if (timerCircle && questionTime > 0) {
+
+                const progress =
+                    Math.max(
+                        0,
+                        Math.min(
+                            100,
+                            (seconds / questionTime) * 100
+                        )
+                    );
+
+                timerCircle.style.background =
+                    `conic-gradient(
+                    #FFC300 ${progress}%,
+                    #ddd ${progress}%
+                )`;
+            }
         }
+
 
         renderTimer();
 
-        // Tick the timer down every second, locally
+
+        /*
+         * Local countdown.
+         *
+         * This is only for smooth display.
+         * The server remains authoritative.
+         */
+
         setInterval(() => {
 
             if (remainingSeconds > 0) {
 
-                remainingSeconds -= 1;
+                remainingSeconds--;
+
                 renderTimer();
 
             }
 
         }, 1000);
 
+
+        /* =====================================================
+           SERVER SYNCHRONIZATION
+        ===================================================== */
+
         function syncQuiz() {
 
-            fetch(`/session/${sessionCode}/quiz-status/`, {
-                cache: "no-store"
-            })
-                .then(response => response.json())
+            fetch(
+                `/session/${sessionCode}/quiz-status/`,
+                {
+                    cache: "no-store"
+                }
+            )
+
+                .then(response => {
+
+                    if (!response.ok) {
+                        throw new Error(
+                            "Failed to fetch quiz status"
+                        );
+                    }
+
+                    return response.json();
+
+                })
+
                 .then(data => {
 
-                    // Host moved to another question
-                    if (data.current_question != currentQuestion) {
+                    /* ---------------------------------------------
+                       Host moved to another question
+                    --------------------------------------------- */
 
-                        location.reload();
-                        return;
-
-                    }
-
-                    // Quiz finished
-                    if (data.quiz_state === "finished") {
-
-                        location.reload();
-                        return;
-
-                    }
-
-                    // Re-sync timer with server truth (handles pause/resume, drift)
                     if (
-                        data.timer_mode === "per_question" &&
-                        data.question_started_at
+                        data.current_question !==
+                        currentQuestion
                     ) {
 
+                        window.location.reload();
+
+                        return;
+                    }
+
+
+                    /* ---------------------------------------------
+                       Quiz finished
+                    --------------------------------------------- */
+
+                    if (
+                        data.quiz_state === "finished"
+                    ) {
+
+                        window.location.reload();
+
+                        return;
+                    }
+
+
+                    /* ---------------------------------------------
+                       Quiz paused
+                    --------------------------------------------- */
+
+                    if (
+                        data.quiz_state === "paused"
+                    ) {
+
+                        return;
+                    }
+
+
+                    /* ---------------------------------------------
+                       PER QUESTION TIMER
+                    --------------------------------------------- */
+
+                    if (
+                        data.timer_mode === "per_question" &&
+                        data.question_started_at &&
+                        data.question_time
+                    ) {
+
+                        const now =
+                            Date.now() / 1000;
+
                         const elapsed =
-                            (Date.now() / 1000) - data.question_started_at;
+                            now -
+                            Number(data.question_started_at);
 
-                        const serverRemaining = Math.max(
-                            0,
-                            Math.floor(data.question_time - elapsed)
-                        );
+                        const serverRemaining =
+                            Math.max(
+                                0,
+                                Math.floor(
+                                    Number(data.question_time)
+                                    -
+                                    elapsed
+                                )
+                            );
 
-                        // Only correct if drifted by more than 1 second
-                        if (Math.abs(serverRemaining - remainingSeconds) > 1) {
+                        questionTime =
+                            Number(data.question_time);
 
-                            remainingSeconds = serverRemaining;
+
+                        /*
+                         * Synchronize whenever there is
+                         * noticeable drift.
+                         */
+
+                        if (
+                            Math.abs(
+                                serverRemaining -
+                                remainingSeconds
+                            ) > 1
+                        ) {
+
+                            remainingSeconds =
+                                serverRemaining;
+
                             renderTimer();
+
+                        }
+
+
+                        /*
+                         * If timer reached zero,
+                         * refresh so the new question
+                         * appears.
+                         */
+
+                        if (
+                            serverRemaining <= 0
+                        ) {
+
+                            window.location.reload();
 
                         }
 
                     }
 
                 })
+
                 .catch(error => {
 
-                    console.log(error);
+                    console.log(
+                        "Quiz synchronization error:",
+                        error
+                    );
 
                 });
 
         }
 
-        // Check twice every second
-        setInterval(syncQuiz, 500);
 
+        /*
+         * Synchronize with server every second.
+         */
 
-        // save answer
-        const csrfTokenInput = document.querySelector(
-            "#answerForm [name=csrfmiddlewaretoken]"
+        setInterval(
+            syncQuiz,
+            1000
         );
 
-        const csrfToken = csrfTokenInput ? csrfTokenInput.value : "";
+
+        /* =====================================================
+           SAVE ANSWER
+        ===================================================== */
+
+        const csrfTokenInput =
+            document.querySelector(
+                "#answerForm [name=csrfmiddlewaretoken]"
+            );
+
+        const csrfToken =
+            csrfTokenInput
+                ? csrfTokenInput.value
+                : "";
 
 
         document
             .querySelectorAll(".answer-option")
             .forEach(option => {
 
-                option.addEventListener("change", function () {
+                option.addEventListener(
+                    "change",
+                    function () {
 
-                    fetch(
-                        "/session/{{ session.code }}/save-answer/",
-                        {
+                        fetch(
+                            `/session/${sessionCode}/save-answer/`,
+                            {
 
-                            method: "POST",
+                                method: "POST",
 
-                            headers: {
+                                headers: {
 
-                                "X-CSRFToken": csrfToken,
+                                    "X-CSRFToken":
+                                        csrfToken,
 
-                                "Content-Type":
-                                    "application/x-www-form-urlencoded",
+                                    "Content-Type":
+                                        "application/x-www-form-urlencoded",
 
-                            },
+                                },
 
-                            body:
-
-                                "question_id=" +
-                                this.dataset.question +
-
-                                "&choice_id=" +
-
-                                this.value,
-
-                        }
-
-                    )
-
-                        .then(response => response.json())
-
-                        .then(data => {
-
-                            if (data.success) {
-
-                                console.log("Answer Saved");
+                                body:
+                                    "question_id=" +
+                                    encodeURIComponent(
+                                        this.dataset.question
+                                    ) +
+                                    "&choice_id=" +
+                                    encodeURIComponent(
+                                        this.value
+                                    ),
 
                             }
+                        )
 
-                        });
+                            .then(response =>
+                                response.json()
+                            )
 
-                });
+                            .then(data => {
+
+                                if (data.success) {
+
+                                    console.log(
+                                        "Answer saved"
+                                    );
+
+                                }
+
+                            })
+
+                            .catch(error => {
+
+                                console.log(
+                                    "Answer save error:",
+                                    error
+                                );
+
+                            });
+
+                    }
+                );
 
             });
 
-        const submitBtn = document.getElementById("submitQuizBtn");
+
+        /* =====================================================
+           SUBMIT QUIZ
+        ===================================================== */
+
+        const submitBtn =
+            document.getElementById(
+                "submitQuizBtn"
+            );
+
 
         if (submitBtn) {
 
-            submitBtn.addEventListener("click", function () {
+            submitBtn.addEventListener(
+                "click",
+                function () {
 
-                if (confirm("Are you sure you want to submit your quiz?")) {
+                    if (
+                        confirm(
+                            "Are you sure you want to submit your quiz?"
+                        )
+                    ) {
 
-                    window.location.href =
-                        `/session/${sessionCode}/submit/`;
+                        window.location.href =
+                            `/session/${sessionCode}/submit/`;
+
+                    }
 
                 }
-
-            });
+            );
 
         }
-
 
     </script>
 </body>

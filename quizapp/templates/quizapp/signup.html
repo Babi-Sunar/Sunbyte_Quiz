@@ -10,16 +10,66 @@
     <link rel="stylesheet" href="{% static 'quizapp/css/signup.css' %}">
 
     <title>Sign Up</title>
+    <style>
+        .signup-alert {
+            display: none;
+
+            width: min(90%, 450px);
+
+            margin: 15px auto;
+
+            padding: 14px 18px;
+
+            border-radius: 10px;
+
+            font-family: "Poppins", sans-serif;
+
+            font-size: 14px;
+            font-weight: 500;
+
+            line-height: 1.5;
+
+            text-align: center;
+
+            box-shadow:
+                0 5px 15px rgba(0, 0, 0, 0.12);
+
+            opacity: 1;
+
+            transition: opacity 0.3s ease;
+        }
+
+
+        /* Error */
+
+        .signup-alert.error {
+            background: #ffe5e5;
+            color: #a50000;
+
+            border: 1px solid #ffb3b3;
+        }
+
+
+        /* Success */
+
+        .signup-alert.success {
+            background: #fff4c2;
+            color: #6b5200;
+
+            border: 1px solid #ffd84d;
+        }
+    </style>
 </head>
 
 <body>
 
     <h2>Sign Up</h2>
-        <a href="{% url 'quizapp:home' %}" class="back-btn" style="color: #4a4638;position: relative ; left: 60vw;">
+    <a href="{% url 'quizapp:home' %}" class="back-btn" style="color: #4a4638;position: relative ; left: 60vw;">
         ← Home
     </a>
+    <div id="signupAlert" class="signup-alert"></div>
     {% if form.errors %}
-    <script>
+    <!-- <script>
         {% for field in form %}
         {% for error in field.errors %}
         alert("{{ field.label }}: {{ error|escapejs }}");
@@ -30,7 +80,7 @@
         alert("{{ error|escapejs }}");
         {% endfor %}
     </script>
-    {% endif %}
+    {% endif %} -->
     <form id="signupForm" method="post">
         {% csrf_token %}
 
@@ -38,7 +88,8 @@
 
             <!-- Username -->
             <label id="username-label" class="input-label" for="username">Username:</label>
-            <input class="input-field" type="text" id="username" name="username" placeholder="Username (without space)" required><br>
+            <input class="input-field" type="text" id="username" name="username" placeholder="Username (without space)"
+                required><br>
 
             <!-- Email -->
             <label class="input-label" id="email-label" for="email">Email:</label>
@@ -87,7 +138,90 @@
 
     <!-- JavaScript -->
     <!-- <script src="{% static 'quizapp/js/signup.js' %}"></script> -->
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
 
+            const alertBox = document.getElementById("signupAlert");
+
+            if (!alertBox) return;
+
+
+            function showSignupAlert(message, type = "error") {
+
+                alertBox.textContent = message;
+
+                alertBox.className = "signup-alert " + type;
+
+                alertBox.style.display = "block";
+                alertBox.style.opacity = "1";
+
+                setTimeout(function () {
+
+                    alertBox.style.opacity = "0";
+
+                    setTimeout(function () {
+                        alertBox.style.display = "none";
+                        alertBox.style.opacity = "1";
+                    }, 300);
+
+                }, 5000);
+            }
+
+
+            /* =====================================
+               DJANGO FORM ERRORS
+               ===================================== */
+
+            {% if form.errors %}
+
+            {% for field in form %}
+
+            {% for error in field.errors %}
+
+            showSignupAlert(
+                "{{ field.label|escapejs }}: {{ error|escapejs }}",
+                "error"
+            );
+
+            {% endfor %}
+
+            {% endfor %}
+
+
+            {% for error in form.non_field_errors %}
+
+            showSignupAlert(
+                "{{ error|escapejs }}",
+                "error"
+            );
+
+            {% endfor %}
+
+            {% endif %}
+
+
+            /* =====================================
+               DJANGO SUCCESS MESSAGE
+               ===================================== */
+
+            {% if messages %}
+
+            {% for message in messages %}
+
+            {% if message.tags == "success" %}
+
+            showSignupAlert(
+                "{{ message|escapejs }}",
+                "success"
+            );
+
+            {% endif %}
+
+            {% endfor %}
+
+            {% endif %}
+        });
+    </script>
 </body>
 
 </html>

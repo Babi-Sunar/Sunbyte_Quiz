@@ -1388,11 +1388,15 @@ def participant_count(request, code):
 @login_required
 def start_quiz(request, code):
 
-    session = _get_hosted_session_or_404(request, code)
+    session = _get_hosted_session_or_404(
+        request,
+        code
+    )
 
     if request.method == "POST":
 
         if session.status != "active":
+
             messages.error(
                 request,
                 "Session is not active."
@@ -1400,40 +1404,42 @@ def start_quiz(request, code):
 
             return redirect(
                 "quizapp:final_room",
-                code=session.code,
+                code=session.code
             )
 
+        # ---------------------------------------------
+        # Start quiz
+        # ---------------------------------------------
+
+        now = timezone.now()
 
         session.quiz_state = "running"
 
+        # Always reset timer timestamps
+        session.quiz_started_at = now
+        session.question_started_at = now
 
-        # Start timer depending on mode
+        # Start from first question
+        session.current_question = 0
 
-        if session.timer_mode == "per_question":
-
-            session.question_started_at = timezone.now()
-
-
-        elif session.timer_mode == "per_quiz":
-
-            session.quiz_started_at = timezone.now()
-
-
-        session.save()
-
+        session.save(
+            update_fields=[
+                "quiz_state",
+                "quiz_started_at",
+                "question_started_at",
+                "current_question",
+            ]
+        )
 
         messages.success(
             request,
             "Quiz started successfully."
         )
 
-
     return redirect(
         "quizapp:final_room",
-        code=code
+        code=session.code
     )
-
-from django.utils import timezone
 
 
 @login_required
@@ -1900,27 +1906,58 @@ def take_quiz(request, code):
         session.recompute_ranks()
         return redirect('quizapp:result_detail', code=session.code)
 
+    # ==========================================================
+    # TIMER
+    # ==========================================================
+
     total_seconds = None
-    if session.timer_mode == 'per_quiz':
-        total_seconds = session.total_time_minutes * 60
-
-    question_time = None
     remaining_time = 0
+    question_time = None
 
-    if current_question:
+    # ----------------------------------------------------------
+    # Whole quiz timer
+    # ----------------------------------------------------------
 
-        question_time = (
-            current_question.time_limit_seconds
-            or session.default_time_per_question_seconds
+    if session.timer_mode == 'per_quiz':
+
+        total_seconds = int(
+            session.total_time_minutes * 60
         )
 
-        if session.timer_mode == "per_question":
+        if session.quiz_started_at:
+
+            elapsed = (
+                timezone.now() - session.quiz_started_at
+            ).total_seconds()
+
+            remaining_time = max(
+                0,
+                int(total_seconds - elapsed)
+            )
+
+        else:
+
+            remaining_time = total_seconds
+
+
+    # ----------------------------------------------------------
+    # Per-question timer
+    # ----------------------------------------------------------
+
+    elif session.timer_mode == 'per_question':
+
+        if current_question:
+        
+            question_time = (
+                current_question.time_limit_seconds
+                or session.default_time_per_question_seconds
+            )
 
             if session.question_started_at:
-
+            
                 elapsed = (
-                    timezone.now() -
-                    session.question_started_at
+                    timezone.now()
+                    - session.question_started_at
                 ).total_seconds()
 
                 remaining_time = max(
@@ -1929,8 +1966,16 @@ def take_quiz(request, code):
                 )
 
             else:
+            
+                remaining_time = int(question_time)
 
-                remaining_time = question_time
+
+    # ----------------------------------------------------------
+    # No timer
+    # ----------------------------------------------------------
+
+    else:
+        remaining_time = 0
     return render(request, 'quizapp/take_quiz.html', {
         'session': session,
         'participant': participant,
@@ -1966,13 +2011,44 @@ def quiz_status(request, code):
         code=code
     )
 
-    data = {
+    questions = list(
+        session.questions.all().order_by("order")
+    )
 
-        "current_question": session.current_question,
+    current_question = None
 
-        "quiz_state": session.quiz_state,
+    if (
+        questions and
+        0 <= session.current_question < len(questions)
+    ):
+        current_question = questions[
+            session.current_question
+        ]
 
-        "timer_mode": session.timer_mode,
+    question_time = None
+
+    if current_question:
+        question_time = (
+            current_question.time_limit_seconds
+            or session.default_time_per_question_seconds
+        )
+
+    return JsonResponse({
+
+        "current_question":
+            session.current_question,
+
+        "quiz_state":
+            session.quiz_state,
+
+        "timer_mode":
+            session.timer_mode,
+
+        "quiz_started_at": (
+            session.quiz_started_at.timestamp()
+            if session.quiz_started_at
+            else None
+        ),
 
         "question_started_at": (
             session.question_started_at.timestamp()
@@ -1980,13 +2056,13 @@ def quiz_status(request, code):
             else None
         ),
 
-        "question_time": session.default_time_per_question_seconds,
+        "question_time":
+            question_time,
 
-    }
+        "total_time_minutes":
+            session.total_time_minutes,
 
-    return JsonResponse(data)
-
-from django.views.decorators.cache import never_cache
+    })
 
 @never_cache
 def session_status(request, code):
