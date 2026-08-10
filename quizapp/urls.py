@@ -124,11 +124,6 @@ urlpatterns = [
     name='reset_password'
     ),
 
-    path(
-    'password-reset-invalid/',
-    views.password_reset_invalid,
-    name='password_reset_invalid'
-    ),
     # Joining — no account required
     path('session/join/', views.join_session, name='join_session'),
 
