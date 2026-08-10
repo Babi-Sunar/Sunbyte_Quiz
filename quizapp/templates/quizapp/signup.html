@@ -68,19 +68,6 @@
         ← Home
     </a>
     <div id="signupAlert" class="signup-alert"></div>
-    {% if form.errors %}
-    <!-- <script>
-        {% for field in form %}
-        {% for error in field.errors %}
-        alert("{{ field.label }}: {{ error|escapejs }}");
-        {% endfor %}
-        {% endfor %}
-
-        {% for error in form.non_field_errors %}
-        alert("{{ error|escapejs }}");
-        {% endfor %}
-    </script>
-    {% endif %} -->
     <form id="signupForm" method="post">
         {% csrf_token %}
 
