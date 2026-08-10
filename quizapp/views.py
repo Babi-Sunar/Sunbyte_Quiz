@@ -23,6 +23,9 @@ import cloudinary.uploader
 from io import BytesIO
 # =======================================================================
 # Auth & landing
+
+def home(request):
+    return render(request, 'quizapp/home.html')
 # =======================================================================
 import resend
 
