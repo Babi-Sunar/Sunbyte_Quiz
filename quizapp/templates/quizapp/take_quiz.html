@@ -175,13 +175,13 @@
             document.querySelector(".timer-circle");
 
         let currentQuestion =
-            {{ session.current_question|default:"0" }};
+            {{ session.current_question|default: "0" }};
 
         let remainingSeconds =
-            {{ remaining_time|default:"0" }};
+            {{ remaining_time|default: "0" }};
 
         let questionTime =
-            {{ question_time|default:"0" }};
+            {{ question_time|default: "0" }};
 
         let timerMode =
             "{{ session.timer_mode }}";
@@ -200,7 +200,10 @@
             const seconds =
                 Math.max(0, Math.floor(remainingSeconds));
 
-            timerEl.textContent = seconds;
+            const mins = Math.floor(seconds / 60);
+            const secs = seconds % 60;
+            timerEl.textContent =
+                `${mins}:${secs.toString().padStart(2, "0")}`;
 
             if (timerCircle && questionTime > 0) {
 
